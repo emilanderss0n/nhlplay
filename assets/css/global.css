@@ -3879,6 +3879,10 @@ table.border-only tbody .home td:last-child {
   border-bottom-right-radius: 10px;
 }
 
+.post-game-stats {
+  padding: 0.4rem 1rem 1rem;
+}
+
 .post-game-stats thead th {
   color: var(--paragraph-color);
   opacity: 0.8;
