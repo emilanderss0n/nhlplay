@@ -2137,10 +2137,10 @@ table.conferenceTable {
   align-items: center;
   background-color: var(--button-group-bg);
   color: var(--medium-contrast-color);
-  padding: 4px;
   border-radius: 0.3rem;
   gap: 0.2rem;
   box-shadow: var(--shadow-box);
+  padding: 0 4px;
 }
 
 .btn-group > a,
@@ -2152,9 +2152,9 @@ table.conferenceTable {
   box-shadow: none;
 }
 
-.btn-group .icon {
-  padding: 4px 7px 4px 4px !important;
-  border-right: 1px dashed var(--content-box-bg);
+.btn-group > .icon {
+  padding: 8px 7px 8px 4px;
+  border-right: 1px solid var(--border-stroke-weak);
 }
 
 .btn-group .btn:hover {
@@ -2164,6 +2164,7 @@ table.conferenceTable {
 
 .btn-group .btn.active {
   color: var(--main-link-color);
+  background-color: var(--component-header-bg);
 }
 
 .btn-group .btn:first-child {
