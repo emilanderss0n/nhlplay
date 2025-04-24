@@ -53,8 +53,7 @@
   --hover-trans-bez: cubic-bezier(0.175, 0.885, 0.32, 1.275);
   --player-modal-bg: #ffffffe8;
   --invert-one: none;
-  --box-shadow-nice: rgb(10 13 51 / 35%) 0px 30px 35px -30px,
-    rgb(0 0 0 / 8%) 0px 5px 5px 0px;
+  --box-shadow-nice: rgb(10 13 51 / 27%) 0px 30px 35px -30px, rgb(0 0 0 / 5%) 0px 5px 5px 0px;
   --header-background: rgb(255 255 255 / 83%);
   --button-group-bg: #fff;
   --toolbar-bg: #ffffffcc;
@@ -628,14 +627,11 @@ a[data-tooltip] {
   letter-spacing: -0.3px;
   max-width: 240px;
   transition: all 200ms linear;
+  outline: none;
 }
 
 .suggestion-input input:hover {
   border: 1px solid var(--border-stroke);
-}
-
-.suggestion-input input:focus {
-  outline: 1px solid var(--main-link-color);
 }
 
 .suggestion-input::before {
@@ -3730,10 +3726,6 @@ table.border-only tbody .home td:last-child {
 .pre-game-box {
   border-radius: 10px;
   overflow: hidden;
-}
-
-.post-game-header,
-.pre-game-header {
   box-shadow: var(--box-shadow-nice);
 }
 
@@ -3834,7 +3826,7 @@ table.border-only tbody .home td:last-child {
 
 .schedule.pre-game-series:has(.game) {
   padding: 1.5rem;
-  background-color: var(--dark-bg-color);
+  background: linear-gradient(180deg, #00000024, var(--content-box-bg));
   position: relative;
 }
 
@@ -3885,6 +3877,11 @@ table.border-only tbody .home td:last-child {
   backdrop-filter: blur(30px);
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
+}
+
+.post-game-stats thead th {
+  color: var(--paragraph-color);
+  opacity: 0.8;
 }
 
 .post-game-stats tbody td {
