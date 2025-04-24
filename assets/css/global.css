@@ -2144,7 +2144,6 @@ table.conferenceTable {
   padding: 0.5rem 0.7rem;
   background-color: transparent;
   color: var(--medium-contrast-color);
-  margin: 0 !important;
   box-shadow: none;
 }
 
@@ -2564,6 +2563,8 @@ table.border-only tbody .home td:last-child {
   display: none;
   font-size: 0.84rem;
   flex: 1;
+  line-height: 1.4;
+  transform: translateY(-0.1rem);
 }
 
 .home-leaders .player-text.active {
@@ -4871,6 +4872,11 @@ footer .credit {
     }
   }
 
+  @media screen and (max-width: 540px) {
+    background-position: -900px 50%;
+    margin-top: 5rem;
+  }
+
   &:hover {
     opacity: 1;
     filter: grayscale(0);
@@ -4878,7 +4884,7 @@ footer .credit {
 
   &.support-banner .content {
     color: var(--heading-color);
-    padding: 5rem 0;
+    padding: 5rem 0 5rem 2rem;
     max-width: 1380px;
     margin: 0 auto;
 
@@ -4889,12 +4895,20 @@ footer .credit {
     @media screen and (max-width: 1350px) {
       padding: 5rem 2rem;
     }
+
+    @media screen and (max-width: 890px) {
+      padding: 4rem 2rem;
+    }
   
     h3 {
       color: var(--heading-color);
       line-height: 1;
       margin-bottom: 1rem;
       font-style: normal;
+
+      @media screen and (max-width: 890px) {
+        font-size: 1.4rem;
+      }
     }
   
     p {
@@ -4910,6 +4924,9 @@ footer .credit {
 
       @media screen and (max-width: 890px) {
         max-width: 100%;
+        text-wrap: pretty;
+        font-size: 1rem;
+        font-weight: 500;
       }
     }
 
@@ -6297,6 +6314,10 @@ footer .credit {
     display: none;
   }
 
+  .btn-group > a {
+    margin: 4px 0;
+  }
+
   #player-modal {
     padding: 1.4rem 1.4rem 4rem;
   }
@@ -6481,8 +6502,8 @@ footer .credit {
   footer .footer-info {
     flex-wrap: wrap;
     justify-content: center;
-    padding: 0 3rem;
-    margin-bottom: 1rem;
+    padding: 0 2rem;
+    margin-bottom: 0.5rem;
   }
 
   .trades .teams {

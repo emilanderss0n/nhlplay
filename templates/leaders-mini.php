@@ -18,7 +18,7 @@
                 </a>
             </div>
             <div class="player-text" data-player-text="<?= $leader->id ?>">
-                <div class="category">Points</div>
+                <div class="category"><?= $categoryTitle ?></div>
                 <div class="name adv-title"><?= $leader->firstName->default ?> <?= $leader->lastName->default ?></div>
                 <div class="more"><?= $leader->teamAbbrev ?> - #<?= $leader->sweaterNumber ?> - <?= positionCodeToName3($leader->position) ?></div>
             </div>
