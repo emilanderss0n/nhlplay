@@ -5316,6 +5316,10 @@ footer .credit {
     border-radius: 0;
   }
 
+  .home-leaders {
+    --grid-gap-vertical: 4rem;
+  }
+
   .schedule.pre-game-series .game #team-linko img {
     width: auto;
     height: 100px;
