@@ -1,0 +1,31 @@
+User-agent: *
+Allow: /
+Disallow: /cache/
+Disallow: /ajax/
+Disallow: /includes/
+Disallow: /event-stream.php
+
+# Prevent pages with sensitive parameters
+Disallow: /*?gameId=
+Disallow: /*?playerId=
+
+# Allow CSS, JS, and image assets
+Allow: /assets/css/
+Allow: /assets/js/
+Allow: /assets/img/
+
+# Set crawl delay for all bots (10 second delay between requests)
+Crawl-delay: 10
+
+# Special rules for Google
+User-agent: Googlebot
+Crawl-delay: 5
+Allow: /assets/
+
+# Special rules for Bing
+User-agent: Bingbot
+Crawl-delay: 5
+Allow: /assets/
+
+# XML Sitemap
+Sitemap: https://nhlplay.online/sitemap.xml
