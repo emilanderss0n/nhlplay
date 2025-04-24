@@ -55,7 +55,7 @@
   --invert-one: none;
   --box-shadow-nice: rgb(10 13 51 / 35%) 0px 30px 35px -30px,
     rgb(0 0 0 / 8%) 0px 5px 5px 0px;
-  --header-background: rgb(255 255 255 / 71%);
+  --header-background: rgb(255 255 255 / 83%);
   --button-group-bg: #fff;
   --toolbar-bg: #ffffffcc;
   --trans-70: #00000070;
@@ -613,7 +613,7 @@ a[data-tooltip] {
 }
 
 .suggestion-input input {
-  background-color: var(--form-bg-2);
+  background-color: var(--semi-frost-bg);
   border: 1px solid var(--border-stroke-weak);
   color: inherit;
   font-weight: bold;
@@ -627,6 +627,15 @@ a[data-tooltip] {
   white-space: nowrap;
   letter-spacing: -0.3px;
   max-width: 240px;
+  transition: all 200ms linear;
+}
+
+.suggestion-input input:hover {
+  border: 1px solid var(--border-stroke);
+}
+
+.suggestion-input input:focus {
+  outline: 1px solid var(--main-link-color);
 }
 
 .suggestion-input::before {
@@ -641,10 +650,6 @@ a[data-tooltip] {
   align-items: center;
   transform: translateX(0.8rem);
   color: var(--medium-contrast-color);
-}
-
-.suggestion-input input:focus {
-  outline: none;
 }
 
 .suggestion-input input::placeholder {
@@ -903,7 +908,7 @@ header .cont {
 }
 
 #mobile-search .suggestion-input::before {
-  transform: translateX(2rem);
+  display: none;
 }
 
 #mobile-search .suggestion-input .suggestion-box {
@@ -917,8 +922,11 @@ header .cont {
   width: 100%;
   max-width: 100%;
   border-radius: 0;
-  padding: 0 0 0 3.6rem;
+  padding: 0.5rem 2rem;
   font-size: 1.2rem;
+  border: none;
+  backdrop-filter: blur(20px);
+  outline: none;
 }
 
 #main-menu .wrapper {
@@ -975,10 +983,21 @@ header .cont {
   align-items: center;
   justify-content: space-between;
   padding: 0 1rem;
-  background-color: var(--form-bg-2);
+  background-color: var(--semi-frost-bg);
   border: 1px solid var(--border-stroke-weak);
   color: var(--medium-contrast-color);
   cursor: pointer;
+  user-select: none;
+  transition: all 200ms linear;
+}
+
+.menu-links .dropdown:checked + label:hover,
+.menu-links .dropdown:not(:checked) + label:hover,
+.menu-teams .dropdown:checked + label:hover,
+.menu-teams .dropdown:not(:checked) + label:hover,
+.custom-select .dropdown:checked + label:hover,
+.custom-select .dropdown:not(:checked) + label:hover {
+  border: 1px solid var(--border-stroke);
 }
 
 .menu-links .dropdown:checked + label,
@@ -6165,14 +6184,6 @@ footer .footer-info span {
   header:has(.logo h3) {
     height: 65px;
     display: flex;
-  }
-
-  #mobile-search .suggestion-input::before {
-    transform: translateX(1.2rem);
-  }
-
-  #player-search-mobile {
-    padding: 0 0 0 2.8rem;
   }
 
   .wrap {
