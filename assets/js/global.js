@@ -11,7 +11,7 @@ import { initLiveGames } from './modules/live-games.js';
 import { initStatLeadersHandlers } from './modules/stat-leaders-handlers.js';
 import { convertUTCTimesToLocal } from './modules/utils.js';
 import { initPreGamePage } from './modules/pre-game-handlers.js';
-import { initDraftRankingsTable } from './modules/drafts.js';
+import { initDraftPage } from './modules/drafts.js';
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -28,18 +28,9 @@ document.addEventListener('DOMContentLoaded', function () {
     initLiveGames();
     initStatLeadersHandlers();
     convertUTCTimesToLocal();
-    initDraftRankingsTable();
+    initDraftPage();
 
     if (document.querySelector('.pre-game-cont')) {
         initPreGamePage();
-    }
-});
-
-document.addEventListener('click', function (event) {
-    const target = event.target.closest('#link-draft');
-    if (target) {
-        setTimeout(() => {{
-        initDraftRankingsTable();
-        }}, 2000);
     }
 });

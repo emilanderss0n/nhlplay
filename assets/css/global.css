@@ -2148,8 +2148,8 @@ table.conferenceTable {
 }
 
 .btn-group > .icon {
-  padding: 8px 7px 8px 4px;
-  border-right: 1px solid var(--border-stroke-weak);
+  padding: 8px 8px 8px 4px;
+  border-right: 1px solid var(--component-header-bg);
 }
 
 .btn-group .btn:hover {
@@ -3227,11 +3227,23 @@ table.border-only tbody .home td:last-child {
   border-radius: 10px;
   position: relative;
   overflow: clip;
+  box-shadow: inset 0 30px 240px rgb(10 18 40 / 74%);
 }
 
 #player-modal .stats-player .career-stats-two .season-career .team-logo {
-  width: 60px;
-  mask: var(--logo-mask-subtle);
+  width: 800px;
+  left: -200px;
+  top: -240px;
+  mix-blend-mode: soft-light;
+  mask: var(--logo-mask-card);
+  opacity: 0.3;
+  position: absolute;
+}
+
+@media (prefers-color-scheme: dark) {
+  #player-modal .stats-player .career-stats-two .season-career {
+    box-shadow: none;
+  }
 }
 
 #player-modal .stats-player .career-stats-two .season-career .header-season-career {
@@ -3248,11 +3260,13 @@ table.border-only tbody .home td:last-child {
 }
 
 #player-modal .stats-player .career-stats-two .title.stats h3 {
-  color: var(--heading-color);
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 #player-modal .stats-player .career-stats-two .title.stats h3 span {
-  color: var(--paragraph-color);
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 #player-modal .stats-player .career-stats-two .type, #player-modal .stats-player .career-stats-two .phone-show {
@@ -3263,7 +3277,9 @@ table.border-only tbody .home td:last-child {
 #player-modal .stats-player .career-stats-two .type {
   margin-bottom: 1rem;
   font-weight: bold;
-  color: var(--heading-color);
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  opacity: 0.8;
 }
 
 #player-modal .stats-player .career-stats-two table {
@@ -4777,6 +4793,30 @@ footer .credit {
 .team-boxes .item .content .head h3 {
   font-size: 1.2rem;
   letter-spacing: 0;
+}
+
+.previous-draft {
+  margin-bottom: 3rem;
+  transition: opacity .5s ease-in, scale .5s ease-in, display .5s ease-in;
+  /* key to transitioning out */
+  transition-behavior: allow-discrete;
+
+  @starting-style {
+    opacity: 0; 
+    scale: .9;
+  }
+
+  &.show {
+    mask: linear-gradient(180deg, rgb(0 0 0) 0%, rgb(0 0 0) 100%);
+  }
+
+  &:not(.show) {
+    opacity: 0;
+    scale: .9;
+    display: none;
+    transition-duration: .4s;
+    transition-timing-function: ease-out;
+  }
 }
 
 .draft-picks-result {

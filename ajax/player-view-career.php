@@ -309,7 +309,7 @@ foreach ($seasonTeamMap as $key => $types) {
     $season2 = substr($season, 4, 4);
     $teamColorConverted = teamNameToIdConvert($teamName);
     ?>
-    <div class="season-career" style="background-image: linear-gradient(173deg, <?= teamToColor($teamColorConverted) ?> -180%, rgba(255,255,255,0) 50%);">
+    <div class="season-career" style="background-image: linear-gradient(173deg, <?= teamToColor($teamColorConverted) ?> -180%, rgba(255,255,255,0) 80%);">
         <div class="header-season-career">
             <img class="team-logo" src="assets/img/teams/<?= $teamColorConverted ?>.svg" alt="<?= $teamName ?>">
             <div class="title stats">

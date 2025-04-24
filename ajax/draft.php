@@ -11,7 +11,9 @@ $ApiUrl = 'https://api-web.nhle.com/v1/draft/rankings/now';
 $curl = curlInit($ApiUrl);
 $draftRankings = json_decode($curl);
 
-$ApiUrl2 = 'https://api-web.nhle.com/v1/draft/picks/'. $draftRankings->draftYear .'/1';
+$draftYear = $draftRankings->draftYear;
+
+$ApiUrl2 = 'https://api-web.nhle.com/v1/draft/picks/'. $draftYear .'/1';
 $curl2 = curlInit($ApiUrl2);
 $draftPicks = json_decode($curl2);
 
@@ -54,12 +56,14 @@ function rankArrow($mid, $final) {
         </div>
         <?php } else { ?>
             <div class="alert alert-warning" role="alert" style="margin-bottom: 3rem;">
-                1st round draft picks will show up here on draft selection in June
+                <span>1st round draft picks will show up here on draft selection in June</span>
+                <a href="javascript:void(0)" class="btn sm" id="show-previous-draft" data-draft-year="<?= $draftYear ?>">Previous Picks</a>
             </div>
         <?php } ?>
+        <div class="previous-draft draft-picks-result grid grid-300 grid-gap-lg grid-gap-row-lg"></div>
         <div class="component-header">
             <h3 class="title">Draft Rankings</h3>
-            <p class="sm">Draft rankings from NHL official API, draft year: <?= $draftRankings->draftYear ?></p>
+            <p class="sm">Draft rankings from NHL official API, draft year: <?= $draftYear ?></p>
         </div>
         <div class="draft-rankings-table">
             <table id="draftRankings" class="hover sticky-header" data-order='[[ 0, "asc" ]]'>
