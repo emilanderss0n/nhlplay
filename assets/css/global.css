@@ -2612,7 +2612,6 @@ table.border-only tbody .home td:last-child {
   flex-direction: column;
   gap: 0.4rem;
   opacity: 0;
-  height: 155px;
 }
 
 .home-leaders .points {
@@ -2620,8 +2619,9 @@ table.border-only tbody .home td:last-child {
   width: 100%;
   align-items: center;
   position: relative;
-  height: 26px;
-  border-radius: 16px;
+  height: 28px;
+  border-radius: 7px;
+  border: 1px solid var(--border-stroke-weak);
   overflow: hidden;
   background-color: var(--low-contrast-color);
   opacity: 1;
@@ -2634,7 +2634,7 @@ table.border-only tbody .home td:last-child {
 .home-leaders .points .points-line {
   height: inherit;
   width: 100%;
-  border-radius: 16px;
+  border-radius: 7px;
   background-color: var(--content-box-bg);
 }
 
@@ -3836,6 +3836,7 @@ table.border-only tbody .home td:last-child {
 
 .schedule.pre-game-series .game .teams {
   background-color: var(--content-box-bg);
+  border: 1px solid var(--border-stroke-weak);
 }
 
 .schedule.pre-game-series .game #team-linko img {
