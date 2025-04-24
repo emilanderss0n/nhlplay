@@ -1,6 +1,16 @@
+<div class="support-banner">
+    <div class="content">
+        <h3>Enjoying NHLPLAY?</h3>
+        <p>Enjoying the ad-free experience? Consider supporting NHLPLAY.online with a small donation. This site is 100% non-profit and run with love for the game.</p>
+        <div class="content-links">
+            <a href="https://ko-fi.com/moxopixel" target="_blank" rel="noopener noreferrer" class="btn"><i class="bi bi-cup-hot-fill"></i> Ko-Fi</a>
+            <a href="https://paypal.me/moxopixel" target="_blank" rel="noopener noreferrer" class="btn"><i class="bi bi-paypal"></i> PayPal</a>
+        </div>
+    </div>
+</div>
 <footer>
     <div class="wrapper">
-        <div class="footer-info">Copyright © 2025 <span>/</span> <strong>NHLPLAY</strong> <span>/</span> <a class="social-btn-twitter" href="https://twitter.com/NHLPlayOnline" target="_blank"><i class="bi bi-twitter"></i> Follow</a> <span>/</span> <a href="https://ko-fi.com/moxopixel" target="_blank">Donate</a></div>
+        <div class="footer-info">Copyright © 2025 <span>/</span> <strong>NHLPLAY</strong> <span>/</span> <a class="social-btn-twitter" href="https://twitter.com/NHLPlayOnline" target="_blank"><i class="bi bi-twitter"></i> Follow</a></div>
         <div class="credit">Created by <a href="https://emils.graphics" target="_blank">emils.graphics</a></div>
     </div>
 </footer>

@@ -493,8 +493,8 @@ p.sm {
 }
 
 .btn i {
-  margin-right: 0.5em;
-  font-size: 1.4em;
+  margin-right: 0.5rem;
+  font-size: 1.4rem;
 }
 
 .btn i.right {
@@ -504,8 +504,8 @@ p.sm {
 }
 
 .indicator {
-  width: 0.5em;
-  height: 0.5em;
+  width: 0.5rem;
+  height: 0.5rem;
   border-radius: 50%;
   background-color: var(--secondary-link-color);
   display: inline-block;
@@ -4693,7 +4693,6 @@ table.border-only tbody .home td:last-child {
 }
 
 footer {
-  margin-top: 8rem;
   background-color: var(--header-background);
 }
 
@@ -4709,10 +4708,15 @@ footer .wrapper {
 footer .footer-info {
   display: flex;
   gap: 0.5rem;
+  font-size: 1rem;
 }
 
 footer .footer-info span {
   color: var(--medium-contrast-color);
+}
+
+footer .credit {
+  font-size: 1rem;
 }
 
 .team-boxes {
@@ -4829,6 +4833,95 @@ footer .footer-info span {
   display: inline-block;
   box-sizing: border-box;
   animation: loader 1s linear infinite;
+}
+
+.support-banner {
+  width: 100%;
+  background-image: url(../img/donation-banner.jpg);
+  background-color: var(--header-background);
+  background-size: cover;
+  background-position: center right;
+  background-repeat: no-repeat;
+  margin-top: 7rem;
+  position: relative;
+  opacity: 0.6;
+  filter: grayscale(1);
+  background-repeat: no-repeat;
+  transition: all 0.2s linear;
+  border-top: 1px solid var(--border-stroke-weak);
+  border-bottom: 1px solid var(--border-stroke-weak);
+
+  @media (prefers-color-scheme: dark) {
+    opacity: 0.8;
+    filter: grayscale(0.7);
+    background-image: url(../img/donation-banner-2.jpg);
+  }
+
+  @media screen and (max-width: 1350px) {
+    opacity: 1;
+    filter: none;
+  }
+
+  @media screen and (max-width: 890px) {
+    background-blend-mode: screen;
+
+    @media (prefers-color-scheme: dark) {
+      background-blend-mode: multiply;
+    }
+  }
+
+  &:hover {
+    opacity: 1;
+    filter: grayscale(0);
+  }
+
+  &.support-banner .content {
+    color: var(--heading-color);
+    padding: 5rem 0;
+    max-width: 1380px;
+    margin: 0 auto;
+
+    @media (prefers-color-scheme: dark) {
+      text-shadow: 1px 1px 2px rgb(0 0 0 / 66%);
+    }
+
+    @media screen and (max-width: 1350px) {
+      padding: 5rem 2rem;
+    }
+  
+    h3 {
+      color: var(--heading-color);
+      line-height: 1;
+      margin-bottom: 1rem;
+      font-style: normal;
+    }
+  
+    p {
+      color: var(--heading-color);
+      text-wrap: balance;
+      font-size: 1.2rem;
+      line-height: 1.5;
+      max-width: 900px;
+
+      @media screen and (max-width: 1100px) {
+        max-width: 600px;
+      }
+
+      @media screen and (max-width: 890px) {
+        max-width: 100%;
+      }
+    }
+
+    .content-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1.4rem;
+    }
+
+    .content-links > a {
+      text-shadow: none;
+    }
+  }
 }
 
 .fadeInTop {
@@ -5232,6 +5325,8 @@ footer .footer-info span {
     justify-content: center;
     gap: 2rem;
   }
+
+
 
   footer {
     padding: 0 30px;
