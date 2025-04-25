@@ -4166,7 +4166,7 @@ table.border-only tbody .home td:last-child {
 .game-misc {
   display: grid;
   gap: 0;
-  margin-top: 3rem;
+  margin-top: 8rem;
   grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
   justify-items: start;
   align-items: center;
@@ -5433,7 +5433,7 @@ footer .credit {
     gap: 2rem;
   }
 
-  .game-misc, .game-info-header {
+  .game-misc {
     display: none;
   }
 
