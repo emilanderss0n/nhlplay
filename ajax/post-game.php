@@ -169,7 +169,7 @@ include_once '../includes/data/init-post-game.php';
             <div class="penalties team-boxes grid grid-300 grid-gap grid-gap-row" id="game-penalties" grid-max-col-count="3">
                 <?= gamePenalties($gameContent) ?>
             </div>
-            <h2 class="header-dashed">Game Information</h2>
+            <h2 class="header-dashed game-info-header">Game Information</h2>
             <div class="game-misc">
                 <?php
                 if(isset($gameVideo->condensedGame)) { 
