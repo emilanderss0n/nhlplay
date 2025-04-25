@@ -1,4 +1,5 @@
 :root {
+  interpolate-size: allow-keywords;
   --transparent: transparent;
   --white: #fff;
   --main-bg-color: #e3e7eb;
@@ -2643,6 +2644,8 @@ table.border-only tbody .home td:last-child {
   width: 100%;
   border-radius: 7px;
   background-color: var(--content-box-bg);
+  background-image: linear-gradient(0deg, #00000026 0%, transparent 20%);
+  overflow: hidden;
 }
 
 .home-leaders .points.active .points-line {
@@ -4900,9 +4903,7 @@ footer .credit {
 
 .transition-zoom-in {
   transition: opacity .5s ease-in-out, scale .5s ease-in-out, height .5s ease-in-out 500ms, margin .5s ease-in-out 500ms;
-  /* key to transitioning out */
-  transition-behavior: allow-discrete;
-
+  
   @starting-style {
     opacity: 0; 
     scale: .9;
@@ -5149,6 +5150,18 @@ footer .credit {
 }
 
 @media screen and (min-width: 1450px) {
+  .home-leaders .player-text .adv-title,
+  .home-leaders .player-text .more {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 120px;
+  }
+
+  .home-leaders .player-text .more {
+    max-width: 160px;
+  }
+
   .section-stats {
     grid-template-columns: repeat(4, 1fr);
   }
