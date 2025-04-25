@@ -5148,6 +5148,33 @@ footer .credit {
   }
 }
 
+@media screen and (min-width: 1450px) {
+  .section-stats {
+    grid-template-columns: repeat(4, 1fr);
+  }
+
+  .stats-leaders .stat-select a {
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .stats-leaders .player .head {
+    transform: translateX(20px);
+  }
+
+  .stats-leaders .player .info {
+    padding-left: 140px;
+  }
+
+  .stats-leaders .player .info h3 {
+    font-size: 0.8rem;
+  }
+
+  .stats-leaders .player .info .main-stat {
+    font-size: 1.2rem;
+  }
+}
+
 /* Responsive CSS */
 @media screen and (min-width: 1350px) {
   ::-webkit-scrollbar {
