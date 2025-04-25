@@ -2347,8 +2347,8 @@ table.border-only tbody .home td:last-child {
   transition: all 0.3s linear;
 }
 
-.injuries-home {
-  margin: 5em 0 0;
+.injuries-home.show {
+  margin: 3rem 0;
 }
 
 .injuries-home .injuries {
@@ -4877,6 +4877,30 @@ footer .credit {
   animation: loader 1s linear infinite;
 }
 
+.transition-zoom-in {
+  transition: opacity .5s ease-in-out, scale .5s ease-in-out, height .5s ease-in-out 500ms, margin .5s ease-in-out 500ms;
+  /* key to transitioning out */
+  transition-behavior: allow-discrete;
+
+  @starting-style {
+    opacity: 0; 
+    scale: .9;
+    height: 0;
+    margin: 0;
+  }
+
+  &.show {
+    mask: linear-gradient(180deg, rgb(0 0 0) 0%, rgb(0 0 0) 100%);
+    transition: opacity .5s ease-in-out 500ms, scale .5s ease-in-out 500ms, height .5s ease-in-out, margin .5s ease-in-out;
+  }
+
+  &:not(.show) {
+    opacity: 0;
+    scale: .9;
+    height: 0;
+  }
+}
+
 .support-banner {
   width: 100%;
   background-image: url(../img/donation-banner.jpg);
@@ -5480,7 +5504,7 @@ footer .credit {
     z-index: 998;
     transform: translateX(900px);
     transition: all 0.5s ease-in-out;
-    overflow-y: scroll;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -5677,10 +5701,6 @@ footer .credit {
 
   .component-header:has(:nth-child(2)) > *:last-child {
     margin-right: 0;
-  }
-
-  .injuries-home .injuries {
-    margin-top: 2rem;
   }
 
   .alert {

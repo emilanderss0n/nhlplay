@@ -17,32 +17,6 @@ $mergedCSS = $isDevelopment ? false : generateMergedCSS([
     'assets/css/bootstrap-icons.min.css',
 ], 'merged.min.css');
 
-// Check if this is an EventSource request or a normal page load
-$isEventSourceRequest = isset($_SERVER['HTTP_ACCEPT']) && $_SERVER['HTTP_ACCEPT'] === 'text/event-stream';
-
-if ($_SERVER['HTTP_HOST'] == 'localhost' && $isEventSourceRequest)
-{
-    include_once 'includes/debug.php';
-    header('Content-Type: text/event-stream');
-    header('Cache-Control: no-cache');
-    header('Connection: keep-alive');
-
-    // Send message to client
-    while (true) {
-        list($changed, $file) = checkForChanges();
-        
-        if ($changed) {
-            echo "data: {\"reload\": true, \"file\": \"$file\"}\n\n";
-        } else {
-            echo "data: {\"reload\": false}\n\n";
-        }
-        
-        ob_flush();
-        flush();
-        sleep(2);
-    }
-    exit;
-}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -87,198 +61,122 @@ if ($_SERVER['HTTP_HOST'] == 'localhost' && $isEventSourceRequest)
     </script>
 </head>
 <body class="<?= $page ?><?php if ($playoffs) { echo ' playoffs'; } ?>">
-<header>
-    <div class="cont">
-        <div class="header-title">
-            <a href="index" class="logo">  
-                <?php if ($isIOS): ?>
-                <!-- iOS fallback image -->
-                <h3>NHLPLAY</h3>
-                <?php else: ?>    
-                <svg width="160" height="42" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="150 60 200 28" preserveAspectRatio="xMidYMid">
-                    <defs>
-                        <linearGradient id="editing-stripes-gradient" x1="0.1719" x2="0.8280" y1="0.1226" y2="0.8773">
-                            <stop offset="0" style="stop-color: var(--stop01)"></stop>
-                            <stop offset="1" style="stop-color: var(--stop02)"></stop>
-                        </linearGradient>
-                        <filter id="editing-stripes" x="0" y="0" width="100" height="200">
-                            <feGaussianBlur stdDeviation="5" in="SourceAlpha" result="BLUR"/>
-                            <feSpecularLighting surfaceScale="4" specularConstant="0.8" specularExponent="30" lighting-color="var(--light-color)" in="BLUR" result="SPECULAR">
-                            <fePointLight x="40" y="-30" z="200"></fePointLight>
-                            </feSpecularLighting>
-                            <feComposite operator="in" in="SPECULAR" in2="SourceAlpha" result="COMPOSITE"/>
-                            <feMerge>
-                                <feMergeNode in="SourceGraphic" />
-                                <feMergeNode in="COMPOSITE"/>
-                            </feMerge>
-                        </filter>
-                    </defs>
-                    <g filter="url(#editing-stripes)">
-                        <g transform="translate(146.69997453689575, 90.05500030517578)">
-                            <path d="M8.17-23.35L8.17 0L3.86 0L3.86-30.11L8.17-30.11L26.27-6.76L26.27-30.11L30.57-30.11L30.57 0L26.27 0L8.17-23.35ZM59.84-30.11L64.14-30.11L64.14 0L59.84 0L59.84-12.89L42.60-12.89L42.60 0L38.30 0L38.30-30.11L42.60-30.11L42.60-17.20L59.84-17.20L59.84-30.11ZM71.87-30.11L76.17-30.11L76.17-4.30L91.65-4.30L91.65 0L71.87 0L71.87-30.11ZM101.12 0L96.81 0L96.81-30.11L113.29-30.11L113.29-30.11Q120.60-30.11 120.60-22.78L120.60-22.78L120.60-18.50L120.60-18.50Q120.60-11.17 113.29-11.17L113.29-11.17L101.12-11.17L101.12 0ZM101.12-25.80L101.12-15.47L113.06-15.47L113.06-15.47Q114.79-15.47 115.54-16.23L115.54-16.23L115.54-16.23Q116.30-16.99 116.30-18.71L116.30-18.71L116.30-22.57L116.30-22.57Q116.30-24.29 115.54-25.05L115.54-25.05L115.54-25.05Q114.79-25.80 113.06-25.80L113.06-25.80L101.12-25.80ZM126.61-30.11L130.91-30.11L130.91-4.30L146.38-4.30L146.38 0L126.61 0L126.61-30.11ZM160.58-30.11L164.88-30.11L176.49 0L172.19 0L169.52-6.93L155.94-6.93L153.27 0L148.97 0L160.58-30.11ZM162.74-24.50L157.58-11.23L167.86-11.23L162.74-24.50ZM175.21-30.11L180.21-30.11L188.96-16.04L197.74-30.11L202.74-30.11L191.13-11.95L191.13 0L186.82 0L186.82-11.95L175.21-30.11Z" fill="url(#editing-stripes-gradient)"></path>
+    <header>
+        <div class="cont">
+            <div class="header-title">
+                <a href="index" class="logo">  
+                    <?php if ($isIOS): ?>
+                    <!-- iOS fallback image -->
+                    <h3>NHLPLAY</h3>
+                    <?php else: ?>    
+                    <svg width="160" height="42" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="150 60 200 28" preserveAspectRatio="xMidYMid">
+                        <defs>
+                            <linearGradient id="editing-stripes-gradient" x1="0.1719" x2="0.8280" y1="0.1226" y2="0.8773">
+                                <stop offset="0" style="stop-color: var(--stop01)"></stop>
+                                <stop offset="1" style="stop-color: var(--stop02)"></stop>
+                            </linearGradient>
+                            <filter id="editing-stripes" x="0" y="0" width="100" height="200">
+                                <feGaussianBlur stdDeviation="5" in="SourceAlpha" result="BLUR"/>
+                                <feSpecularLighting surfaceScale="4" specularConstant="0.8" specularExponent="30" lighting-color="var(--light-color)" in="BLUR" result="SPECULAR">
+                                <fePointLight x="40" y="-30" z="200"></fePointLight>
+                                </feSpecularLighting>
+                                <feComposite operator="in" in="SPECULAR" in2="SourceAlpha" result="COMPOSITE"/>
+                                <feMerge>
+                                    <feMergeNode in="SourceGraphic" />
+                                    <feMergeNode in="COMPOSITE"/>
+                                </feMerge>
+                            </filter>
+                        </defs>
+                        <g filter="url(#editing-stripes)">
+                            <g transform="translate(146.69997453689575, 90.05500030517578)">
+                                <path d="M8.17-23.35L8.17 0L3.86 0L3.86-30.11L8.17-30.11L26.27-6.76L26.27-30.11L30.57-30.11L30.57 0L26.27 0L8.17-23.35ZM59.84-30.11L64.14-30.11L64.14 0L59.84 0L59.84-12.89L42.60-12.89L42.60 0L38.30 0L38.30-30.11L42.60-30.11L42.60-17.20L59.84-17.20L59.84-30.11ZM71.87-30.11L76.17-30.11L76.17-4.30L91.65-4.30L91.65 0L71.87 0L71.87-30.11ZM101.12 0L96.81 0L96.81-30.11L113.29-30.11L113.29-30.11Q120.60-30.11 120.60-22.78L120.60-22.78L120.60-18.50L120.60-18.50Q120.60-11.17 113.29-11.17L113.29-11.17L101.12-11.17L101.12 0ZM101.12-25.80L101.12-15.47L113.06-15.47L113.06-15.47Q114.79-15.47 115.54-16.23L115.54-16.23L115.54-16.23Q116.30-16.99 116.30-18.71L116.30-18.71L116.30-22.57L116.30-22.57Q116.30-24.29 115.54-25.05L115.54-25.05L115.54-25.05Q114.79-25.80 113.06-25.80L113.06-25.80L101.12-25.80ZM126.61-30.11L130.91-30.11L130.91-4.30L146.38-4.30L146.38 0L126.61 0L126.61-30.11ZM160.58-30.11L164.88-30.11L176.49 0L172.19 0L169.52-6.93L155.94-6.93L153.27 0L148.97 0L160.58-30.11ZM162.74-24.50L157.58-11.23L167.86-11.23L162.74-24.50ZM175.21-30.11L180.21-30.11L188.96-16.04L197.74-30.11L202.74-30.11L191.13-11.95L191.13 0L186.82 0L186.82-11.95L175.21-30.11Z" fill="url(#editing-stripes-gradient)"></path>
+                            </g>
                         </g>
-                    </g>
-                </svg>
-                <?php endif; ?>
-            </a>
-            <div id="activity"><span class="loader"></span></div>
-        </div>
-        <div class="sm-only">
-            <a id="nav-mobile-search" href="javascript:void(0)"><i class="bi bi-search"></i></a>
-            <label id="nav-mobile" class="hamburger">
-                <input type="checkbox">
-                <svg viewBox="0 0 32 32">
-                    <path class="line line-top-bottom" d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22"></path>
-                    <path class="line" d="M7 16 27 16"></path>
-                </svg>
-            </label>
-        </div>
-        <nav id="main-menu" role="navigation">
-            <div class="wrapper">
-                
-                <div class="menu-right">
-                    <div class="suggestion-input">
-                        <div id="activity-sm"><span class="loader"></span></div>
-                        <input id="player-search" type="text" placeholder="Player Search" autocomplete="off">
-                        <div class="suggestion-box"></div>
-                    </div>
-                    <div class="menu-links">
-                        <input class="dropdown" type="checkbox" id="dropdown1" name="dropdown1"/>
-                        <label class="for-dropdown" for="dropdown1">Links <i class="bi bi-arrow-down-short"></i></label>
-                        <div class="section-dropdown"> 
-                            <a id="link-game-scores" href="<?= BASE_URL ?>/scores" rel="page">Scores <i class="bi bi-arrow-right-short"></i></a>
-                            <a id="link-stat-leaders" href="<?= BASE_URL ?>/stat-leaders" rel="page">Stat Leaders <i class="bi bi-arrow-right-short"></i></a>
-                            <a id="link-game-recaps" href="<?= BASE_URL ?>/recaps" rel="page">Game Recaps <i class="bi bi-arrow-right-short"></i></a>
-                            <a id="link-trades" href="<?= BASE_URL ?>/trades" rel="page">
-                                <span>Trades</span>
-                                <i class="bi bi-arrow-right-short"></i>
-                            </a>
-                            <a id="link-draft" href="<?= BASE_URL ?>/draft" rel="page">Draft <i class="bi bi-arrow-right-short"></i></a>
-                            <a id="link-last-season" href="<?= BASE_URL ?>/last-season-overview" rel="page">Last Season <i class="bi bi-arrow-right-short"></i></a>
+                    </svg>
+                    <?php endif; ?>
+                </a>
+                <div id="activity"><span class="loader"></span></div>
+            </div>
+            <div class="sm-only">
+                <a id="nav-mobile-search" href="javascript:void(0)"><i class="bi bi-search"></i></a>
+                <label id="nav-mobile" class="hamburger">
+                    <input type="checkbox">
+                    <svg viewBox="0 0 32 32">
+                        <path class="line line-top-bottom" d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22"></path>
+                        <path class="line" d="M7 16 27 16"></path>
+                    </svg>
+                </label>
+            </div>
+            <nav id="main-menu" role="navigation">
+                <div class="wrapper">
+                    
+                    <div class="menu-right">
+                        <div class="suggestion-input">
+                            <div id="activity-sm"><span class="loader"></span></div>
+                            <input id="player-search" type="text" placeholder="Player Search" autocomplete="off">
+                            <div class="suggestion-box"></div>
                         </div>
-                    </div>
-                    <ul class="menu-teams" aria-haspopup="true" style="display: none">
-                        <li>
-                            <button class="tablet-show">Teams <i class="bi bi-chevron-down"></i></button>
-                            <div class="pre-cont" aria-label="submenu">
-                                <ul class="container">
-                                    <?php include('includes/teamSelection.php'); ?>
-                                </ul>
+                        <div class="menu-links">
+                            <input class="dropdown" type="checkbox" id="dropdown1" name="dropdown1"/>
+                            <label class="for-dropdown" for="dropdown1">Links <i class="bi bi-arrow-down-short"></i></label>
+                            <div class="section-dropdown"> 
+                                <a id="link-game-scores" href="<?= BASE_URL ?>/scores" rel="page">Scores <i class="bi bi-arrow-right-short"></i></a>
+                                <a id="link-stat-leaders" href="<?= BASE_URL ?>/stat-leaders" rel="page">Stat Leaders <i class="bi bi-arrow-right-short"></i></a>
+                                <a id="link-game-recaps" href="<?= BASE_URL ?>/recaps" rel="page">Game Recaps <i class="bi bi-arrow-right-short"></i></a>
+                                <a id="link-trades" href="<?= BASE_URL ?>/trades" rel="page">
+                                    <span>Trades</span>
+                                    <i class="bi bi-arrow-right-short"></i>
+                                </a>
+                                <a id="link-draft" href="<?= BASE_URL ?>/draft" rel="page">Draft <i class="bi bi-arrow-right-short"></i></a>
+                                <a id="link-last-season" href="<?= BASE_URL ?>/last-season-overview" rel="page">Last Season <i class="bi bi-arrow-right-short"></i></a>
                             </div>
-                        </li>
-                    </ul>
-                    <div class="menu-teams">
-                        <input class="dropdown" type="checkbox" id="dropdown2" name="dropdown2"/>
-                        <label class="for-dropdown" for="dropdown2">Teams <i class="bi bi-arrow-down-short"></i></label>
-                        <div class="section-dropdown" id="team-selection"> 
-                            <div class="fader-top"></div>
-                            <div class="container">
-                            <?php include('includes/teamSelection.php'); ?>
+                        </div>
+                        <ul class="menu-teams" aria-haspopup="true" style="display: none">
+                            <li>
+                                <button class="tablet-show">Teams <i class="bi bi-chevron-down"></i></button>
+                                <div class="pre-cont" aria-label="submenu">
+                                    <ul class="container">
+                                        <?php include('includes/teamSelection.php'); ?>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="menu-teams">
+                            <input class="dropdown" type="checkbox" id="dropdown2" name="dropdown2"/>
+                            <label class="for-dropdown" for="dropdown2">Teams <i class="bi bi-arrow-down-short"></i></label>
+                            <div class="section-dropdown" id="team-selection"> 
+                                <div class="fader-top"></div>
+                                <div class="container">
+                                <?php include('includes/teamSelection.php'); ?>
+                                </div>
+                                <div class="fader-bottom"></div>
                             </div>
-                            <div class="fader-bottom"></div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </nav>
-    </div>
-</header>
+            </nav>
+        </div>
+    </header>
 
-<div id="mobile-search">
-    <div class="suggestion-input">
-        <div id="activity-sm"><span class="loader"></span></div>
-        <input id="player-search-mobile" type="text" placeholder="Player Search" autocomplete="off">
-        <div class="suggestion-box"></div>
-    </div>
-</div>
-
-<dialog id="gameLogModal">
-    <div class="modal-header"><p>Post Game</p><a href="javascript:void(0);" id="closeGameLogModal"><i class="bi bi-x-lg"></i></a></div>
-    <div class="content"></div>
-</dialog>
-<div id="gameLogOverlay"></div>
-
-<div class="overlay">
-    <div id="activity-player">
-        <span class="loader"></span>
-    </div>
-    <div id="player-modal"></div>
-</div>
-
-<?php if ($_SERVER['HTTP_HOST'] == 'localhost'): ?>
-<style>
-    #debug-output {
-        position: fixed;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        height: 300px;
-        background-color: #202025;
-        color: white;
-        padding: 10px;
-        font-family: monospace;
-        z-index: 9999;
-        transition: height 0.3s ease;
-    }
-    #debug-output.expanded {
-        height: 100vh;
-    }
-    #debug-output:has(.debug-content:empty) {
-        display: none;
-    }
-    .debug-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-    }
-    .debug-header h3 {
-        margin: 0;
-    }
-    .debug-content {
-        max-height: calc(100% - 40px);
-        overflow-y: auto;
-    }
-    .debug-content pre {
-        margin: 0;
-    }
-    .debug-buttons {
-        display: flex;
-        gap: 10px;
-    }
-    .debug-btn {
-        background: #555;
-        border: none;
-        color: white;
-        padding: 3px 8px;
-        border-radius: 3px;
-        cursor: pointer;
-    }
-    .debug-btn:hover {
-        background: #777;
-    }
-</style>
-<div id="debug-output">
-    <div class="debug-header">
-        <h3>Debug Output</h3>
-        <div class="debug-buttons">
-            <button id="debug-expand" class="debug-btn">Expand</button>
-            <button id="debug-close" class="debug-btn">Close</button>
+    <div id="mobile-search">
+        <div class="suggestion-input">
+            <div id="activity-sm"><span class="loader"></span></div>
+            <input id="player-search-mobile" type="text" placeholder="Player Search" autocomplete="off">
+            <div class="suggestion-box"></div>
         </div>
     </div>
-    <div class="debug-content"></div>
-</div>
-<script>
-    document.getElementById('debug-expand').addEventListener('click', function() {
-        const debugOutput = document.getElementById('debug-output');
-        debugOutput.classList.toggle('expanded');
-        this.textContent = debugOutput.classList.contains('expanded') ? 'Collapse' : 'Expand';
-    });
-    
-    document.getElementById('debug-close').addEventListener('click', function() {
-        document.getElementById('debug-output').style.display = 'none';
-    });
-</script>
-<?php endif; ?>
+
+    <dialog id="gameLogModal">
+        <div class="modal-header"><p>Post Game</p><a href="javascript:void(0);" id="closeGameLogModal"><i class="bi bi-x-lg"></i></a></div>
+        <div class="content"></div>
+    </dialog>
+    <div id="gameLogOverlay"></div>
+
+    <div class="overlay">
+        <div id="activity-player">
+            <span class="loader"></span>
+        </div>
+        <div id="player-modal"></div>
+    </div>
 </body>
 </html>

@@ -107,6 +107,33 @@ export function fadeOutElement(element) {
     });
 }
 
+export function toggleHeightTransition(triggerId, anchorId, contentSelector) {
+    const trigger = document.getElementById(triggerId);
+    const anchor = document.getElementById(anchorId);
+    const content = document.querySelector(contentSelector);
+
+    if (!trigger || !anchor || !content) return;
+
+    const isOpen = anchor.classList.contains('show');
+
+    if (isOpen) {
+        // COLLAPSE
+        content.style.height = content.scrollHeight + 'px';
+        content.offsetHeight; // force reflow
+        content.style.height = '0px';
+        anchor.classList.remove('show');
+    } else {
+        // EXPAND
+        anchor.classList.add('show');
+        content.style.height = content.scrollHeight + 'px';
+
+        content.addEventListener('transitionend', function handler() {
+            content.style.height = 'auto';
+            content.removeEventListener('transitionend', handler);
+        });
+    }
+}
+
 export function smoothScroll(targetElement, duration = 1000) {
     if (!targetElement) return;
 

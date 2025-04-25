@@ -1,3 +1,5 @@
+import { toggleHeightTransition } from './utils.js';
+
 export function initMenuHandlers() {
     // Handle clicks outside dropdown menus
     document.addEventListener('click', function (e) {
@@ -43,25 +45,26 @@ export function initMenuHandlers() {
     // Close mobile menu when clicking links
     document.addEventListener('click', function (e) {
         const mainMenu = document.getElementById('main-menu');
-        if (mainMenu && mainMenu.classList.contains('open') && e.target.closest('#main-menu.open a')) {
+        if (mainMenu && mainMenu.classList.contains('open') && e.target.closest('a') && mainMenu.contains(e.target)) {
             e.preventDefault();
-            mainMenu.classList.toggle('open');
-            document.body.classList.toggle('no-scroll');
-            document.getElementById('nav-mobile').classList.toggle('open');
+            mainMenu.classList.remove('open');
+            document.body.classList.remove('no-scroll');
+            
+            // Get the nav-mobile element and remove open class
+            const navMobile = document.getElementById('nav-mobile');
+            if (navMobile) navMobile.classList.remove('open');
+            
+            // Also uncheck the checkbox that controls the mobile menu
+            const navMobileCheckbox = document.querySelector('#nav-mobile input[type="checkbox"]');
+            if (navMobileCheckbox) navMobileCheckbox.checked = false;
         }
     });
 
-    // Scroll to injuries
+    // Injuries toggle
     document.addEventListener('click', function (e) {
         if (e.target.id === 'injuriesLink') {
             e.preventDefault();
-            const injuriesAnchor = document.getElementById('injuriesAnchor');
-            if (injuriesAnchor) {
-                injuriesAnchor.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            }
+            toggleHeightTransition('injuriesLink', 'injuriesAnchor', '.transition-zoom-in');
         }
     });
 

@@ -84,13 +84,6 @@ export function initTeamHandlers(elements) {
                     elements.mainElement.classList.remove('page-ani');
                 }, { once: true });
 
-                const navOpen = document.body.classList.contains('no-scroll');
-                if (navOpen) {
-                    document.getElementById('main-menu').classList.remove('open');
-                    document.getElementById('nav-mobile').classList.remove('open');
-                    document.body.classList.remove('no-scroll');
-                }
-
                 // Sort roster by points immediately after loading
                 const teamRoster = elements.mainElement.querySelector(".team-roster");
                 if (teamRoster) {

@@ -30,6 +30,11 @@ if (!is_dir($cacheDir)) {
             }
             ?>
         </div>
+        <div class="injuries-home transition-zoom-in" id="injuriesAnchor">
+            <div class="injuries team-boxes grid grid-400 grid-gap grid-gap-row" grid-max-col-count="2">
+            <?php getInjuriesLeague() ?>
+            </div>
+        </div>
         <div class="component-header">
             <h3 class="title">Games Today</h3>
             <div class="see-score-check">
@@ -121,14 +126,6 @@ if (!is_dir($cacheDir)) {
                 }
                 renderLeagueTable($standing, $detect);
                 ?>
-            </div>
-        </div>
-        <div class="injuries-home" id="injuriesAnchor">
-            <div class="component-header">
-                <h3 class="title">Injury Updates</h3>
-            </div>
-            <div class="injuries team-boxes grid grid-400 grid-gap grid-gap-row" grid-max-col-count="2">
-            <?php getInjuriesLeague() ?>
             </div>
         </div>
     </div>
