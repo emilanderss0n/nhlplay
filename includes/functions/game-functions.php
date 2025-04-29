@@ -400,28 +400,24 @@ function renderSeasonSeries($seasonSeries) {
         
         // Check if game is scheduled for today
         $isToday = false;
+        $gameDate = new DateTime($seriesGame->gameDate);
+
         if ($seriesGame->gameState == 'FUT' || $seriesGame->gameState == 'PRE') {
-            $gameDate = new DateTime($seriesGame->gameDate);
             $today = new DateTime('today');
             $isToday = $gameDate->format('Y-m-d') === $today->format('Y-m-d');
         }
         
         // Add disabled class for today's games
-        echo '<div class="game ' . $gameStateClass . ($isToday ? ' disabled' : '') . '"';
-        if ($seriesGame->gameState) {
-            echo ' data-post-link="'. $seriesGame->id .'"';
-        }
-        echo '>';
+        echo '<div class="game" data-tooltip="'. $gameDate->format('Y-m-d') .'">';
         echo '<div class="teams">';
-        echo '<a id="team-linko" class="'.($isToday ? 'disabled' : '').'" href="#">';
+        echo '<span id="team-linko" href="#">';
         echo '<h3>'. $seriesGame->awayTeam->abbrev .'</h3>';
-        echo '</a>';
+        echo '</span>';
         echo '<p><span class="scoring">';
         
         if ($seriesGame->gameState == 'OFF' || $seriesGame->gameState == 'LIVE' || $seriesGame->gameState == 'CRIT' || $seriesGame->gameState == 'OVER' || $seriesGame->gameState == 'FINAL') {
             echo $seriesGame->awayTeam->score . ' - ' . $seriesGame->homeTeam->score;
         } elseif ($seriesGame->gameState == 'FUT' || $seriesGame->gameState == 'PRE') {
-            $gameDate = new DateTime($seriesGame->gameDate);
             $today = new DateTime('today');
             $tomorrow = new DateTime('tomorrow');
             
@@ -435,9 +431,9 @@ function renderSeasonSeries($seasonSeries) {
         }
         
         echo '</span></p>';
-        echo '<a id="team-linko" class="'.($isToday ? 'disabled' : '').'" href="#">';
+        echo '<span id="team-linko" href="#">';
         echo '<h3>'. $seriesGame->homeTeam->abbrev .'</h3>';
-        echo '</a>';
+        echo '</span>';
         echo '</div>';
         echo '</div>';
     }

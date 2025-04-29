@@ -74,6 +74,7 @@
   --border-stroke-weak: hsl(218.86deg 17.4% 44.93% / 21%);
   --border-stroke: hsl(218.86deg 17.4% 44.93% / 35%);
   --component-header-bg: #f7f9fb;
+  --tooltip-mask: linear-gradient(-45deg, #000 50%, hsl(0deg 0% 0% / 0%) 50%);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -541,21 +542,24 @@ a[data-tooltip] {
 }
 
 [data-tooltip]:before {
+  content: attr(data-tooltip);
   position: absolute;
   bottom: 150%;
   left: 50%;
   margin-bottom: 5px;
-  margin-left: -80px;
+  margin-left: -86px;
   padding: 7px;
   width: 160px;
   border-radius: 3px;
-  background-color: var(--content-box-bg);
+  background-color: var(--second-content-box-bg);
   color: var(--heading-color);
-  content: attr(data-tooltip);
   text-align: center;
   font-weight: 500;
   font-size: 0.8rem;
   line-height: 1.4;
+  box-shadow: var(--shadow-button);
+  border: 1px solid var(--border-stroke-weak);
+  z-index: 999;
 }
 
 [data-tooltip]:after {
@@ -564,12 +568,16 @@ a[data-tooltip] {
   left: 50%;
   margin-left: -5px;
   width: 0;
-  border-top: 5px solid var(--content-box-bg);
-  border-right: 5px solid transparent;
-  border-left: 5px solid transparent;
+  width: 10px;
+  height: 10px;
+  background-color: var(--second-content-box-bg);
+  rotate: 45deg;
+  border: 1px solid var(--border-stroke-weak);
   content: " ";
   font-size: 0;
   line-height: 0;
+  z-index: 9999;
+  mask: var(--tooltip-mask);
 }
 
 [data-tooltip]:hover:before,
@@ -577,6 +585,10 @@ a[data-tooltip] {
   visibility: visible;
   opacity: 1;
   transform: translateY(0);
+}
+
+[data-tooltip]:hover:after {
+  rotate: 45deg;
 }
 
 .trend {
@@ -1581,7 +1593,13 @@ header .cont {
 
 .schedule .game:not(.recap):hover .teams {
   background-color: var(--content-box-bg);
-  box-shadow: 0 0 0 2px var(--low-contrast-color);
+  box-shadow: 0 0 0 2px #fff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .schedule .game:not(.recap):hover .teams {
+    box-shadow: 0 0 0 2px var(--low-contrast-color);
+  }
 }
 
 .schedule .game .teams p {
