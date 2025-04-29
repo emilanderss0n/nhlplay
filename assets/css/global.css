@@ -619,7 +619,7 @@ a[data-tooltip] {
   font-weight: bold;
   font-family: "Inter", sans-serif;
   border-radius: 5px;
-  font-size: 1.1rem;
+  font-size: 1rem;
   height: 100%;
   padding: 0 1rem 0 2.3rem;
   overflow: hidden;
@@ -4190,6 +4190,11 @@ table.border-only tbody .home td:last-child {
 
 .game-misc .item:nth-child(4), .game-misc .item:nth-child(5) {
   border-bottom: none;
+}
+
+.game-misc .item:nth-child(6) {
+  border-bottom: none;
+  border-right: none;
 }
 
 .game-misc .item:has(.bi){

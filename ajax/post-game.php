@@ -179,6 +179,24 @@ include_once '../includes/data/init-post-game.php';
                     </div>
                     ';
                 } ?>
+                <div class="coaches item">
+                    <div class="away-coach coach">
+                        <picture>
+                            <source srcset="<?= $awayTeam->darkLogo ?>" media="(prefers-color-scheme: dark)">
+                            <img src="<?= $awayTeam->logo ?>" alt="<?= $awayTeam->commonName->default ?>" />
+                        </picture>
+                        <span data-tooltip="Coach"><?= $railContent->gameInfo->awayTeam->headCoach->default ?></span>
+                    </div>
+                </div>
+                <div class="coaches item">
+                    <div class="home-coach coach">
+                        <picture>
+                            <source srcset="<?= $homeTeam->darkLogo ?>" media="(prefers-color-scheme: dark)">
+                            <img src="<?= $homeTeam->logo ?>" alt="<?= $awayTeam->commonName->default ?>" />
+                        </picture>
+                        <span data-tooltip="Coach"><?= $railContent->gameInfo->homeTeam->headCoach->default ?></span>
+                    </div>
+                </div>
                 <div class="arena item"><i class="bi bi-pin-map-fill"></i><span data-tooltip="Arena"><?= $game->venue->default ?>, <?= $game->venueLocation->default ?></span></div>
                 <div class="referee item"><i class="bi bi-person-gear"></i>
                     <?php 
@@ -197,22 +215,6 @@ include_once '../includes/data/init-post-game.php';
                         if ($i < $lineCount - 1) echo ', ';
                     }
                     ?>
-                </div>
-                <div class="coaches item">
-                    <div class="away-coach coach">
-                        <picture>
-                            <source srcset="<?= $awayTeam->darkLogo ?>" media="(prefers-color-scheme: dark)">
-                            <img src="<?= $awayTeam->logo ?>" alt="<?= $awayTeam->commonName->default ?>" />
-                        </picture>
-                        <span data-tooltip="Coach"><?= $railContent->gameInfo->awayTeam->headCoach->default ?></span>
-                    </div>
-                    <div class="home-coach coach">
-                        <picture>
-                            <source srcset="<?= $homeTeam->darkLogo ?>" media="(prefers-color-scheme: dark)">
-                            <img src="<?= $homeTeam->logo ?>" alt="<?= $awayTeam->commonName->default ?>" />
-                        </picture>
-                        <span data-tooltip="Coach"><?= $railContent->gameInfo->homeTeam->headCoach->default ?></span>
-                    </div>
                 </div>
             </div>
         </div>
