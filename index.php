@@ -101,6 +101,19 @@ if (!is_dir($cacheDir)) {
         <div class="playoffs-table">
             <?= renderPlayoffsBracket('2025', 'Stanley Cup Playoffs', true) ?>
         </div>
+        <dialog id="seriesModal" class="modal">
+            <div class="modal-header">
+                <h3 class="title">Playoff Series</h3>
+                <span class="close close-btn bi bi-x-lg"></span>
+            </div>
+            <div class="modal-content">
+                <div id="seriesContent"></div>
+            </div>
+        </dialog>
+        <script type="module">
+            import { initPlayoffSeriesHandlers } from './assets/js/modules/standings-handlers.js';
+            document.addEventListener('DOMContentLoaded', initPlayoffSeriesHandlers);
+        </script>
         <?php } ?>
         <div class="standings">
             <div class="component-header">

@@ -1791,6 +1791,112 @@ header .cont {
   font-size: 0.9rem;
 }
 
+.modal {
+  background-color: var(--player-modal-bg);
+  backdrop-filter: blur(20px);
+  padding: 0;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 1000px;
+  border: 1px solid var(--border-stroke-weak);
+  max-height: 80vh;
+  overflow-y: auto;
+  color: var(--paragraph-color);
+  outline: none;
+
+  transition: 
+    opacity .5s ease-in-out,
+    transform .5s ease-in-out,
+    backdrop-filter .5s ease-in-out,
+    display .5s ease-in-out;
+
+  @starting-style {
+    opacity: 0; 
+    transform: translateY(40px);
+  }
+
+  [open] {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  &.closing {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  &::backdrop {
+    background-color: rgba(0, 0, 0, 0.7);
+    opacity: 1;
+    transform: translateY(0);
+    transition: 
+      opacity .5s ease-in-out,
+      transform .5s ease-in-out,
+      display .5s ease-in-out;
+
+    @starting-style {
+      opacity: 0; 
+      transform: translateY(0);
+    }
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-stroke-weak);
+  font-size: 0.9rem;
+  color: var(--heading-color);
+}
+
+.modal-content {
+  padding: 1rem;
+}
+
+.modal .close {
+  color: var(--main-link-color);
+  float: right;
+  font-size: 2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s linear;
+}
+
+.modal .close:hover {
+  color: var(--main-link-color-hover);
+}
+
+.modal .series-game {
+  padding: 1rem;
+  border-radius: 10px;
+  background-color: var(--semi-frost-bg-2);
+  border: 1px solid var(--border-stroke-weak);
+}
+
+.modal .game-date {
+  font-size: 0.9rem;
+  color: var(--paragraph-color);
+  margin-bottom: 1rem;
+}
+
+.modal .game-teams {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.modal .game-teams .team {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    font-family: 'Tomorrow', sans-serif;
+    font-size: 1.5rem;
+    color: var(--heading-color);
+}
+
 #gameLogModal {
   z-index: 99;
   top: 55px;
@@ -2067,6 +2173,15 @@ body.playoffs .standings {
   font-weight: bold;
   font-size: 1rem;
   margin-bottom: 0;
+}
+
+.playoffs-bracket .round-games .game[data-series-letter] {
+  transition: all 0.3s linear;
+  cursor: pointer;
+}
+
+.playoffs-bracket .round-games .game[data-series-letter]:hover {
+  box-shadow: 0 0 0 2px var(--main-link-color);
 }
 
 .playoffs-bracket .round-games.western-final .game {

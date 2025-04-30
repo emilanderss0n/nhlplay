@@ -223,12 +223,16 @@ function generateMergedCSS($cssFiles, $outputFile) {
 /**
  * Renders the NHL Playoffs bracket
  * 
- * @param string $season The season year (e.g., '2024')
+ * @param string $season The season year (e.g., '2025')
  * @param string $headerTitle Optional custom header title, defaults to "Stanley Cup Playoffs"
  * @param bool $showHeader Whether to show the component header, defaults to true
+ * @param bool $showFilters Whether to show filters, defaults to true
  * @return string The HTML for the playoffs bracket
  */
 function renderPlayoffsBracket($season = '2025', $headerTitle = 'Stanley Cup Playoffs', $showHeader = true, $showFilters = true) {
+    // Convert single year to full season format only for the series objects
+    $fullSeason = strlen($season) === 4 ? (intval($season) - 1) . $season : $season;
+    
     $ApiUrl = "https://api-web.nhle.com/v1/playoff-bracket/{$season}";
     $playoffs = json_decode(curlInit($ApiUrl));
     
@@ -244,10 +248,11 @@ function renderPlayoffsBracket($season = '2025', $headerTitle = 'Stanley Cup Pla
         'final' => ['O']
     ];
     
-    // Create a mapping of series by letter for quick lookup
+    // Create a mapping of series by letter for quick lookup and add season to each series
     $seriesByLetter = [];
     foreach ($pSeries as $series) {
         if (isset($series->seriesLetter)) {
+            $series->season = $fullSeason; // Add season to each series object
             $seriesByLetter[$series->seriesLetter] = $series;
         }
     }
@@ -297,6 +302,54 @@ function renderPlayoffsBracket($season = '2025', $headerTitle = 'Stanley Cup Pla
     
     echo '</div>';
     
+    return ob_get_clean();
+}
+
+/**
+ * Fetches the playoff series games
+ * 
+ * @param string $season The season year
+ * @param string $seriesLetter The series letter (A-O)
+ * @return object|null The series games data or null if not found
+ */
+function getPlayoffSeriesGames($season, $seriesLetter) {
+    $ApiUrl = "https://api-web.nhle.com/v1/schedule/playoff-series/{$season}/{$seriesLetter}";
+    return json_decode(curlInit($ApiUrl));
+}
+
+/**
+ * Renders the playoff series modal content
+ * 
+ * @param object $seriesData The series data
+ * @return string HTML content for the modal
+ */
+function renderPlayoffSeriesModal($seriesData) {
+    if (!$seriesData || !isset($seriesData->games) || empty($seriesData->games)) {
+        return '<div class="error-message">No series data available.</div>';
+    }
+
+    ob_start();
+    ?>
+    <div class="series-modal-content">
+        <div class="series-games grid grid-300 grid-gap grid-gap-row">
+            <?php foreach ($seriesData->games as $game): ?>
+                <div class="series-game">
+                    <div class="game-date"><?= date('M j', strtotime($game->startTimeUTC)) ?></div>
+                    <div class="game-teams">
+                        <div class="team">
+                            <span class="team-name"><?= $game->awayTeam->abbrev ?></span>
+                            <span class="team-score"><?= $game->awayTeam->score ?? '-' ?></span>
+                        </div>
+                        <div class="team">
+                            <span class="team-name"><?= $game->homeTeam->abbrev ?></span>
+                            <span class="team-score"><?= $game->homeTeam->score ?? '-' ?></span>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+    </div>
+    <?php
     return ob_get_clean();
 }
 
@@ -420,21 +473,23 @@ function renderRegularRound($seriesByLetter, $eastern, $western, $round, $roundT
         <div class="round-games eastern-conference <?= $round ?>">
             <?php 
             $hasEasternSeries = false;
+            $shownEasternGames = 0;
             foreach ($eastern as $letter) {
                 if (isset($seriesByLetter[$letter])) {
                     $series = $seriesByLetter[$letter];
                     if (isset($series->seriesUrl)) {
                         echo renderMatchup($series);
                         $hasEasternSeries = true;
+                        $shownEasternGames++;
                     }
                 }
             }
             
-            // If no eastern series exist for this round, show placeholders
-            if (!$hasEasternSeries) {
-                // For round 1, show 4 placeholders, for round 2, show 2
-                $placeholderCount = ($round === 'round-1') ? 4 : 2;
-                for ($i = 0; $i < $placeholderCount; $i++) {
+            // If no eastern series exist for this round or we haven't shown enough games, show placeholders
+            $requiredGames = ($round === 'round-1') ? 4 : 2;
+            $remainingGames = $requiredGames - $shownEasternGames;
+            if ($remainingGames > 0) {
+                for ($i = 0; $i < $remainingGames; $i++) {
                     echo renderEmptyMatchup();
                 }
             }
@@ -444,21 +499,22 @@ function renderRegularRound($seriesByLetter, $eastern, $western, $round, $roundT
         <div class="round-games western-conference <?= $round ?>">
             <?php 
             $hasWesternSeries = false;
+            $shownWesternGames = 0;
             foreach ($western as $letter) {
                 if (isset($seriesByLetter[$letter])) {
                     $series = $seriesByLetter[$letter];
                     if (isset($series->seriesUrl)) {
                         echo renderMatchup($series);
                         $hasWesternSeries = true;
+                        $shownWesternGames++;
                     }
                 }
             }
             
-            // If no western series exist for this round, show placeholders
-            if (!$hasWesternSeries) {
-                // For round 1, show 4 placeholders, for round 2, show 2
-                $placeholderCount = ($round === 'round-1') ? 4 : 2;
-                for ($i = 0; $i < $placeholderCount; $i++) {
+            // If no western series exist for this round or we haven't shown enough games, show placeholders
+            $remainingGames = $requiredGames - $shownWesternGames;
+            if ($remainingGames > 0) {
+                for ($i = 0; $i < $remainingGames; $i++) {
                     echo renderEmptyMatchup();
                 }
             }
@@ -501,7 +557,7 @@ function renderPlayoffTeam($team, $wins) {
 function renderMatchup($series) {
     ob_start();
     ?>
-    <div class="game">
+    <div class="game" data-series-letter="<?= htmlspecialchars($series->seriesLetter) ?>" data-season="<?= htmlspecialchars($series->season) ?>">
         <div class="game-matchup">
             <?= renderPlayoffTeam($series->topSeedTeam, $series->topSeedWins) ?>
             <?= renderPlayoffTeam($series->bottomSeedTeam, $series->bottomSeedWins) ?>

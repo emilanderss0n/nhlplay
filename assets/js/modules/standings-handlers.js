@@ -101,3 +101,58 @@ export function initStandingsHandlers() {
         }
     });
 }
+
+export function initPlayoffSeriesHandlers() {
+    const modal = document.getElementById('seriesModal');
+    const closeBtn = modal?.querySelector('.close');
+    const seriesContent = document.getElementById('seriesContent');
+
+    if (!modal || !closeBtn || !seriesContent) return;
+
+    // Close modal when clicking the X button
+    closeBtn.onclick = function() {
+        modal.classList.add('closing');
+
+        // Wait for transition to end before actually closing it
+        modal.addEventListener('transitionend', () => {
+            requestAnimationFrame(() => {
+                modal.close();
+                modal.classList.remove('closing');
+            });
+        }, { once: true });
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.classList.add('closing');
+
+            // Wait for transition to end before actually closing it
+            modal.addEventListener('transitionend', () => {
+                requestAnimationFrame(() => {
+                    modal.close();
+                    modal.classList.remove('closing');
+                });
+            }, { once: true });
+        }
+    }
+
+    // Add click handlers to playoff games
+    document.querySelectorAll('.playoffs-bracket .game[data-series-letter]').forEach(game => {
+        game.addEventListener('click', async function() {
+            const seriesLetter = this.dataset.seriesLetter;
+            const season = this.dataset.season;
+
+            try {
+                const response = await fetch(`ajax/playoff-series.php?season=${season}&series=${seriesLetter}`);
+                if (!response.ok) throw new Error('Network response was not ok');
+                
+                const data = await response.text();
+                seriesContent.innerHTML = data;
+                modal.showModal();
+            } catch (error) {
+                console.error('Error fetching series data:', error);
+            }
+        });
+    });
+}
