@@ -6,11 +6,6 @@ $playerID = $_POST['player'];
 $ApiUrl = 'https://api-web.nhle.com/v1/player/'. $playerID .'/landing';
 $curl = curlInit($ApiUrl);
 $playerResult = json_decode($curl);
-
-$ApiUrl = 'https://api-web.nhle.com/v1/player/'. $playerID .'/game-log/'. $season .'/2';
-$curl = curlInit($ApiUrl);
-$playerGameLog = json_decode($curl);
-
 $player = $playerResult;
 
 $playerSeasonStats = $player->featuredStats->regularSeason->subSeason ?? null;
@@ -41,7 +36,7 @@ if ($isSkater) {
     $needsAdvancedStats = true;
 }
 
-$lastGames = $playerGameLog->gameLog ?? [];
+$lastGames = $player->last5Games ?? [];
 
 $dob = $player->birthDate ?? null;
 $playerAge = $dob ? (date('Y') - date('Y',strtotime($dob))) : null;

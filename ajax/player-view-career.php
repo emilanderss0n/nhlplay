@@ -65,7 +65,7 @@ $careerAll = $careerData->seasonTotals;
 
     // Only display the trophies div if there are trophies to show
     if (!empty($trophyCounts)) {
-        echo '<div class="trophies">';
+        echo '<div class="trophies grid grid-150 grid-gap-lg grid-gap-row-xl">';
         // Loop through trophy counts to display each trophy
         foreach ($trophyCounts as $trophyName => $count) {
             $imageFileName = isset($trophyImageMap[$trophyName]) ? $trophyImageMap[$trophyName] : strtolower(str_replace(' ', '_', $trophyName));
@@ -75,10 +75,12 @@ $careerAll = $careerData->seasonTotals;
             $shortTrophyName = implode(' ', array_slice($trophyNameWords, 0, 2));
             
             echo '<div class="trophy">';
-            echo '<h2 class="trophy-count">' . $count . '<span>x</span></h2>';
             echo '<div class="trophy-wrapper">';
             echo '<img src="'. BASE_URL .'/assets/img/trophies/' . $imageFileName . '.png" alt="' . $trophyName . '">';
+            echo '<div class="trophy-count-wrapper">';
+            echo '<h2 class="trophy-count">' . $count . '<span>x</span></h2>';
             echo '<p class="trophy-name">' . $shortTrophyName . '</p>';
+            echo '</div>';
             echo '</div>';
             echo '</div>';
         }
@@ -311,20 +313,20 @@ foreach ($seasonTeamMap as $key => $types) {
     ?>
     <div class="season-career" style="background-image: linear-gradient(173deg, <?= teamToColor($teamColorConverted) ?> -180%, rgba(255,255,255,0) 80%);">
         <div class="header-season-career">
-            <img class="team-logo" src="assets/img/teams/<?= $teamColorConverted ?>.svg" alt="<?= $teamName ?>">
-            <div class="title stats">
-                <h3 class="header-text">
-                    <?= $teamName ?><span class="season"> <?= '- ' . $season1 . ' / ' . $season2 ?></span>
-                </h3>
-            </div>
+            <h3 class="header-text">
+                <?= $teamName ?><span class="season"> <?= '- ' . $season1 . ' / ' . $season2 ?></span>
+            </h3>
         </div>
         <?php
         // REGULAR SEASON
         if (isset($types[2])) {
             $career = $types[2];
             ?>
-            <div>
-                <p class="type">REGULAR</p>
+            <div class="section">
+                <div class="title stats">
+                    <p class="type">REGULAR</p>
+                    <div class="header-line"><a href="javascript:void(0);" data-player="<?= $playerID ?>" data-season-selection="<?= $season ?>" data-season-type="2" class="btn sm">Full Game Log</a></div>
+                </div>
                 <?php if ($careerData->position == 'G') { ?>
                 <table>
                     <thead>
@@ -396,8 +398,11 @@ foreach ($seasonTeamMap as $key => $types) {
         if (isset($types[3])) {
             $career = $types[3];
             ?>
-            <div>
-                <p class="type">PLAYOFFS</p>
+            <div class="section">
+                <div class="title stats">
+                    <p class="type">PLAYOFFS</p>
+                    <div class="header-line"><a href="javascript:void(0);" data-player="<?= $playerID ?>" data-season-selection="<?= $season ?>" data-season-type="3" class="btn sm">Full Game Log</a></div>
+                </div>
                 <?php if ($careerData->position == 'G') { ?>
                 <table>
                     <thead>
@@ -463,6 +468,7 @@ foreach ($seasonTeamMap as $key => $types) {
                 <?php } ?>
             </div>
         <?php } ?>
+        <img class="team-logo" src="assets/img/teams/<?= $teamColorConverted ?>.svg" alt="<?= $teamName ?>">
     </div>
 <?php } ?>
 </div>

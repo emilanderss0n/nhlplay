@@ -6,43 +6,62 @@
     Header set Access-Control-Allow-Origin "*"
 </IfModule>
 
+# Detect environment and set base path
+RewriteCond %{REQUEST_URI} ^/nhl/
+RewriteRule .* - [E=BASE_PATH:/nhl]
+RewriteCond %{REQUEST_URI} !^/nhl/
+RewriteRule .* - [E=BASE_PATH:]
+
+# Set custom 404 error page
+ErrorDocument 404 /%{ENV:BASE_PATH}/404.php
+
 RewriteEngine On
 
 # Handle team abbreviation URLs (3 uppercase letters)
 RewriteRule ^([A-Z]{3})/?$ index.php?team_abbr=$1 [QSA,L]
 
+# Block access to non-existent PHP files to prevent 403 errors
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} \.php$
+RewriteRule ^ - [R=404,L]
+
 # Allow direct access to actual files
 RewriteCond %{REQUEST_FILENAME} -f
 RewriteRule ^ - [L]
 
-# Handle PHP files with clean URLs
+# Handle PHP files with clean URLs (only if .php file exists)
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f 
 RewriteRule ^([^/]+)/?$ $1.php [L]
 
-# Special handling for pages directory files when accessed directly
+# Special handling for pages directory files
 RewriteRule ^pages/last-season-overview/?$ pages/last-season-overview.php [L]
-
-# Handle clean URLs for pages directory files
 RewriteRule ^last-season-overview/?$ pages/last-season-overview.php [L]
 
-# Explicitly handle ajax requests to avoid 403 errors
+# Handle AJAX requests
 RewriteCond %{HTTP:X-Requested-With} =XMLHttpRequest
-RewriteCond %{REQUEST_URI} ^/nhl/ajax/(.*)$ [OR]
-RewriteCond %{REQUEST_URI} ^/ajax/(.*)$
+RewriteCond %{REQUEST_URI} ^/(?:nhl/)?ajax/
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^ - [L]
 
-# Redirect non-AJAX requests from /ajax/ prefix to clean URLs
+# Redirect non-AJAX requests from /ajax/ prefix
 RewriteCond %{HTTP:X-Requested-With} !=XMLHttpRequest
 RewriteRule ^ajax/([^/]+)$ $1 [R=301,L]
 
-# If not found as a file or directory, try in ajax directory
+# Try ajax directory (only if target file exists)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}/ajax/$1.php -f
 RewriteRule ^([^/]+)/?$ ajax/$1.php [L]
 
-# If still not found, try in pages directory
+# Try pages directory (only if target file exists)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{DOCUMENT_ROOT}/pages/$1.php -f
 RewriteRule ^([^/]+)/?$ pages/$1.php [L]
+
+# Return 404 for anything else
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ - [R=404,L]

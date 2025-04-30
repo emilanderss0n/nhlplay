@@ -75,6 +75,8 @@
   --border-stroke: hsl(218.86deg 17.4% 44.93% / 35%);
   --component-header-bg: #f7f9fb;
   --tooltip-mask: linear-gradient(-45deg, #000 50%, hsl(0deg 0% 0% / 0%) 50%);
+  --table-td: #fff;
+  --table-td-odd: #f0f0f0;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -89,7 +91,7 @@
     --secondary-link-color: #cb93fd;
     --secondary-link-color-hover: #d7aaff;
     --green: #00b894;
-    --paragraph-color: #7f8799;
+    --paragraph-color: #9da1ab;
     --medium-contrast-color: #656d7c;
     --low-contrast-color: #353c4b;
     --heading-color: #fff;
@@ -138,6 +140,8 @@
     --border-stroke-weak: hsl(0deg 0% 100% / 10%);
     --border-stroke: hsl(0deg 0% 100% / 20%);
     --component-header-bg: #131720;
+    --table-td: #13181e;
+    --table-td-odd: #0d1116;
   }
 }
 
@@ -324,6 +328,10 @@ img {
 
 .grid-200 {
   --grid-min-col-size: 200px;
+}
+
+.grid-150 {
+  --grid-min-col-size: 150px;
 }
 
 .grid-gap-sm {
@@ -2216,7 +2224,7 @@ table tbody tr.season td span.hot {
 }
 
 table thead td {
-  background-color: var(--content-box-bg);
+  background-color: var(--table-td);
   padding: 0.6rem 0.8rem;
   font-size: 0.8em;
   font-weight: bold;
@@ -2239,7 +2247,7 @@ table tbody tr:last-child td:last-child {
 }
 
 table > tbody > tr > td {
-  background-color: var(--content-box-bg);
+  background-color: var(--table-td);
   padding: 0.5rem 0.8rem !important;
   vertical-align: middle !important;
   transition: all 0.3s;
@@ -2255,7 +2263,7 @@ table.jsDataTable-table.hover > tbody > tr:hover > td > a {
 }
 
 table tbody tr:nth-child(odd) td {
-  background-color: var(--odd-bg);
+  background-color: var(--table-td-odd);
 }
 
 table tbody td img {
@@ -3112,6 +3120,8 @@ table.border-only tbody .home td:last-child {
 
 #player-modal .player-header .right .name .player-name {
   position: relative;
+  font-size: 2rem;
+  line-height: 1.4;
 }
 
 #player-modal .player-header .right .drafted {
@@ -3152,15 +3162,14 @@ table.border-only tbody .home td:last-child {
 }
 
 #player-modal .player-header-info .info p {
-  font-size: 1.7rem;
-  font-family: "Tomorrow", sans-serif;
-  font-weight: 500;
+  font-size: 1.4rem;
+  font-weight: 600;
   color: var(--heading-color);
   overflow-x: clip;
 }
 
 #player-modal .player-header-info .info .flag {
-  width: 36px;
+  width: 30px;
   height: auto;
   margin-top: 0.2rem;
   border-radius: 3px;
@@ -3170,8 +3179,9 @@ table.border-only tbody .home td:last-child {
 
 #player-modal .player-header-info .label {
   margin-bottom: 0.3rem;
-  font-weight: 500;
+  font-weight: 700;
   color: var(--paragraph-color);
+  font-size: 0.9rem;
 }
 
 #player-modal .player-graph {
@@ -3234,7 +3244,7 @@ table.border-only tbody .home td:last-child {
 
 #player-modal .stats-player .career-stats-two {
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;
   gap: 2rem;
   margin-top: 5rem;
 }
@@ -3249,28 +3259,20 @@ table.border-only tbody .home td:last-child {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 1rem;
   background-color: var(--black-white);
   border-radius: 10px;
   position: relative;
   overflow: clip;
-  box-shadow: inset 0 30px 240px rgb(10 18 40 / 74%);
 }
 
 #player-modal .stats-player .career-stats-two .season-career .team-logo {
   width: 800px;
   left: -200px;
-  top: -240px;
+  top: -100px;
   mix-blend-mode: soft-light;
   mask: var(--logo-mask-card);
   opacity: 0.3;
   position: absolute;
-}
-
-@media (prefers-color-scheme: dark) {
-  #player-modal .stats-player .career-stats-two .season-career {
-    box-shadow: none;
-  }
 }
 
 #player-modal .stats-player .career-stats-two .season-career .header-season-career {
@@ -3278,22 +3280,31 @@ table.border-only tbody .home td:last-child {
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-}
-
-#player-modal .stats-player .career-stats-two .title.stats {
-  margin: 0;
-  position: relative;
+  padding: 1rem;
+  background-color: var(--semi-frost-bg);
+  backdrop-filter: blur(10px);
   z-index: 2;
 }
 
-#player-modal .stats-player .career-stats-two .title.stats h3 {
-  color: #fff;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+#player-modal .stats-player .career-stats-two .header-season-career h3 {
+  color: var(--paragraph-color);
+  line-height: 1;
+  font-size: 1.6rem;
 }
 
-#player-modal .stats-player .career-stats-two .title.stats h3 span {
-  color: #fff;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+#player-modal .stats-player .career-stats-two .season-career .section {
+  padding: 1rem;
+}
+
+#player-modal .stats-player .career-stats-two .season-career .section .title.stats {
+  margin: 0 0 1.5rem;
+  padding: 0.6rem;
+  background-color: var(--semi-frost-bg);
+  border-radius: 5px;
+  backdrop-filter: blur(10px);
+  z-index: 2;
+  position: relative;
+  border: 1px solid var(--border-stroke-weak);
 }
 
 #player-modal .stats-player .career-stats-two .type, #player-modal .stats-player .career-stats-two .phone-show {
@@ -3302,11 +3313,9 @@ table.border-only tbody .home td:last-child {
 }
 
 #player-modal .stats-player .career-stats-two .type {
-  margin-bottom: 1rem;
   font-weight: bold;
-  color: #fff;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-  opacity: 0.8;
+  color: var(--paragraph-color);
+  font-style: normal;
 }
 
 #player-modal .stats-player .career-stats-two table {
@@ -3319,12 +3328,6 @@ table.border-only tbody .home td:last-child {
   display: none;
 }
 
-.trophies {
-  display: flex;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
 .trophies .trophy {
   display: flex;
   align-items: center;
@@ -3332,11 +3335,9 @@ table.border-only tbody .home td:last-child {
 }
 
 .trophies .trophy .trophy-count {
-  position: absolute;
-  left: 0;
-  top: 0;
   font-style: normal;
   font-weight: 600;
+  line-height: 1;
 }
 
 .trophies .trophy .trophy-count span {
@@ -3345,9 +3346,9 @@ table.border-only tbody .home td:last-child {
 
 .trophies .trophy .trophy-wrapper {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  gap: 0.3rem;
   align-items: center;
-  padding: 0 1rem;
 }
 
 .trophies .trophy .trophy-wrapper > img {
@@ -6023,13 +6024,6 @@ footer .credit {
 
   #player-modal .stats-player .phone-show .stat .label {
     font-size: 0.9rem;
-  }
-
-  #player-modal .trophies {
-    gap: 1rem;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    flex-direction: row;
   }
 
   #player-modal .trophies .trophy {

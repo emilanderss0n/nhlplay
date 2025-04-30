@@ -272,7 +272,7 @@ function renderLastGames($lastGames, $isSkater) {
             </thead>
             <tbody>
             <?php
-            foreach (array_slice($lastGames, 0, 5) as $lastGame) {
+            foreach (array_slice($lastGames, 0, 10) as $lastGame) {
                 $gameDate = date_create($lastGame->gameDate);
                 ?>
                 <tr>
@@ -300,7 +300,7 @@ function renderLastGames($lastGames, $isSkater) {
             </thead>
             <tbody>
             <?php 
-            foreach (array_slice($lastGames, 0, 5) as $lastGame) {
+            foreach (array_slice($lastGames, 0, 10) as $lastGame) {
                 $gameDate = date_create($lastGame->gameDate);
                 ?>
                 <tr>
