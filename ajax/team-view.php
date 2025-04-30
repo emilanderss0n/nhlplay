@@ -1,8 +1,25 @@
 <?php
 include_once '../path.php';
 include_once '../includes/functions.php';
-if(isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') { $activeTeam = $_POST['active_team']; } else { include_once '../header.php'; $activeTeam = $_GET['active_team']; }
-$activeTeam = $_POST['active_team'];
+// Process request parameters based on request type
+if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
+    // AJAX request - prioritize POST parameter
+    $activeTeam = $_POST['active_team'];
+} else {
+    // Direct access - check for team_abbr parameter first, then GET active_team
+    include_once '../header.php';
+    
+    if(isset($_GET['team_abbr'])) {
+        // Convert abbreviation to team ID using your existing function
+        $activeTeam = abbrevToTeamId($_GET['team_abbr']);
+    } elseif(isset($_GET['active_team'])) {
+        $activeTeam = $_GET['active_team'];
+    } else {
+        // Default fallback or error handling
+        header("Location: " . rtrim(BASE_URL, '/') . "/404.php");
+        exit;
+    }
+}
 
 
 $utcTimezone = new DateTimeZone('UTC');
@@ -27,7 +44,7 @@ $injuredPlayerIds = getInjuredPlayerIds($teamAbbrev2);
         <div class="team-view-main">
             <div class="team-header">
                 <div class="selected-team">
-                    <img src="<?= rtrim(BASE_URL, '/') ?>/assets/img/teams/<?= $activeTeam ?>.svg" alt="logo" />
+                    <img src="assets/img/teams/<?= $activeTeam ?>.svg" alt="logo" />
                     <div class="team-name">
                         <h2><?= getValue($teamInfo->teamName->default, '') ?></h2>
                         <div class="team-quick-links">
