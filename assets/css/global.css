@@ -2211,12 +2211,12 @@ body.playoffs .standings {
   margin-bottom: 0;
 }
 
-.playoffs-bracket .round-games .game[data-series-letter], .playoffs-bracket .final-matchup {
+.playoffs-bracket .round-games .game[data-series-letter], .playoffs-bracket .final-matchup:has(.game[data-series-letter]) {
   transition: all 0.2s linear;
   cursor: pointer;
 }
 
-.playoffs-bracket .round-games .game[data-series-letter]:hover, .playoffs-bracket .final-matchup:hover  {
+.playoffs-bracket .round-games .game[data-series-letter]:hover, .playoffs-bracket .final-matchup:has(.game[data-series-letter]):hover {
   box-shadow: 0 0 0 2px var(--main-link-color);
 }
 
