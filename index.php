@@ -109,6 +109,8 @@ if (!is_dir($cacheDir)) {
             <div class="modal-content">
                 <div id="seriesContent"></div>
             </div>
+            <div class="modal-footer">
+            </div>
         </dialog>
         <script type="module">
             import { initPlayoffSeriesHandlers } from './assets/js/modules/standings-handlers.js';

@@ -328,21 +328,45 @@ function renderPlayoffSeriesModal($seriesData) {
         return '<div class="error-message">No series data available.</div>';
     }
 
+    // Map team abbreviations to their logos
+    $teamLogos = [
+        $seriesData->topSeedTeam->abbrev => [
+            'logo' => $seriesData->topSeedTeam->logo,
+            'darkLogo' => $seriesData->topSeedTeam->darkLogo
+        ],
+        $seriesData->bottomSeedTeam->abbrev => [
+            'logo' => $seriesData->bottomSeedTeam->logo,
+            'darkLogo' => $seriesData->bottomSeedTeam->darkLogo
+        ]
+    ];
+
     ob_start();
     ?>
     <div class="series-modal-content">
         <div class="series-games grid grid-300 grid-gap grid-gap-row">
-            <?php foreach ($seriesData->games as $game): ?>
+            <?php foreach ($seriesData->games as $game): 
+                $awayScore = $game->awayTeam->score ?? null;
+                $homeScore = $game->homeTeam->score ?? null;
+                $isGameComplete = isset($awayScore) && isset($homeScore);
+            ?>
                 <div class="series-game">
                     <div class="game-date"><?= date('M j', strtotime($game->startTimeUTC)) ?></div>
                     <div class="game-teams">
-                        <div class="team">
+                        <div class="team<?= $isGameComplete && $awayScore > $homeScore ? ' won' : '' ?> flex-default">
+                            <picture>
+                                <source srcset="<?= $teamLogos[$game->awayTeam->abbrev]['darkLogo'] ?>" media="(prefers-color-scheme: dark)">
+                                <img src="<?= $teamLogos[$game->awayTeam->abbrev]['logo'] ?>" alt="<?= $game->awayTeam->abbrev ?>" class="team-img" />
+                            </picture>
                             <span class="team-name"><?= $game->awayTeam->abbrev ?></span>
-                            <span class="team-score"><?= $game->awayTeam->score ?? '-' ?></span>
+                            <span class="team-score"><?= $awayScore ?? '-' ?></span>
                         </div>
-                        <div class="team">
+                        <div class="team<?= $isGameComplete && $homeScore > $awayScore ? ' won' : '' ?> flex-default">
+                            <picture>
+                                <source srcset="<?= $teamLogos[$game->homeTeam->abbrev]['darkLogo'] ?>" media="(prefers-color-scheme: dark)">
+                                <img src="<?= $teamLogos[$game->homeTeam->abbrev]['logo'] ?>" alt="<?= $game->homeTeam->abbrev ?>" class="team-img" />
+                            </picture>
                             <span class="team-name"><?= $game->homeTeam->abbrev ?></span>
-                            <span class="team-score"><?= $game->homeTeam->score ?? '-' ?></span>
+                            <span class="team-score"><?= $homeScore ?? '-' ?></span>
                         </div>
                     </div>
                 </div>

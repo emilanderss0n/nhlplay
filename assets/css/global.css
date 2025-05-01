@@ -1799,16 +1799,15 @@ header .cont {
   width: 80%;
   max-width: 1000px;
   border: 1px solid var(--border-stroke-weak);
-  max-height: 80vh;
-  overflow-y: auto;
   color: var(--paragraph-color);
   outline: none;
+  overflow: hidden;
 
   transition: 
-    opacity .5s ease-in-out,
-    transform .5s ease-in-out,
-    backdrop-filter .5s ease-in-out,
-    display .5s ease-in-out;
+    opacity .3s ease-out,
+    transform .3s ease-out,
+    backdrop-filter .3s ease-out,
+    display .3s ease-out;
 
   @starting-style {
     opacity: 0; 
@@ -1847,12 +1846,15 @@ header .cont {
   align-items: center;
   padding: 1rem;
   border-bottom: 1px solid var(--border-stroke-weak);
-  font-size: 0.9rem;
+  font-size: 0.8rem;
+  line-height: 1;
   color: var(--heading-color);
 }
 
 .modal-content {
   padding: 1rem;
+  max-height: 75vh;
+  overflow-y: auto;
 }
 
 .modal .close {
@@ -1868,6 +1870,18 @@ header .cont {
   color: var(--main-link-color-hover);
 }
 
+.modal .modal-footer:has(> *) {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-top: 1px solid var(--border-stroke-weak);
+}
+
+.modal .modal-footer {
+  display: none;
+}
+
 .modal .series-game {
   padding: 1rem;
   border-radius: 10px;
@@ -1875,26 +1889,37 @@ header .cont {
   border: 1px solid var(--border-stroke-weak);
 }
 
-.modal .game-date {
+.modal .series-game .game-date {
   font-size: 0.9rem;
-  color: var(--paragraph-color);
   margin-bottom: 1rem;
 }
 
-.modal .game-teams {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+.modal .series-game .game-teams {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-.modal .game-teams .team {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-weight: 600;
-    font-family: 'Tomorrow', sans-serif;
-    font-size: 1.5rem;
-    color: var(--heading-color);
+.modal .series-game .game-teams .team {
+  font-weight: 600;
+  font-family: 'Tomorrow', sans-serif;
+  font-size: 1.5rem;
+  color: var(--heading-color);
+  max-height: 50px;
+  mix-blend-mode: luminosity;
+  opacity: 0.5;
+}
+
+.modal .series-game .game-teams .team.won {
+  mix-blend-mode: normal;
+  opacity: 1;
+}
+
+.modal .series-game .game-teams .team img {
+  width: 60px;
+  height: 60px;
+  mask: var(--logo-mask-subtle);
+  transform: translateY(4px);
 }
 
 #gameLogModal {
@@ -1953,6 +1978,17 @@ header .cont {
   width: 100%;
   height: 100%;
   background-color: rgb(0 0 0 / 70%);
+}
+
+.flex-default {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+.flex-default > :last-child {
+  margin-left: auto;
 }
 
 .team-advanced-stats .team-adv-stats-title {
@@ -2175,13 +2211,17 @@ body.playoffs .standings {
   margin-bottom: 0;
 }
 
-.playoffs-bracket .round-games .game[data-series-letter] {
-  transition: all 0.3s linear;
+.playoffs-bracket .round-games .game[data-series-letter], .playoffs-bracket .final-matchup {
+  transition: all 0.2s linear;
   cursor: pointer;
 }
 
-.playoffs-bracket .round-games .game[data-series-letter]:hover {
+.playoffs-bracket .round-games .game[data-series-letter]:hover, .playoffs-bracket .final-matchup:hover  {
   box-shadow: 0 0 0 2px var(--main-link-color);
+}
+
+.playoffs-bracket .final-matchup .game[data-series-letter]:hover {
+  box-shadow: none;
 }
 
 .playoffs-bracket .round-games.western-final .game {

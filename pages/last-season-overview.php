@@ -165,6 +165,21 @@ function fetchPlayoffData($url) {
         <div class="playoffs-table">
             <?= renderPlayoffsBracket('2024', 'Stanley Cup Playoffs', true, false) ?>
         </div>
+        <dialog id="seriesModal" class="modal">
+            <div class="modal-header">
+                <h3 class="title">Playoff Series</h3>
+                <span class="close close-btn bi bi-x-lg"></span>
+            </div>
+            <div class="modal-content">
+                <div id="seriesContent"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </dialog>
+        <script type="module">
+            import { initPlayoffSeriesHandlers } from './assets/js/modules/standings-handlers.js';
+            document.addEventListener('DOMContentLoaded', initPlayoffSeriesHandlers);
+        </script>
     </div>
 </main>
 <?php
