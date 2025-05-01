@@ -6,6 +6,8 @@
     Header set Access-Control-Allow-Origin "*"
 </IfModule>
 
+RewriteEngine On
+
 # Detect environment and set base path
 RewriteCond %{REQUEST_URI} ^/nhl/
 RewriteRule .* - [E=BASE_PATH:/nhl]
@@ -14,8 +16,6 @@ RewriteRule .* - [E=BASE_PATH:]
 
 # Set custom 404 error page
 ErrorDocument 404 /%{ENV:BASE_PATH}/404.php
-
-RewriteEngine On
 
 # Handle team abbreviation URLs (3 uppercase letters)
 RewriteRule ^([A-Z]{3})/?$ ajax/team-view.php?team_abbr=$1 [QSA,L]

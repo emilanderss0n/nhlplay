@@ -96,7 +96,7 @@ $playerBirthplaceLong = \Locale::getDisplayRegion('-' . $playerBirthplace, 'en')
             </div>
         </div>
         <?php if ($playerSeasonStats && $playerSeasonStats->gamesPlayed > 4) { ?>
-            <div class="player-graph">
+            <div class="player-graph transition-zoom-in" id="playerGraph">
                 <canvas id="playerStatsChart"></canvas>
             </div>
         <?php } ?>
@@ -109,59 +109,12 @@ $playerBirthplaceLong = \Locale::getDisplayRegion('-' . $playerBirthplace, 'en')
             </div>
         </div>
         <div class="stats-player">
-            <div class="phone-show">
-                <?php if ($isSkater) { ?>
-                    <?= renderPhoneStatsDisplay($playerSeasonStats, $regularSeasonAdvancedStats['formattedSAT'], $regularSeasonAdvancedStats['formattedUSAT'], $regularSeasonAdvancedStats['evenStrengthGoalDiff'], true) ?>
-                <?php } else { ?>
-                    <?= renderPhoneStatsDisplay($playerSeasonStats, null, null, null, false) ?>
-                <?php } ?>
-            </div>
-            <table class="phone-hide">
-                <?php if ($isSkater) { ?>
-                    <thead>
-                        <tr>
-                            <td>Games</td>
-                            <td>Goals</td>
-                            <td>Assists</td>
-                            <td>Points</td>
-                            <td>PPG</td>
-                            <td>+/-</td>
-                            <td>PIM</td>
-                            <td>Shots</td>
-                            <td>S%</td>
-                            <td data-tooltip="Shot Attempts For Percentage">SAT%</td>
-                            <td data-tooltip="Unblocked Shot Attempts For Percentage">USAT%</td>
-                            <td data-tooltip="Even Strength Goal Differential">EV GD</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?= renderPlayerStatsRow($playerSeasonStats, $regularSeasonAdvancedStats['formattedSAT'], $regularSeasonAdvancedStats['formattedUSAT'], $regularSeasonAdvancedStats['evenStrengthGoalDiff']) ?>
-                    </tbody>
-                <?php } else { ?>
-                    <thead>
-                        <tr>
-                            <td>GP</td>
-                            <td>SV%</td>
-                            <td>GAA</td>
-                            <td>W</td>
-                            <td>L (OT)</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?= renderGoalieStatsRow($playerSeasonStats) ?>
-                    </tbody>
-                <?php } ?>
-            </table>
-
-            <?php if ($playerPlayoffsStats) { ?>
-                <div class="title stats">
-                    <h3 class="header-text">Playoffs</h3>
-                </div>
+            <div class="stats-player-inner">
                 <div class="phone-show">
                     <?php if ($isSkater) { ?>
-                        <?= renderPhoneStatsDisplay($playerPlayoffsStats, $playoffAdvancedStats['formattedSAT'], $playoffAdvancedStats['formattedUSAT'], $playoffAdvancedStats['evenStrengthGoalDiff'], true) ?>
+                        <?= renderPhoneStatsDisplay($playerSeasonStats, $regularSeasonAdvancedStats['formattedSAT'], $regularSeasonAdvancedStats['formattedUSAT'], $regularSeasonAdvancedStats['evenStrengthGoalDiff'], true) ?>
                     <?php } else { ?>
-                        <?= renderPhoneStatsDisplay($playerPlayoffsStats, null, null, null, false) ?>
+                        <?= renderPhoneStatsDisplay($playerSeasonStats, null, null, null, false) ?>
                     <?php } ?>
                 </div>
                 <table class="phone-hide">
@@ -177,13 +130,13 @@ $playerBirthplaceLong = \Locale::getDisplayRegion('-' . $playerBirthplace, 'en')
                                 <td>PIM</td>
                                 <td>Shots</td>
                                 <td>S%</td>
-                                <td data-tooltip="Shot Attempts For Percentage - The percentage of shot attempts (on goal, missed, or blocked) taken by the player's team while they are on the ice">SAT%</td>
-                                <td data-tooltip="Unblocked Shot Attempts For Percentage - The percentage of unblocked shot attempts (on goal or missed) taken by the player's team while they are on the ice">USAT%</td>
-                                <td data-tooltip="Even Strength Goal Differential - The difference between goals for and against at even strength while the player is on the ice">EV GD</td>
+                                <td data-tooltip="Shot Attempts For Percentage">SAT%</td>
+                                <td data-tooltip="Unblocked Shot Attempts For Percentage">USAT%</td>
+                                <td data-tooltip="Even Strength Goal Differential">EV GD</td>
                             </tr>
                         </thead>
                         <tbody>
-                            <?= renderPlayerStatsRow($playerPlayoffsStats, $playoffAdvancedStats['formattedSAT'], $playoffAdvancedStats['formattedUSAT'], $playoffAdvancedStats['evenStrengthGoalDiff']) ?>
+                            <?= renderPlayerStatsRow($playerSeasonStats, $regularSeasonAdvancedStats['formattedSAT'], $regularSeasonAdvancedStats['formattedUSAT'], $regularSeasonAdvancedStats['evenStrengthGoalDiff']) ?>
                         </tbody>
                     <?php } else { ?>
                         <thead>
@@ -196,13 +149,62 @@ $playerBirthplaceLong = \Locale::getDisplayRegion('-' . $playerBirthplace, 'en')
                             </tr>
                         </thead>
                         <tbody>
-                            <?= renderGoalieStatsRow($playerPlayoffsStats) ?>
+                            <?= renderGoalieStatsRow($playerSeasonStats) ?>
                         </tbody>
                     <?php } ?>
                 </table>
-            <?php } ?>
-            
-            <?= renderLastGames($lastGames, $isSkater) ?>
+
+                <?php if ($playerPlayoffsStats) { ?>
+                    <div class="title stats">
+                        <h3 class="header-text">Playoffs</h3>
+                    </div>
+                    <div class="phone-show">
+                        <?php if ($isSkater) { ?>
+                            <?= renderPhoneStatsDisplay($playerPlayoffsStats, $playoffAdvancedStats['formattedSAT'], $playoffAdvancedStats['formattedUSAT'], $playoffAdvancedStats['evenStrengthGoalDiff'], true) ?>
+                        <?php } else { ?>
+                            <?= renderPhoneStatsDisplay($playerPlayoffsStats, null, null, null, false) ?>
+                        <?php } ?>
+                    </div>
+                    <table class="phone-hide">
+                        <?php if ($isSkater) { ?>
+                            <thead>
+                                <tr>
+                                    <td>Games</td>
+                                    <td>Goals</td>
+                                    <td>Assists</td>
+                                    <td>Points</td>
+                                    <td>PPG</td>
+                                    <td>+/-</td>
+                                    <td>PIM</td>
+                                    <td>Shots</td>
+                                    <td>S%</td>
+                                    <td data-tooltip="Shot Attempts For Percentage - The percentage of shot attempts (on goal, missed, or blocked) taken by the player's team while they are on the ice">SAT%</td>
+                                    <td data-tooltip="Unblocked Shot Attempts For Percentage - The percentage of unblocked shot attempts (on goal or missed) taken by the player's team while they are on the ice">USAT%</td>
+                                    <td data-tooltip="Even Strength Goal Differential - The difference between goals for and against at even strength while the player is on the ice">EV GD</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?= renderPlayerStatsRow($playerPlayoffsStats, $playoffAdvancedStats['formattedSAT'], $playoffAdvancedStats['formattedUSAT'], $playoffAdvancedStats['evenStrengthGoalDiff']) ?>
+                            </tbody>
+                        <?php } else { ?>
+                            <thead>
+                                <tr>
+                                    <td>GP</td>
+                                    <td>SV%</td>
+                                    <td>GAA</td>
+                                    <td>W</td>
+                                    <td>L (OT)</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?= renderGoalieStatsRow($playerPlayoffsStats) ?>
+                            </tbody>
+                        <?php } ?>
+                    </table>
+                <?php } ?>
+                
+                <?= renderLastGames($lastGames, $isSkater) ?>
+            </div>
         </div>
 </div>
 <script type="module">

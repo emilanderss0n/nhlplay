@@ -3277,13 +3277,15 @@ table.border-only tbody .home td:last-child {
 
 #player-modal .player-header .right .name .player-name {
   position: relative;
-  font-size: 2rem;
-  line-height: 1.4;
+  font-size: 4ch;
+  line-height: 1;
 }
 
 #player-modal .player-header .right .drafted {
-  margin-bottom: 1.4rem;
+  margin: 0.7rem 0 1.4rem;
   font-weight: 600;
+  color: var(--paragraph-color);
+  font-size: 1rem;
 }
 
 #player-modal .player-header .headshot {
@@ -3347,6 +3349,29 @@ table.border-only tbody .home td:last-child {
   height: 550px;
   width: 100%;
   margin-top: 3rem;
+  padding-top: 2rem;
+}
+
+#player-modal .player-graph::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  background-color: var(--border-stroke-weak);
+  left: 0;
+  top: 0;
+}
+
+#player-modal .player-graph::after {
+  content: "// RADAR CHART";
+  font-family: "Tomorrow", sans-serif;
+  position: absolute;
+  color: var(--paragraph-color);
+  opacity: 0.6;
+  left: 0;
+  top: 10px;
+  letter-spacing: 6px;
+  font-size: 0.9rem;
 }
 
 #player-modal table {
@@ -3520,6 +3545,21 @@ table.border-only tbody .home td:last-child {
 
 #player-modal .game-log-entry strong {
   color: var(--heading-color);
+}
+
+#player-modal .wrapper .stats-player > .stats-player-inner {
+  opacity: 1;
+  transform: translateY(0px);
+  transition: all 0.3s linear;
+
+  @starting-style {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+#player-modal .awards:has(.trophies) {
+  margin: 3rem 0 4rem;
 }
 
 .trophies .trophy {
@@ -5451,30 +5491,8 @@ footer .credit {
     font-size: 1.4rem;
   }
 
-  #player-modal .player-header-info .info {
-    padding: 0.8rem;
-    border: 2px solid var(--border-stroke-weak);
-    flex: auto;
-  }
-
   #player-modal .player-header .right:has(.drafted) .name {
     margin-top: 0;
-  }
-
-  #player-modal .player-header-info .info:nth-child(1) {
-    border-bottom-left-radius: 10px;
-    border-top-left-radius: 10px;
-    border-right: none;
-  }
-
-  #player-modal .player-header-info .info:nth-child(2) {
-    border-right: none;
-  }
-
-  #player-modal .player-header-info .info:nth-child(4) {
-    border-top-right-radius: 10px;
-    border-bottom-right-radius: 10px;
-    border-left: none;
   }
 
   #player-modal table tbody tr td {
@@ -5719,6 +5737,30 @@ footer .credit {
   .playoffs-bracket .playoffs-round.final .game .game-matchup {
     flex-direction: row;
     gap: 2rem;
+  }
+}
+
+@media screen and (min-width: 840px) {
+  #player-modal .player-header-info .info {
+    padding: 0.8rem;
+    border: 2px solid var(--border-stroke-weak);
+    flex: auto;
+  }
+
+  #player-modal .player-header-info .info:nth-child(1) {
+    border-bottom-left-radius: 10px;
+    border-top-left-radius: 10px;
+    border-right: none;
+  }
+
+  #player-modal .player-header-info .info:nth-child(2) {
+    border-right: none;
+  }
+
+  #player-modal .player-header-info .info:nth-child(4) {
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-left: none;
   }
 }
 
@@ -6130,6 +6172,14 @@ footer .credit {
     top: -2rem;
   }
 
+  #player-modal .player-graph {
+    padding: 0;
+  }
+
+  #player-modal .player-graph::before, #player-modal .player-graph::after {
+    display: none;
+  }
+
   #player-modal .player-header {
     flex-direction: column;
     align-items: center;
@@ -6149,6 +6199,7 @@ footer .credit {
 
   #player-modal .player-header .right .name .player-name {
     line-height: 1.1;
+    font-size: 2rem;
   }
 
   #player-modal .player-header .right .drafted {
@@ -6258,10 +6309,23 @@ footer .credit {
   }
 
   #player-modal .stats-player .career-stats-two .season-career .team-logo {
-    display: none;
+    left: -20rem;
+    top: 1rem;
+    max-width: 700px;
+    opacity: 0.2;
   }
+  
   #player-modal .stats-player .career-stats-two .title.stats {
     justify-content: center;
+  }
+
+  #player-modal .stats-player .career-stats-two .header-season-career h3 {
+    font-size: 1rem;
+}
+
+  #player-modal .stats-player .career-stats-two .season-career .title.stats {
+    justify-content: space-between;
+    flex-direction: row;
   }
 
   #last-games tbody td,

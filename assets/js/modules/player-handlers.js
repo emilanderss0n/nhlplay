@@ -107,8 +107,27 @@ export function initPlayerHandlers(elements) {
 
                 // Hide player graph by default
                 const playerGraph = elements.playerModal.querySelector('.player-graph');
+                const playerGraphInner = elements.playerModal.querySelector('#playerStatsChart');
                 if (playerGraph) {
                     playerGraph.style.display = 'none';
+                    
+                    const isOpen = playerGraph.classList.contains('show');
+                    if (isOpen) {
+                        // COLLAPSE
+                        playerGraphInner.style.height = playerGraphInner.scrollHeight + 'px';
+                        playerGraphInner.offsetHeight; // force reflow
+                        playerGraphInner.style.height = '0px';
+                        playerGraph.classList.remove('show');
+                    } else {
+                        // EXPAND
+                        playerGraph.classList.add('show');
+                        playerGraphInner.style.height = playerGraphInner.scrollHeight + 'px';
+                
+                        playerGraph.addEventListener('transitionend', function handler() {
+                            playerGraphInner.style.height = 'auto';
+                            playerGraph.removeEventListener('transitionend', handler);
+                        });
+                    }
                 }
             };
 
