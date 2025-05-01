@@ -325,7 +325,9 @@ foreach ($seasonTeamMap as $key => $types) {
             <div class="section">
                 <div class="title stats">
                     <p class="type">REGULAR</p>
-                    <div class="header-line"><a href="javascript:void(0);" data-player="<?= $playerID ?>" data-season-selection="<?= $season ?>" data-season-type="2" class="btn sm">Full Game Log</a></div>
+                    <div class="header-line">
+                        <a href="javascript:void(0);" data-player="<?= $playerID ?>" data-skater-goalie="<?= $careerData->position ?>" data-season-selection="<?= $season ?>" data-season-type="2" class="btn sm outline player-game-log">Full Game Log</a>
+                    </div>
                 </div>
                 <?php if ($careerData->position == 'G') { ?>
                 <table>
@@ -401,7 +403,9 @@ foreach ($seasonTeamMap as $key => $types) {
             <div class="section">
                 <div class="title stats">
                     <p class="type">PLAYOFFS</p>
-                    <div class="header-line"><a href="javascript:void(0);" data-player="<?= $playerID ?>" data-season-selection="<?= $season ?>" data-season-type="3" class="btn sm">Full Game Log</a></div>
+                    <div class="header-line">
+                    <a href="javascript:void(0);" data-player="<?= $playerID ?>" data-skater-goalie="<?= $careerData->position ?>" data-season-selection="<?= $season ?>" data-season-type="3" class="btn sm outline player-game-log">Full Game Log</a>
+                    </div>
                 </div>
                 <?php if ($careerData->position == 'G') { ?>
                 <table>

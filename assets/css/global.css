@@ -19,9 +19,7 @@
   --low-contrast-color: #c2c5d1;
   --medium-contrast-color: #7f86a1;
   --paragraph-color: #57617b;
-  --shadow-box: 0px 13.7928px 24px rgb(175 182 209 / 18%),
-    0px 7.32523px 8.64212px rgb(194 198 209 / 6%),
-    0px 3.04819px 3.59618px rgb(213 213 213 / 3%);
+  --shadow-box: 0px 24.7928px 24px -15px rgb(129 133 147 / 26%), 0px 15.32523px 10.64212px -8px rgb(147 151 162 / 19%), 0px 6.04819px 3.59618px -3px rgb(25 26 29 / 12%);
   --big-shadow: 0 30px 40px -20px rgb(142 151 172 / 30%);
   --main-logo: url(../img/logo.png);
   --odd-bg: #f7f9fb;
@@ -2340,6 +2338,10 @@ table.conferenceTable {
   border-right: 1px solid var(--component-header-bg);
 }
 
+.btn-group .btn > i {
+  font-size: 0.9rem;
+}
+
 .btn-group .btn:hover {
   color: var(--heading-color);
   background-color: var(--main-darker-bg);
@@ -3174,7 +3176,7 @@ table.border-only tbody .home td:last-child {
   position: relative;
   max-width: 1200px;
   height: 100vh;
-  z-index: 9999;
+  z-index: 99;
   top: 0;
   left: 0;
   margin: 0 0 0 auto;
@@ -3214,7 +3216,7 @@ table.border-only tbody .home td:last-child {
   height: 100%;
   top: 0;
   left: 0;
-  z-index: 9998;
+  z-index: 98;
   display: none;
 }
 
@@ -3348,8 +3350,16 @@ table.border-only tbody .home td:last-child {
 }
 
 #player-modal table {
-  border: 1px solid var(--border-stroke-weak);
+  border: none;
   border-radius: 7px;
+  box-shadow: var(--shadow-box);
+}
+
+@media (prefers-color-scheme: dark) {
+  #player-modal table {
+    border: 1px solid var(--border-stroke-weak);
+    box-shadow: none;
+  }
 }
 
 #player-modal .stats-player table {
@@ -3442,9 +3452,9 @@ table.border-only tbody .home td:last-child {
 }
 
 #player-modal .stats-player .career-stats-two .header-season-career h3 {
-  color: var(--paragraph-color);
+  color: var(--heading-color);
   line-height: 1;
-  font-size: 1.6rem;
+  font-size: 1.3rem;
 }
 
 #player-modal .stats-player .career-stats-two .season-career .section {
@@ -3481,6 +3491,35 @@ table.border-only tbody .home td:last-child {
 
 #player-modal .stats-player .phone-show {
   display: none;
+}
+
+#player-modal #playerContent h3 {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  font-style: normal;
+  font-family: unset;
+  color: var(--paragraph-color);
+}
+
+#player-modal .player-game-log-list {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+#player-modal .game-log-entry {
+  padding: 1rem;
+  background-color: var(--semi-frost-bg);
+  border-radius: 5px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+#player-modal .game-log-entry strong {
+  color: var(--heading-color);
 }
 
 .trophies .trophy {

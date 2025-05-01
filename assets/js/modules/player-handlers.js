@@ -24,8 +24,45 @@ export function removeLoaderFromContainer(container) {
     }
 }
 
+// Add the game log click handler
+function setupGameLogHandlers() {
+    eventManager.addDelegatedEventListener(document, '.player-game-log', 'click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const playerId = this.dataset.player;
+        const seasonSelection = this.dataset.seasonSelection;
+        const seasonType = this.dataset.seasonType;
+        const playerType = this.dataset.skaterGoalie;
+        const playerModal = document.getElementById('playerModalExtra');
+
+        if (playerModal) {
+            // Show loading state
+            const playerContent = playerModal.querySelector('#playerContent');
+            if (playerContent) {
+                showLoaderInContainer(playerContent);
+            }
+
+            // Fetch game log data
+            const xhr = new XMLHttpRequest();
+            const baseUrl = window.location.pathname.startsWith('/nhl') ? '/nhl' : '';
+            xhr.onload = function() {
+                if (playerContent) {
+                    playerContent.innerHTML = fixAjaxResponseUrls(this.responseText);
+                }
+                playerModal.showModal();
+            };
+
+            xhr.open('POST', baseUrl + '/ajax/player-view-gamelog.php');
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            xhr.send('player=' + playerId + '&season-selection=' + seasonSelection + '&season-type=' + seasonType + '&player-type=' + playerType);
+        }
+    });
+}
+
 // Function to initialize player handlers
 export function initPlayerHandlers(elements) {
+    setupGameLogHandlers();
     // Use event delegation for handling player links
     eventManager.addDelegatedEventListener(document, '#player-link:not(.compare-player-item), [id^="player-link"]:not(.compare-player-item)', 'click', function (e) {
         e.preventDefault();
@@ -556,7 +593,7 @@ export function initPlayerHandlers(elements) {
                                         chartInitialized = initPlayerChart();
 
                                         // Update the button text
-                                        graphToggle.innerHTML = "<i class='bi bi-x'></i>Radar";
+                                        graphToggle.innerHTML = "<i class='bi bi-x-lg'></i>Radar";
                                     } catch (error) {
                                         console.error('Error parsing radar data:', error);
                                         playerGraph.innerHTML = '<div class="error">Failed to load radar data</div>';

@@ -43,6 +43,17 @@ $playerAge = $dob ? (date('Y') - date('Y',strtotime($dob))) : null;
 $playerBirthplace = convertCountryAlphas3To2($player->birthCountry) ?? null;
 $playerBirthplaceLong = \Locale::getDisplayRegion('-' . $playerBirthplace, 'en');
 ?>
+<dialog id="playerModalExtra" class="modal">
+    <div class="modal-header">
+        <h3 class="title"><?= $player->firstName->default ?> <?= $player->lastName->default ?></h3>
+        <span class="close close-btn bi bi-x-lg"></span>
+    </div>
+    <div class="modal-content">
+        <div id="playerContent"></div>
+    </div>
+    <div class="modal-footer">
+    </div>
+</dialog>
 <div class="wrapper <?php if (isset($player->draftDetails->year) && $player->draftDetails->year == date("Y")) { echo 'rookie'; } ?>">
     <div id="close"><i class="bi bi-x-lg"></i></div>
         <div class="player-header">
@@ -194,3 +205,40 @@ $playerBirthplaceLong = \Locale::getDisplayRegion('-' . $playerBirthplace, 'en')
             <?= renderLastGames($lastGames, $isSkater) ?>
         </div>
 </div>
+<script type="module">
+    document.addEventListener('DOMContentLoaded', () => {
+        initPlayerHandlers({
+            playerModal: document.getElementById('playerModalExtra'),
+            playerActivityElement: document.getElementById('activity-player')
+        });
+    });
+    const modal = document.getElementById('playerModalExtra');
+    const closeBtn = modal?.querySelector('.close');
+    // Close modal when clicking the X button
+    closeBtn.onclick = function() {
+        modal.classList.add('closing');
+
+        // Wait for transition to end before actually closing it
+        modal.addEventListener('transitionend', () => {
+            requestAnimationFrame(() => {
+                modal.close();
+                modal.classList.remove('closing');
+            });
+        }, { once: true });
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.classList.add('closing');
+
+            // Wait for transition to end before actually closing it
+            modal.addEventListener('transitionend', () => {
+                requestAnimationFrame(() => {
+                    modal.close();
+                    modal.classList.remove('closing');
+                });
+            }, { once: true });
+        }
+    }
+</script>
