@@ -120,10 +120,10 @@ $mergedCSS = $isDevelopment ? false : generateMergedCSS([
                             <input class="dropdown" type="checkbox" id="dropdown1" name="dropdown1"/>
                             <label class="for-dropdown" for="dropdown1">Links <i class="bi bi-arrow-down-short"></i></label>
                             <div class="section-dropdown"> 
-                                <a id="link-game-scores" href="<?= BASE_URL ?>/ajax/scores" rel="page">Scores <i class="bi bi-arrow-right-short"></i></a>
-                                <a id="link-stat-leaders" href="<?= BASE_URL ?>/ajax/stat-leaders" rel="page">Stat Leaders <i class="bi bi-arrow-right-short"></i></a>
-                                <a id="link-game-recaps" href="<?= BASE_URL ?>/ajax/recaps" rel="page">Game Recaps <i class="bi bi-arrow-right-short"></i></a>
-                                <a id="link-trades" href="<?= BASE_URL ?>/ajax/trades" rel="page">
+                                <a id="link-game-scores" href="<?= BASE_URL ?>/scores" rel="page">Scores <i class="bi bi-arrow-right-short"></i></a>
+                                <a id="link-stat-leaders" href="<?= BASE_URL ?>/stat-leaders" rel="page">Stat Leaders <i class="bi bi-arrow-right-short"></i></a>
+                                <a id="link-game-recaps" href="<?= BASE_URL ?>/recaps" rel="page">Game Recaps <i class="bi bi-arrow-right-short"></i></a>
+                                <a id="link-trades" href="<?= BASE_URL ?>/trades" rel="page">
                                     <span>Trades</span>
                                     <i class="bi bi-arrow-right-short"></i>
                                 </a>
