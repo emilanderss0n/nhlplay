@@ -4,36 +4,49 @@
 
 .jsDataTable-top,
 .jsDataTable-bottom {
-    padding: 8px 0;
-    display: block;
-}
-
-.jsDataTable-top>nav:first-child,
-.jsDataTable-top>div:first-child,
-.jsDataTable-bottom>nav:first-child,
-.jsDataTable-bottom>div:first-child {
-    float: left;
-}
-
-.jsDataTable-top>nav:last-child,
-.jsDataTable-top>div:last-child,
-.jsDataTable-bottom>nav:last-child,
-.jsDataTable-bottom>div:last-child {
-    float: right;
+    padding: 1rem 0;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .jsDataTable-input {
-    padding: 6px 12px;
+    padding: 0.5rem 0.8rem;
+    border-radius: 5px;
+    border: 1px solid var(--border-stroke-weak);
+    background-color: var(--form-bg-2);
+    color: var(--paragraph-color);
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
 }
 
 .jsDataTable-info {
-    margin: 7px 0;
+    color: var(--paragraph-color);
+}
+
+.jsDataTable-dropdown label {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--paragraph-color);
+}
+
+.jsDataTable-selector {
+    padding: 0.5rem 0.8rem;
+    border-radius: 5px;
+    border: 1px solid var(--border-stroke-weak);
+    background-color: var(--form-bg-2);
+    color: var(--paragraph-color);
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
 }
 
 /* PAGER */
 .jsDataTable-pagination ul {
     margin: 0;
     padding-left: 0;
+    display: flex;
 }
 
 .jsDataTable-pagination li {
@@ -42,23 +55,25 @@
 }
 
 .jsDataTable-pagination a {
-    border: 1px solid transparent;
     float: left;
     margin-left: 2px;
     padding: 6px 12px;
     position: relative;
     text-decoration: none;
-    color: #333;
+    color: var(--main-link-color);
+    border-radius: 5px;
 }
 
 .jsDataTable-pagination a:hover {
-    background-color: #d9d9d9;
+    background-color: var(--low-contrast-color);
+    color: var(--heading-color);
 }
 
 .jsDataTable-pagination .active a,
 .jsDataTable-pagination .active a:focus,
 .jsDataTable-pagination .active a:hover {
-    background-color: #d9d9d9;
+    background-color: var(--main-link-color);
+    color: var(--content-box-bg);
     cursor: default;
 }
 
@@ -183,34 +198,6 @@ thead.table-dark .desc .jsDataTable-sorter::before {
     text-align: center;
 }
 
-.jsDataTable-top::after,
-.jsDataTable-bottom::after {
-    clear: both;
-    content: " ";
-    display: table;
-}
-
-.jsDataTable-selector {
-    padding: .375rem 2.25rem .375rem .75rem;
-    display: unset;
-    width: unset;
-}
-
 .jsDataTable-select-cell {
     width: 0.1% !important;
-}
-
-@media screen and (max-width: 560px) {
-
-    .jsDataTable-top,
-    .jsDataTable-bottom {
-        display: block;
-    }
-
-    .jsDataTable-top>nav:last-child,
-    .jsDataTable-top>div:last-child,
-    .jsDataTable-bottom>nav:last-child,
-    .jsDataTable-bottom>div:last-child {
-        float: left;
-    }
 }

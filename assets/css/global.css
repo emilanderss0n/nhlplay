@@ -2011,6 +2011,12 @@ header .cont {
   display: none;
 }
 
+.draft-rankings-table .jsDataTable-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .jsDataTable-sorter {
   color: var(--heading-color);
 }
@@ -6895,6 +6901,10 @@ footer .credit {
 
   .team-game-log .log-game .game-team-logo:last-child {
     right: auto;
+  }
+
+  .jsDataTable-top, .draft-rankings-table .jsDataTable-top, .jsDataTable-bottom {
+    display: none;
   }
 
   footer .footer-info {

@@ -11,19 +11,14 @@ $ApiUrl = 'https://api-web.nhle.com/v1/draft/rankings/now';
 $curl = curlInit($ApiUrl);
 $draftRankings = json_decode($curl);
 
-$draftYear = $draftRankings->draftYear;
+$draftYearCurrent = $draftRankings->draftYear;
+$draftYearLast = $draftYearCurrent - 1;
 
-$ApiUrl2 = 'https://api-web.nhle.com/v1/draft/picks/'. $draftYear .'/1';
+$ApiUrl2 = 'https://api-web.nhle.com/v1/draft/picks/'. $draftYearCurrent .'/1';
 $curl2 = curlInit($ApiUrl2);
 $draftPicks = json_decode($curl2);
 $draftPicksPicksExists = isset($draftPicks->picks) && !empty($draftPicks->picks);
 
-// Helper for arrow icons
-function rankArrow($mid, $final) {
-    if ($final < $mid) return ['↑', 'up'];
-    if ($final > $mid) return ['↓', 'down'];
-    return ['→', ''];
-}
 ?>
 <main>
     <div class="wrap">
@@ -58,63 +53,30 @@ function rankArrow($mid, $final) {
         <?php } else { ?>
             <div class="alert alert-warning" role="alert" style="margin-bottom: 3rem;">
                 <span>1st round draft picks will show up here on draft selection in June</span>
-                <a href="javascript:void(0)" class="btn sm" id="show-previous-draft" data-draft-year="<?= $draftYear ?>">Previous Picks</a>
+                <a href="javascript:void(0)" class="btn sm" id="show-previous-draft" data-draft-year="<?= $draftYearLast ?>">Previous Picks</a>
             </div>
         <?php } ?>
         <div class="previous-draft draft-picks-result grid grid-300 grid-gap-lg grid-gap-row-lg"></div>
         <div class="component-header">
-            <h3 class="title">Draft Rankings</h3>
-            <p class="sm">Draft rankings from NHL official API, draft year: <?= $draftYear ?></p>
+            <h3 class="title">Draft Rankings <span class="lower-contrast">(<?= $draftYearCurrent ?>)</span></h3>
+            <div class="btn-group draft-filter">
+                <i class="bi bi-filter icon"></i>
+                <a class="btn sm active" id="draft-table-1" data-table="1" href="javascript:void(0)" data-tooltip="North American Skaters">N.A. Skaters</a>
+                <a class="btn sm" id="draft-table-2" data-table="2" href="javascript:void(0)" data-tooltip="International Skaters">Int. Skaters</a>
+                <a class="btn sm" id="draft-table-3" data-table="3" href="javascript:void(0)" data-tooltip="North American Goalies">N.A. Goalies</a>
+                <a class="btn sm" id="draft-table-4" data-table="4" href="javascript:void(0)" data-tooltip="International Goalies">Int. Goalies</a>
+            </div>
         </div>
         <div class="draft-rankings-table">
-            <table id="draftRankings" class="hover sticky-header" data-order='[[ 0, "asc" ]]'>
-                <thead>
-                    <tr>
-                        <td>Final</td>
-                        <td>Mid</td>
-                        <td>Name</td>
-                        <td>Pos</td>
-                        <td>Club</td>
-                        <td>League</td>
-                        <td>Birth</td>
-                        <td>Age</td>
-                        <td>Height</td>
-                        <td>Weight</td>
-                    </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($draftRankings->rankings as $draftRank) { 
-                    $finalRank = isset($draftRank->finalRank) ? $draftRank->finalRank : '-';
-                    $midtermRank = isset($draftRank->midtermRank) ? $draftRank->midtermRank : '-';
-                    // Calculate age
-                    $birthDate = new DateTime($draftRank->birthDate);
-                    $today = new DateTime();
-                    $age = $today->diff($birthDate)->y;
-
-                    // Skip if either rank is '-'
-                    if ($finalRank === '-' || $midtermRank === '-') {
-                        continue;
-                    }
-
-                    $rankInfo = rankArrow($midtermRank, $finalRank);
+            <div id="rankings-container">
+                <?php 
+                $draftYearParam = isset($_GET['year']) ? $_GET['year'] : $draftYearCurrent;
+                include_once '../includes/tables/draft-table-1.php'; 
                 ?>
-                    <tr>
-                        <td style="font-weight:bold;"><span class="final-rank"><span class="number"><?= $finalRank ?></span><span class="trend <?= $rankInfo[1] ?>"><?= $rankInfo[0] ?></span></span></td>
-                        <td><?= $midtermRank ?></td>
-                        <td>
-                            <?= htmlspecialchars($draftRank->firstName . ' ' . $draftRank->lastName) ?>
-                        </td>
-                        <td><?= $draftRank->positionCode ?></td>
-                        <td><?= htmlspecialchars($draftRank->lastAmateurClub) ?></td>
-                        <td><?= htmlspecialchars($draftRank->lastAmateurLeague) ?></td>
-                        <td><?= htmlspecialchars($draftRank->birthCountry) ?></td>
-                        <td><?= $age ?></td>
-                        <td><?= intval($draftRank->heightInInches/12) . "'" . ($draftRank->heightInInches%12) . '"' ?></td>
-                        <td><?= $draftRank->weightInPounds ?></td>
-                    </tr>
-                <?php } ?>
-                </tbody>
-            </table>
+            </div>
+            <div class="loading-spinner" style="display: none;">
+                <div class="spinner"></div>
+            </div>
         </div>
     </div>
 </main>

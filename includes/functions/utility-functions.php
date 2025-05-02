@@ -590,3 +590,13 @@ function renderMatchup($series) {
     <?php
     return ob_get_clean();
 }
+
+/**
+ * Renders in draft tables
+ * 
+ */
+function rankArrow($mid, $final) {
+    if ($final < $mid) return ['↑', 'up'];
+    if ($final > $mid) return ['↓', 'down'];
+    return ['→', ''];
+}

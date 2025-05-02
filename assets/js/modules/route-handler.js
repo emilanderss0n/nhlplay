@@ -33,6 +33,9 @@ export function initRouteHandler(elements) {
                     });
                 }
             }
+
+            // IMPORTANT: Dispatch custom event after content loads (used on draft page)
+            document.dispatchEvent(new CustomEvent('routeChanged'));
         };
 
         xhr.onloadend = function () {

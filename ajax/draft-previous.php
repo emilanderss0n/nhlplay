@@ -2,10 +2,19 @@
 include_once '../path.php';
 include_once '../includes/functions.php';
 
-$ApiUrl = 'https://api-web.nhle.com/v1/draft/picks/'. $draftYear .'/1';
+$draftYearSelection = $_POST['draftYear'] ?? $_GET['draftYear'] ?? '';
+
+if (empty($draftYearSelection)) {
+    die('Draft year is required');
+}
+
+$ApiUrl = 'https://api-web.nhle.com/v1/draft/picks/'. $draftYearSelection .'/1';
 $curl = curlInit($ApiUrl);
 $draftPicks = json_decode($curl);
 
+if (!$draftPicks || !isset($draftPicks->picks)) {
+    die('No draft picks found');
+}
 ?>
 <?php foreach ($draftPicks->picks as $draftPick) { ?>
     <div class="draft-pick" style="background-image: linear-gradient(22deg, <?= teamToColor($draftPick->teamId) ?> 0%, rgba(255,255,255,0) 120%);">
