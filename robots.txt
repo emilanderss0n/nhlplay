@@ -3,7 +3,6 @@ Allow: /
 Disallow: /cache/
 Disallow: /ajax/
 Disallow: /includes/
-Disallow: /event-stream.php
 
 # Prevent pages with sensitive parameters
 Disallow: /*?gameId=
