@@ -1,10 +1,12 @@
 export function initDraftPage() {
     setupDraftTableHandlers();
+    setupPreviousDraftHandler();
     
     // Listen for route changes
     document.addEventListener('routeChanged', () => {
         if (window.location.pathname.includes('/draft')) {
             setupDraftTableHandlers();
+            setupPreviousDraftHandler();
         }
     });
 }
@@ -32,6 +34,35 @@ function setupDraftTableHandlers() {
     document.querySelectorAll('.draft-filter .btn').forEach(button => {
         button.addEventListener('click', handleDraftTableSwitch);
     });
+}
+
+function setupPreviousDraftHandler() {
+    const previousDraftBtn = document.getElementById('show-previous-draft');
+    if (previousDraftBtn) {
+        previousDraftBtn.addEventListener('click', function() {
+            const previousDraft = document.querySelector('.previous-draft');
+            
+            // If already shown and has content, just toggle visibility
+            if (previousDraft.innerHTML.trim()) {
+                previousDraft.classList.toggle('show');
+                return;
+            }
+            
+            // Otherwise load content
+            const draftYear = this.dataset.draftYear;
+            const xhr = new XMLHttpRequest();
+            const baseUrl = window.location.pathname.startsWith('/nhl') ? '/nhl' : '';
+            xhr.open('GET', `${baseUrl}/ajax/draft-previous.php?draftYear=${draftYear}`);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            
+            xhr.onload = function() {
+                previousDraft.innerHTML = this.responseText;
+                previousDraft.classList.toggle('show');
+            };
+            
+            xhr.send();
+        });
+    }
 }
 
 function handleDraftTableSwitch(e) {
