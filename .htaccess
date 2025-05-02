@@ -52,14 +52,14 @@ RewriteRule ^ajax/([^/]+)$ $1 [R=301,L]
 # Try ajax directory (only if target file exists)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{DOCUMENT_ROOT}/ajax/$1.php -f
-RewriteRule ^([^/]+)/?$ ajax/$1.php [L]
+RewriteCond %{DOCUMENT_ROOT}%{ENV:BASE_PATH}/ajax/$1.php -f
+RewriteRule ^([^/]+)/?$ %{ENV:BASE_PATH}/ajax/$1.php [L]
 
 # Try pages directory (only if target file exists)
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteCond %{DOCUMENT_ROOT}/pages/$1.php -f
-RewriteRule ^([^/]+)/?$ pages/$1.php [L]
+RewriteCond %{DOCUMENT_ROOT}%{ENV:BASE_PATH}/pages/$1.php -f
+RewriteRule ^([^/]+)/?$ %{ENV:BASE_PATH}/pages/$1.php [L]
 
 # Return 404 for anything else
 RewriteCond %{REQUEST_FILENAME} !-f
