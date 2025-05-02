@@ -16,6 +16,7 @@ $draftYear = $draftRankings->draftYear;
 $ApiUrl2 = 'https://api-web.nhle.com/v1/draft/picks/'. $draftYear .'/1';
 $curl2 = curlInit($ApiUrl2);
 $draftPicks = json_decode($curl2);
+$draftPicksPicksExists = isset($draftPicks->picks) && !empty($draftPicks->picks);
 
 // Helper for arrow icons
 function rankArrow($mid, $final) {
@@ -26,7 +27,7 @@ function rankArrow($mid, $final) {
 ?>
 <main>
     <div class="wrap">
-        <?php if (!empty($draftPicks)) { ?>
+        <?php if ($draftPicksPicksExists) { ?>
         <div class="component-header">
             <h3 class="title">Draft Picks</h3>
         </div>
