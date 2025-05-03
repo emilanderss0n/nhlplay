@@ -354,6 +354,7 @@
 
 #team-builder-drop-area .player-slot .player .info .name {
     font-size: 1rem;
+    font-weight: 500;
 }
 
 #team-builder-drop-area .player-slot .player .jersey {

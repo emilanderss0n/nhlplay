@@ -97,6 +97,9 @@ export function initTeamBuilder() {
                     swiper.update();
                 }
             });
+
+            // Update pool player states to reflect dropped players
+            updatePoolPlayerStates();
         } catch (error) {
             console.error('Error loading team roster:', error);
         }
