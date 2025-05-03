@@ -450,6 +450,12 @@ p.sm {
   font-size: 0.8rem;
 }
 
+button {
+  font-family: 'Inter', sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+}
+
 .btn {
   padding: 0.5em 1em;
   display: flex;
@@ -1251,6 +1257,7 @@ header .cont {
 }
 
 #team-selection a span img,
+#team-selection-custom a span img,
 #team-player-stats-selection a span img {
   width: 24px;
   height: 24px;

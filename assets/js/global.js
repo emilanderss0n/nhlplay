@@ -12,6 +12,7 @@ import { initStatLeadersHandlers } from './modules/stat-leaders-handlers.js';
 import { convertUTCTimesToLocal } from './modules/utils.js';
 import { initPreGamePage } from './modules/pre-game-handlers.js';
 import { initDraftPage } from './modules/drafts.js';
+import { initTeamBuilder} from './modules/teambuilder.js';
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -29,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initStatLeadersHandlers();
     convertUTCTimesToLocal();
     initDraftPage();
+    initTeamBuilder();
 
     if (document.querySelector('.pre-game-cont')) {
         initPreGamePage();

@@ -31,6 +31,11 @@ export function initRouteHandler(elements) {
                     import('./player-leaders.js').then(module => {
                         module.initializeSkaterLeaders();
                     });
+                    if (url.includes('team-builder')) {
+                        import('./teambuilder.js').then(module => {
+                            module.initTeamBuilder();
+                        });
+                    }
                 }
             }
 
