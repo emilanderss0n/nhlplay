@@ -19,7 +19,7 @@
   --low-contrast-color: #c2c5d1;
   --medium-contrast-color: #7f86a1;
   --paragraph-color: #57617b;
-  --shadow-box: 0px 24.7928px 24px -15px rgb(129 133 147 / 26%), 0px 15.32523px 10.64212px -8px rgb(147 151 162 / 19%), 0px 6.04819px 3.59618px -3px rgb(25 26 29 / 12%);
+  --shadow-box: 0px 24.7928px 24px -15px rgb(129 133 147 / 18%), 0px 15.32523px 10.64212px -8px rgb(147 151 162 / 11%), 0px 6.04819px 3.59618px -3px rgb(25 26 29 / 12%);
   --big-shadow: 0 30px 40px -20px rgb(142 151 172 / 30%);
   --main-logo: url(../img/logo.png);
   --odd-bg: #f7f9fb;

@@ -2,6 +2,10 @@
     display: none;
 }
 
+.team-builder {
+    user-select: none;
+}
+
 #team-builder-drop-area .player {
     cursor: grab;
 }
@@ -27,6 +31,7 @@
     backdrop-filter: blur(40px);
     background-color: var(--header-background);
     z-index: 10;
+    user-select: none;
 
     animation: slide-out-down-dismiss 0.5s ease-out;
 
@@ -130,12 +135,13 @@
 
 .tb-selection-players .tb-pool .player .info {
     display: flex;
+    height: 100%;
+    align-items: center;
 }
 
 .tb-selection-players .tb-pool .player .info .text {
     width: 100%;
     padding-left: 6.5rem;
-    padding-top: 2rem;
     color: var(--heading-color);
     position: relative;
     z-index: 3;
@@ -182,7 +188,8 @@
 }
 
 .tb-selection-players .tb-pool .player.in-slot::after {
-    content: '✓';
+    content: '\F633';
+    font-family: 'bootstrap-icons';
     position: absolute;
     right: 0.5rem;
     bottom: 0.5rem;
@@ -274,20 +281,16 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.3s ease-out;
 }
 
 .team-builder .player-slot:empty {
-    min-height: 110px;
-    border: 2px dashed var(--low-contrast-color);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     cursor: pointer;
 }
 
 .team-builder .player-slot:empty::after {
-    content: "+";
+    content: "\F4FE";
+    font-family: 'bootstrap-icons';
     font-size: 2rem;
     color: var(--low-contrast-color);
 }

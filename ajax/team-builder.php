@@ -10,10 +10,10 @@ if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH']
 }
 
 $teamAbbrev = $activeTeam ? idToTeamAbbrev($activeTeam) : '';
-$teamRosterInfo = $activeTeam ? getTeamRosterInfo($teamAbbrev, $season) : [];
+$teamRosterInfo = $activeTeam ? getTeamRosterInfo($teamAbbrev, $season) : null;
 $medianAge = $activeTeam ? getTeamMedianAge($teamRosterInfo) : 0;
-$teamInfo = $activeTeam ? getTeamStats($teamAbbrev) : [];
-$teamStatsAdv = $activeTeam ? getTeamStatsAdv($activeTeam, $season) : [];
+$teamInfo = $activeTeam ? getTeamStats($teamAbbrev) : null;
+$teamStatsAdv = $activeTeam ? getTeamStatsAdv($activeTeam, $season) : null;
 ?>
 
 <div popover id="team-builder-player-pool" class="tb-selection-pool">
@@ -78,7 +78,8 @@ $teamStatsAdv = $activeTeam ? getTeamStatsAdv($activeTeam, $season) : [];
                             <div class="fader-bottom"></div>
                         </div>
                     </div>
-                    <button popovertarget="team-builder-player-pool" class="btn sm disabled">Select Players</button>
+                    <button popovertarget="team-builder-player-pool" class="btn sm disabled"><i class="bi bi-person-plus"></i> Add</button>
+                    <button class="btn sm" id="btn-clear-tb"><i class="bi bi-trash"></i> Clear</button>
                 </div>
             </div>
 
@@ -144,7 +145,7 @@ $teamStatsAdv = $activeTeam ? getTeamStatsAdv($activeTeam, $season) : [];
                     </div>
 
                     <div class="line-group goalie-lines">
-                    <h3>Goalies</h3>
+                    <h3>Starting Goalies</h3>
                     <div class="line">
                         <div class="line-slots">
                             <div class="player-slot" data-position="goalie"></div>

@@ -1,23 +1,36 @@
 <?php
 function renderTeamBuilderRoster($teamRosterInfo, $activeTeam, $type) {
-    if ($type === 'forwards') {
-        foreach ($teamRosterInfo->forwards as $player) {
-            renderTeamBuilderPlayer($player, $activeTeam, 'forward');
-        }
-    } else if ($type === 'defensemen') {
-        foreach ($teamRosterInfo->defensemen as $player) {
-            renderTeamBuilderPlayer($player, $activeTeam, 'defenseman');
-        }
-    } else if ($type === 'goalies') {
-        foreach ($teamRosterInfo->goalies as $player) {
-            renderTeamBuilderPlayer($player, $activeTeam, 'goalie');
-        }
+    if (!$teamRosterInfo || !$activeTeam) {
+        return;
+    }
+
+    if (!is_object($teamRosterInfo)) {
+        return;
+    }
+
+    $roster = match($type) {
+        'forwards' => $teamRosterInfo->forwards ?? null,
+        'defensemen' => $teamRosterInfo->defensemen ?? null,
+        'goalies' => $teamRosterInfo->goalies ?? null,
+        default => null
+    };
+
+    if (!$roster || !is_array($roster)) {
+        return;
+    }
+
+    foreach ($roster as $player) {
+        renderTeamBuilderPlayer($player, $activeTeam, rtrim($type, 's'));
     }
 }
 
 function renderTeamBuilderPlayer($player, $activeTeam, $type) {
     ?>
-    <a class="player <?= strtolower(positionCodeToName2($player->positionCode)) ?><?php if (isset($player->rookie) == 'true') { echo ' rookie'; } ?> swiper-slide" href="javacript:void(0);" style="background-image: linear-gradient(142deg, <?= teamToColor($activeTeam) ?> -100%, rgba(255,255,255,0) 70%);">
+    <a class="player <?= strtolower(positionCodeToName2($player->positionCode)) ?><?php if (isset($player->rookie) == 'true') { echo ' rookie'; } ?> swiper-slide" 
+       href="javascript:void(0);" 
+       style="background-image: linear-gradient(142deg, <?= teamToColor($activeTeam) ?> -100%, rgba(255,255,255,0) 70%);"
+       data-team-id="<?= $activeTeam ?>"
+       data-player-id="<?= $player->id ?>">
         <div class="jersey"><span>#</span><?= $player->sweaterNumber ?></div>
         <div class="info">
             <div class="headshot">
