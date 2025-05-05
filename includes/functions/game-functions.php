@@ -422,11 +422,11 @@ function renderSeasonSeries($seasonSeries) {
             $tomorrow = new DateTime('tomorrow');
             
             if ($gameDate->format('Y-m-d') === $today->format('Y-m-d')) {
-                echo '<div class="theTime">Today</div>';
+                echo '<div class="theTime tag">Today</div>';
             } elseif ($gameDate->format('Y-m-d') === $tomorrow->format('Y-m-d')) {
-                echo '<div class="theTime">Tomorrow</div>';
+                echo '<div class="theTime tag">Tomorrow</div>';
             } else {
-                echo '<div class="theTime">' . date('y/m/d', strtotime($seriesGame->gameDate)) . '</div>';
+                echo '<div class="theTime tag">' . date('y/m/d', strtotime($seriesGame->gameDate)) . '</div>';
             }
         }
         

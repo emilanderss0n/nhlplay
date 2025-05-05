@@ -42,7 +42,7 @@ include_once '../includes/data/init-post-game.php';
                             <div class="game-date"><?= $gameTime->format( 'Y-m-d' ) .' <span>UTC</span>'; ?> <?= $endPeriod ?></div>
                             <?php
                             if(isset($gameVideo->condensedGame)) { 
-                                echo '<a href="https://players.brightcove.net/6415718365001/EXtG1xJ7H_default/index.html?videoId='. $gameVideo->condensedGame .'" target="_blank" class="post-recap-vid-header"><i class="bi bi-camera-video"></i>
+                                echo '<a href="https://players.brightcove.net/6415718365001/EXtG1xJ7H_default/index.html?videoId='. $gameVideo->condensedGame .'" target="_blank" class="tag post-recap-vid-header"><i class="bi bi-camera-video"></i>
                                 Recap
                                 </a>
                                 ';

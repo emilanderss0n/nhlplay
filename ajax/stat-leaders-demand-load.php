@@ -23,7 +23,7 @@ function processBatchRequest() {
     
     $categories = json_decode($_POST['categories'], true);
     $type = $_POST['type'];
-    $season = $_POST['season'] ?? '20242025';
+    $season = $_POST['season'];
     $playoffs = isset($_POST['playoffs']) ? filter_var($_POST['playoffs'], FILTER_VALIDATE_BOOLEAN) : false;
     $loadOnDemand = true;
     
@@ -45,7 +45,7 @@ function processBatchRequest() {
 function processSingleRequest() {
     $type = $_POST['type'] ?? null;
     $category = $_POST['category'] ?? null;
-    $season = $_POST['season'] ?? '20242025';
+    $season = $_POST['season'] ?? null;
     $playoffs = isset($_POST['playoffs']) ? filter_var($_POST['playoffs'], FILTER_VALIDATE_BOOLEAN) : false;
     $loadOnDemand = isset($_POST['loadOnDemand']) ? filter_var($_POST['loadOnDemand'], FILTER_VALIDATE_BOOLEAN) : false;
 

@@ -48,6 +48,7 @@ function renderStatHolder($type, $category, $season, $playoffs, $loadOnDemand = 
     $sameRankCount = 0;
     $cardCount = 0; // Counter for full card designs
     $maxCardDesigns = 3; // Maximum number of full card designs
+    $firstListLeader = true; // Track if this is the first list-leader element
 
     // Build HTML output
     ob_start();
@@ -57,9 +58,6 @@ function renderStatHolder($type, $category, $season, $playoffs, $loadOnDemand = 
     
     for ($i = 0; $i < $playerCount; $i++) {
         $statPoint = $statPoints->data[$i];
-        
-        // Determine if this is the winner/leader
-        $winnerClass = isStatLeader($statPoint, $category, $maxPoints) ? 'winner' : '';
         
         // Format stat value for display
         $formattedStat = formatStatValue($statPoint, $category);
@@ -78,7 +76,7 @@ function renderStatHolder($type, $category, $season, $playoffs, $loadOnDemand = 
         if ($cardCount < $maxCardDesigns) {
             // Full card design
             ?>
-            <a id="player-link" data-link="<?= $statPoint->player->id ?>" href="#" class="player <?= $winnerClass ?> top-leader">
+            <a id="player-link" data-link="<?= $statPoint->player->id ?>" href="#" class="player top-leader">
                 <div class="rank"><?= $rank; ?></div>
                 <img class="head" height="240" width="240" src="https://assets.nhle.com/mugs/nhl/<?= $season ?>/<?= $statPoint->team->triCode ?>/<?= $statPoint->player->id ?>.png" />
                 <img class="team-img" src="assets/img/teams/<?= $statPoint->team->id ?>.svg" width="200" height="200">
@@ -93,12 +91,15 @@ function renderStatHolder($type, $category, $season, $playoffs, $loadOnDemand = 
             $cardCount++; // Increment card counter
         } else {
             // Simple list design for players after the first 3
+            // Add "first" class to the first list-leader element
+            $listLeaderClass = $firstListLeader ? "player list-leader first" : "player list-leader";
+            $firstListLeader = false; // Mark that we've used the first class
             ?>
-            <a id="player-link" data-link="<?= $statPoint->player->id ?>" href="#" class="player list-leader <?= $winnerClass ?>">
+            <a id="player-link" data-link="<?= $statPoint->player->id ?>" href="#" class="<?= $listLeaderClass ?>">
                 <div class="rank"><?= $rank; ?></div>
                 <div class="info-simple">
                     <span class="player-name"><?= $statPoint->player->fullName ?></span>
-                    <span class="player-team"><?= $statPoint->team->triCode ?></span>
+                    <span class="player-team tag"><?= $statPoint->team->triCode ?></span>
                 </div>
                 <div class="stat-value"><?= $formattedStat ?></div>
             </a>

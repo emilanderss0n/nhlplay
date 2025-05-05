@@ -26,7 +26,7 @@ include_once '../includes/data/init-pre-game.php';
                         <div class="score">
                             <span>VS</span>
                             <div class="game-date"><?php echo $gameTime->format( 'Y / m / d - H:i' ) .' <span>UTC</span>'; ?></div>
-                            <div id="countdown" data-game-time="<?= $gameTime->format('Y-m-d\TH:i:s\Z') ?>"></div>
+                            <div id="countdown" class="tag" data-game-time="<?= $gameTime->format('Y-m-d\TH:i:s\Z') ?>"></div>
                         </div>
                         <div class="home-team">
                             <picture>
@@ -237,7 +237,7 @@ include_once '../includes/data/init-pre-game.php';
                             <div class="player-text" data-player-text="<?= $leader->playerId ?>">
                                 <div class="category">Points</div>
                                 <div class="name adv-title"><?= $leader->firstName->default ?> <?= $leader->lastName->default ?></div>
-                                <div class="more"><?= $awayTeamAbbrev ?> - <?= positionCodeToName($leader->positionCode) ?></div>
+                                <div class="more"><div class="tag"><?= $awayTeamAbbrev ?></div> - <?= positionCodeToName($leader->positionCode) ?></div>
                             </div>
                             <div class="value-top" data-player-text="<?= $leader->playerId ?>"><?= $leader->points ?><div>POINTS</div></div>
                         <?php } ?>
@@ -278,7 +278,7 @@ include_once '../includes/data/init-pre-game.php';
                             <div class="player-text" data-player-text="<?= $leader->playerId ?>">
                                 <div class="category">Points</div>
                                 <div class="name adv-title"><?= $leader->firstName->default ?> <?= $leader->lastName->default ?></div>
-                                <div class="more"><?= $homeTeamAbbrev ?> - <?= positionCodeToName($leader->positionCode) ?></div>
+                                <div class="more"><div class="tag"><?= $homeTeamAbbrev ?></div> - <?= positionCodeToName($leader->positionCode) ?></div>
                             </div>
                             <div class="value-top" data-player-text="<?= $leader->playerId ?>"><?= $leader->points ?><div>POINTS</div></div>
                         <?php } ?>

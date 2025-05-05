@@ -20,7 +20,7 @@
             <div class="player-text" data-player-text="<?= $leader->id ?>">
                 <div class="category"><?= $categoryTitle ?></div>
                 <div class="name adv-title"><?= $leader->firstName->default ?> <?= $leader->lastName->default ?></div>
-                <div class="more"><?= $leader->teamAbbrev ?> - #<?= $leader->sweaterNumber ?> - <?= positionCodeToName3($leader->position) ?></div>
+                <div class="more"><div class="tag"><?= $leader->teamAbbrev ?></div> - #<?= $leader->sweaterNumber ?> - <?= positionCodeToName3($leader->position) ?></div>
             </div>
             <div class="value-top" data-player-text="<?= $leader->id ?>">
                 <?= is_float($leader->value) ? number_format($leader->value, 2) : $leader->value ?><div><?= $categoryTitle ?></div>

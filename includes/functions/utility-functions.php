@@ -357,7 +357,7 @@ function renderPlayoffSeriesModal($seriesData) {
                                 <source srcset="<?= $teamLogos[$game->awayTeam->abbrev]['darkLogo'] ?>" media="(prefers-color-scheme: dark)">
                                 <img src="<?= $teamLogos[$game->awayTeam->abbrev]['logo'] ?>" alt="<?= $game->awayTeam->abbrev ?>" class="team-img" />
                             </picture>
-                            <span class="team-name"><?= $game->awayTeam->abbrev ?></span>
+                            <span class="tag t-lg t-strong"><?= $game->awayTeam->abbrev ?></span>
                             <span class="team-score"><?= $awayScore ?? '-' ?></span>
                         </div>
                         <div class="team<?= $isGameComplete && $homeScore > $awayScore ? ' won' : '' ?> flex-default">
@@ -365,7 +365,7 @@ function renderPlayoffSeriesModal($seriesData) {
                                 <source srcset="<?= $teamLogos[$game->homeTeam->abbrev]['darkLogo'] ?>" media="(prefers-color-scheme: dark)">
                                 <img src="<?= $teamLogos[$game->homeTeam->abbrev]['logo'] ?>" alt="<?= $game->homeTeam->abbrev ?>" class="team-img" />
                             </picture>
-                            <span class="team-name"><?= $game->homeTeam->abbrev ?></span>
+                            <span class="tag t-lg t-strong"><?= $game->homeTeam->abbrev ?></span>
                             <span class="team-score"><?= $homeScore ?? '-' ?></span>
                         </div>
                     </div>
@@ -563,7 +563,7 @@ function renderPlayoffTeam($team, $wins) {
             <source srcset="<?= $team->darkLogo ?>" media="(prefers-color-scheme: dark)">
             <img src="<?= $team->logo ?>" alt="<?= $team->abbrev ?>" class="team-img" />
         </picture>
-        <span><?= $team->abbrev ?></span>
+        <div class="tag t-lg t-strong"><?= $team->abbrev ?></div>
         <div class="game-score">
             <span><?= $wins ?></span>
         </div>
