@@ -465,6 +465,8 @@ button {
   color: var(--main-bg-color);
   box-shadow: var(--shadow-button);
   position: relative;
+  transition: all 0.2s linear;
+  will-change: transform, background-color, color, outline;
 }
 
 .btn.sm {
@@ -475,6 +477,7 @@ button {
 
 .btn.sm i {
   margin-right: 0.35em;
+  font-size: 1rem;
 }
 
 .btn.sm.outline {
@@ -494,6 +497,11 @@ button {
 .btn:hover {
   background-color: var(--main-link-color-hover);
   color: var(--main-bg-color);
+}
+
+.btn:active {
+  background-color: var(--main-link-color-darker);
+  transform: scale(0.9);
 }
 
 .btn.subtle {
@@ -529,7 +537,7 @@ button {
 
 [data-tooltip] {
   position: relative;
-  z-index: 99999;
+  z-index: 10;
 }
 
 a[data-tooltip] {
@@ -1937,14 +1945,14 @@ header .cont {
   border-radius: 10px;
   max-width: 1380px;
   background-color: var(--toolbar-bg);
-  border: none;
   box-shadow: var(--shadow-button);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(30px);
+  border: 1px solid var(--border-stroke-weak);
 }
 
 #gameLogModal .modal-header {
   padding: 1rem;
-  border-bottom: 2px solid var(--low-contrast-color);
+  border-bottom: 1px solid var(--border-stroke-weak);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -4445,6 +4453,7 @@ table.border-only tbody .home td:last-child {
   padding: 1rem;
   border-right: 1px solid var(--border-stroke-weak);
   border-bottom: 1px solid var(--border-stroke-weak);
+  color: var(--heading-color);
   width: 100%;
   height: 80px;
   justify-content: center;

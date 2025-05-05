@@ -354,3 +354,11 @@ function setupTimeObserver() {
     // Observe changes to the entire document to catch all time elements
     window.timeObserver.observe(document.body, { childList: true, subtree: true });
 }
+
+export function debounce(fn, delay) {
+    let timeoutId;
+    return function (...args) {
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => fn.apply(this, args), delay);
+    };
+}
