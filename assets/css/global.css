@@ -3660,7 +3660,7 @@ table.border-only tbody .home td:last-child {
 }
 
 .stats-leaders > h3 {
-  padding: 2rem 0 0.5rem;
+  padding: 1rem 0 0.5rem;
   font-weight: 300;
   font-style: italic;
   font-size: 1.2rem;
@@ -3787,7 +3787,7 @@ table.border-only tbody .home td:last-child {
 }
 
 .stats-leaders .player .info h3 {
-  font-size: 1em;
+  font-size: 1rem;
   font-weight: normal;
   text-transform: none;
   font-style: normal;
@@ -3798,13 +3798,62 @@ table.border-only tbody .home td:last-child {
   font-size: 1.2em;
 }
 
-@container stat-player (width > 400px) {
-  .stats-leaders .player .info {
-    padding-left: 220px;
-  }
-  .stats-leaders .player .head {
-    transform: translateX(60px);
-  }
+.stats-leaders .player.list-leader {
+  height: auto;
+  padding: 0.5rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  box-shadow: none;
+  min-height: 0px;
+  gap: 1rem;
+}
+
+.stats-leaders .player.list-leader .rank {
+  position: relative;
+  left: auto;
+  top: auto;
+  width: 28px;
+  height: auto;
+  line-height: 1;
+  font-size: 1.2rem;
+  margin: 0;
+  mix-blend-mode: normal;
+  min-width: 0;
+  color: var(--heading-color);
+  text-shadow: none;
+}
+
+.stats-leaders .player.list-leader .info-simple {
+  display: flex;
+  flex: 1;
+  align-items: center;
+}
+
+.stats-leaders .player.list-leader .player-name {
+  font-weight: 500;
+  font-size: 1rem;
+  color: var(--paragraph-color);
+  margin-right: 0.5rem;
+}
+
+.stats-leaders .player.list-leader:hover .player-name {
+  color: var(--heading-color);
+}
+
+.stats-leaders .player.list-leader .player-team {
+  color: var(--medium-contrast-color);
+  font-size: 0.85rem;
+  padding: 0.15rem 0.4rem;
+  background-color: var(--table-td-odd);
+  border-radius: 3px;
+}
+
+.stats-leaders .player.list-leader .stat-value {
+  font-weight: 600;
+  color: var(--heading-color);
+  font-size: 1rem;
 }
 
 .voted-info {
@@ -3812,16 +3861,11 @@ table.border-only tbody .home td:last-child {
   font-style: italic;
 }
 
-.three-stars-title {
-  margin-top: 3em;
-}
-
 .three-stars {
   display: flex;
-  flex-direction: row-reverse;
-  column-gap: 2rem;
-  margin: 2rem 0;
-  justify-content: space-between;
+  flex-direction: column-reverse;
+  gap: 1rem;
+  margin: 1.5rem 0 0;
 }
 
 .three-stars .item {
@@ -5443,7 +5487,7 @@ footer .credit {
   }
 
   .section-stats {
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 
   .stats-leaders .stat-select a {
@@ -5457,10 +5501,6 @@ footer .credit {
 
   .stats-leaders .player .info {
     padding-left: 140px;
-  }
-
-  .stats-leaders .player .info h3 {
-    font-size: 0.8rem;
   }
 
   .stats-leaders .player .info .main-stat {
@@ -6383,12 +6423,12 @@ footer .credit {
     gap: 0;
   }
 
-  .stats-leaders > h3 {
-    padding: 2em 0 1em !important;
-  }
-
   .stats-leaders .player {
     gap: 2em;
+  }
+
+  .stats-leaders > h3 {
+    padding: 2rem 0 0.5rem;
   }
 
   .three-stars {

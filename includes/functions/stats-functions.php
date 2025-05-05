@@ -5,22 +5,14 @@ if (!defined('BASE_URL')) {
     include_once dirname(dirname(__DIR__)) . '/path.php';
 }
 
-function renderStatHolder($type, $category, $season, $loadOnDemand = false) {
+function renderStatHolder($type, $category, $season, $playoffs, $loadOnDemand = false) {
     // Build API URL based on type and category
-    $ApiUrl = "https://api.nhle.com/stats/rest/en/leaders/{$type}/{$category}?cayenneExp=season={$season}%20and%20gameType=2";
-    
-    // Special cases for different player types
-    if ($type === 'goalies') {
-        $ApiUrl = "https://api.nhle.com/stats/rest/en/leaders/goalies/{$category}?cayenneExp=season={$season}%20and%20gamesPlayed%20>=%205";
-    } elseif ($type === 'defense') {
-        $ApiUrl = "https://api.nhle.com/stats/rest/en/leaders/skaters/{$category}?cayenneExp=season={$season}%20and%20gameType=2%20and%20player.positionCode%20=%20%27D%27";
-    } elseif ($type === 'rookies') {
-        $ApiUrl = "https://api.nhle.com/stats/rest/en/leaders/skaters/{$category}?cayenneExp=season={$season}%20and%20gameType=2%20and%20isRookie%20=%20%27Y%27";
-    }
+    $gameType = $playoffs ? 3 : 2;
+    $ApiUrl = buildStatLeaderApiUrl($type, $category, $season, $gameType);
 
     // Handle caching
     $cacheDir = dirname(__DIR__, 2) . '/cache/';
-    $fileName = "{$type}_{$category}";
+    $fileName = "{$type}_{$category}_" . ($playoffs ? 'playoffs' : 'regular');
     $cacheFile = $cacheDir . $fileName . '.json';
     $cacheTime = 60 * 60; // 1 hour
 
@@ -47,64 +39,164 @@ function renderStatHolder($type, $category, $season, $loadOnDemand = false) {
         return '<div class="error">Failed to load data</div>';
     }
 
-    // Find the max value for this category to highlight the leader
-    $maxPoints = ($category === 'gaa') ? PHP_INT_MAX : 0;
-    foreach ($statPoints->data as $statPoint) {
-        if ($category === 'gaa') {
-            if ($statPoint->gaa < $maxPoints) {
-                $maxPoints = $statPoint->gaa;
-            }
-        } elseif ($category === 'savePctg') {
-            if ($statPoint->savePctg > $maxPoints) {
-                $maxPoints = $statPoint->savePctg;
-            }
-        } else {
-            if ($statPoint->{$category} > $maxPoints) {
-                $maxPoints = $statPoint->{$category};
-            }
-        }
-    }
+    // Use findMaxStatValue to determine the leader in the category
+    $maxPoints = findMaxStatValue($statPoints->data, $category);
+
+    // Initialize variables for tracking rankings
+    $rank = 1;
+    $previousValue = null;
+    $sameRankCount = 0;
+    $cardCount = 0; // Counter for full card designs
+    $maxCardDesigns = 3; // Maximum number of full card designs
 
     // Build HTML output
-    $i = 1;
     ob_start();
-    foreach ($statPoints->data as $statPoint) {
+    
+    // Process only first 10 players
+    $playerCount = min(count($statPoints->data), 10);
+    
+    for ($i = 0; $i < $playerCount; $i++) {
+        $statPoint = $statPoints->data[$i];
+        
         // Determine if this is the winner/leader
-        $winnerClass = '';
-        if ($category === 'gaa') {
-            $winnerClass = ($statPoint->gaa == $maxPoints) ? 'winner' : '';
-        } elseif ($category === 'savePctg') {
-            $winnerClass = ($statPoint->savePctg == $maxPoints) ? 'winner' : '';
-        } else {
-            $winnerClass = ($statPoint->{$category} == $maxPoints) ? 'winner' : '';
-        }
+        $winnerClass = isStatLeader($statPoint, $category, $maxPoints) ? 'winner' : '';
         
         // Format stat value for display
         $formattedStat = formatStatValue($statPoint, $category);
         
-        // Render the stat holder with absolute image URLs
-        ?>
-        <a id="player-link" data-link="<?= $statPoint->player->id ?>" href="#" class="player <?= $winnerClass ?>">
-            <div class="rank"><?= $i++; ?></div>
-            <img class="head" height="240" width="240" src="https://assets.nhle.com/mugs/nhl/<?= $season ?>/<?= $statPoint->team->triCode ?>/<?= $statPoint->player->id ?>.png" />
-            <img class="team-img" src="assets/img/teams/<?= $statPoint->team->id ?>.svg" width="200" height="200">
-            <div class="team-color" style="background: linear-gradient(142deg, <?= teamToColor($statPoint->team->id) ?> 0%, rgba(255,255,255,0) 58%); right: 0;"></div>
+        // Update ranking logic - players with the same stat get the same rank
+        $currentValue = getPlayerStatValue($statPoint, $category);
+        
+        if ($i > 0 && $currentValue === $previousValue) {
+            $sameRankCount++;
+        } else {
+            $rank = $i + 1 - $sameRankCount;
+        }
+        $previousValue = $currentValue;
+        
+        // Show full card design for the first 3 players only, regardless of rank
+        if ($cardCount < $maxCardDesigns) {
+            // Full card design
+            ?>
+            <a id="player-link" data-link="<?= $statPoint->player->id ?>" href="#" class="player <?= $winnerClass ?> top-leader">
+                <div class="rank"><?= $rank; ?></div>
+                <img class="head" height="240" width="240" src="https://assets.nhle.com/mugs/nhl/<?= $season ?>/<?= $statPoint->team->triCode ?>/<?= $statPoint->player->id ?>.png" />
+                <img class="team-img" src="assets/img/teams/<?= $statPoint->team->id ?>.svg" width="200" height="200">
+                <div class="team-color" style="background: linear-gradient(142deg, <?= teamToColor($statPoint->team->id) ?> 0%, rgba(255,255,255,0) 58%); right: 0;"></div>
 
-            <div class="info">
-                <h3><?= $statPoint->player->fullName ?></h3>
-                <div class="main-stat"><?= $formattedStat ?></div>
-            </div>
-        </a>
-        <?php
+                <div class="info">
+                    <h3><?= $statPoint->player->fullName ?></h3>
+                    <div class="main-stat"><?= $formattedStat ?></div>
+                </div>
+            </a>
+            <?php
+            $cardCount++; // Increment card counter
+        } else {
+            // Simple list design for players after the first 3
+            ?>
+            <a id="player-link" data-link="<?= $statPoint->player->id ?>" href="#" class="player list-leader <?= $winnerClass ?>">
+                <div class="rank"><?= $rank; ?></div>
+                <div class="info-simple">
+                    <span class="player-name"><?= $statPoint->player->fullName ?></span>
+                    <span class="player-team"><?= $statPoint->team->triCode ?></span>
+                </div>
+                <div class="stat-value"><?= $formattedStat ?></div>
+            </a>
+            <?php
+        }
     }
     $output = ob_get_clean();
     return $output;
 }
 
+/**
+ * Get the actual stat value for a player for comparison purposes
+ * 
+ * @param object $statPoint Player stat object
+ * @param string $category Stat category
+ * @return mixed The actual numeric value of the stat
+ */
+function getPlayerStatValue($statPoint, $category) {
+    // For GAA, lower is better so we need to handle it specially
+    if ($category === 'gaa') {
+        return $statPoint->gaa;
+    } else if ($category === 'savePctg') {
+        return $statPoint->savePctg;
+    } else {
+        return $statPoint->{$category};
+    }
+}
+
+/**
+ * Build API URL for stat leader requests
+ *
+ * @param string $type Player type (skaters, goalies, defense, rookies)
+ * @param string $category Stat category (points, goals, etc.)
+ * @param string $season Season ID
+ * @param int $gameType Game type (2=Regular, 3=Playoffs)
+ * @return string Complete API URL
+ */
+function buildStatLeaderApiUrl($type, $category, $season, $gameType) {
+    $baseUrl = "https://api.nhle.com/stats/rest/en/leaders/";
+    
+    // Start with basic URL structure
+    if ($type === 'goalies') {
+        $url = $baseUrl . "goalies/{$category}?cayenneExp=season={$season}%20and%20gameType={$gameType}";
+        $url .= "%20and%20gamesPlayed%20>=%205";
+    } else {
+        $url = $baseUrl . "skaters/{$category}?cayenneExp=season={$season}%20and%20gameType={$gameType}";
+        
+        // Add position or rookie filters
+        if ($type === 'defense') {
+            $url .= "%20and%20player.positionCode%20=%20%27D%27";
+        } elseif ($type === 'rookies') {
+            $url .= "%20and%20isRookie%20=%20%27Y%27";
+        }
+    }
+    
+    return $url;
+}
+
+/**
+ * Find the maximum value for a stat category
+ *
+ * @param array $data Array of player stat objects
+ * @param string $category The stat category to find max value for
+ * @return mixed Maximum value found
+ */
+function findMaxStatValue($data, $category) {
+    // Special case for categories where lower is better
+    if ($category === 'gaa') {
+        return min(array_column($data, $category));
+    } elseif ($category === 'savePctg') {
+        return max(array_column($data, $category));
+    } else {
+        return max(array_column($data, $category));
+    }
+}
+
+/**
+ * Check if a player is the stat leader
+ *
+ * @param object $statPoint Player stat object
+ * @param string $category Stat category
+ * @param mixed $maxValue Maximum value for this category
+ * @return boolean True if player is the leader
+ */
+function isStatLeader($statPoint, $category, $maxValue) {
+    if ($category === 'gaa') {
+        return $statPoint->gaa == $maxValue;
+    } elseif ($category === 'savePctg') {
+        return $statPoint->savePctg == $maxValue;
+    } else {
+        return $statPoint->{$category} == $maxValue;
+    }
+}
+
 function formatStatValue($statPoint, $category) {
     switch ($category) {
         case 'savePctg':
-            return number_format($statPoint->savePctg, 3) . ' Save %';
+            return number_format($statPoint->savePctg, 3) . ' SV%';
         case 'gaa':
             return number_format($statPoint->gaa, 2) . ' GAA';
         case 'goals':
