@@ -1554,25 +1554,26 @@ header .cont {
   margin-bottom: 0.5em;
 }
 
-.schedule .game .time {
-  color: var(--medium-contrast-color);
+.schedule .game .extra {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   margin-top: 0.5em;
-  font-weight: bold;
-  font-size: 0.8em;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0 0.6rem;
 }
 
-.schedule .game.final .time {
+.schedule .game.final .extra {
   color: var(--main-link-color);
 }
 
-.schedule .game.preview .time,
-.schedule .game.live .time {
+.schedule .game.preview .extra,
+.schedule .game.live .extra {
   color: var(--paragraph-color);
 }
 
-.schedule .game.live .time .period {
+.schedule .game.live .extra .period {
   display: flex;
   gap: 0.3rem;
 }
@@ -1582,8 +1583,10 @@ header .cont {
   align-items: center;
 }
 
-.schedule .game .time i {
-  margin-right: 0.4em;
+.schedule .game .game-time, .schedule .game .game-status {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
 }
 
 .schedule .game .leads {
@@ -1739,6 +1742,16 @@ header .cont {
   color: var(--heading-color);
 }
 
+.schedule .game.final.scores .more {
+  margin-top: 0.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--paragraph-color);
+  padding: 0.3rem 0.6rem;
+  background-color: var(--border-stroke-weak);
+  border-radius: 3px;
+}
+
 .team-roster-header.game-log {
   margin: 1rem 0;
 }
@@ -1830,7 +1843,7 @@ header .cont {
   backdrop-filter: blur(20px);
   padding: 0;
   border-radius: 10px;
-  width: 80%;
+  width: 85%;
   max-width: 1000px;
   border: 1px solid var(--border-stroke-weak);
   color: var(--paragraph-color);
@@ -3641,6 +3654,7 @@ table.border-only tbody .home td:last-child {
   top: -1rem;
   font-size: 2em;
   cursor: pointer;
+  background: transparent;
   color: var(--medium-contrast-color);
   transition: all 0.2s;
 }
@@ -3662,20 +3676,26 @@ table.border-only tbody .home td:last-child {
 
 .stats-leaders .stat-select {
   display: flex;
-  gap: 1em;
-  border-bottom: 1px solid var(--low-contrast-color);
+  gap: 1rem;
+  border-bottom: 1px solid var(--border-stroke-weak);
   margin-top: 0.5em;
 }
 
 .stats-leaders .stat-select a {
   padding: 0.5em 0;
   color: var(--heading-color);
+  font-weight: 600;
   border-bottom: 3px solid transparent;
+}
+
+.stats-leaders .stat-select a:not(.active):hover {
+  border-bottom: 3px solid var(--heading-color);
 }
 
 .stats-leaders .stat-select a.active {
   border-bottom: 3px solid var(--main-link-color);
   color: var(--main-link-color);
+  pointer-events: none;
 }
 
 .stats-leaders > h3 {
@@ -6127,6 +6147,14 @@ footer .credit {
     margin: 1em 0 0.5em;
   }
 
+  [data-tooltip]:before, [data-tooltip]:after {
+    display: none;
+  }
+
+  table {
+    overflow-x: auto;
+  }
+
   table tbody tr td #team-link {
     display: none;
   }
@@ -6788,6 +6816,12 @@ footer .credit {
     margin: 100px auto 0;
   }
 
+  .btn-group {
+    flex-wrap: wrap;
+    margin: 1rem !important;
+    justify-content: space-between;
+  }
+
   .btn-group .icon {
     display: none;
   }
@@ -7038,7 +7072,8 @@ footer .credit {
 .team-game-log,
 .team-advanced-stats
 .schedule .game,
-.schedule .game .time {
+.schedule .game .time,
+.schedule .game .extra {
   opacity: 0;
   transform: translateY(20px);
   animation-name: elementIn;
@@ -7049,7 +7084,8 @@ footer .credit {
   animation-fill-mode: forwards;
 }
 
-.schedule .game .time {
+.schedule .game .time,
+.schedule .game .extra {
   animation-delay: 0.3s;
 }
 

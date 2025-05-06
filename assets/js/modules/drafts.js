@@ -21,13 +21,17 @@ function setupDraftTableHandlers() {
 
     // Initialize first table
     const draftTable = document.getElementById('draftRankings1');
-    if (draftTable) {
-        new jsdatatables.JSDataTable('#draftRankings1', {
-            paging: true,
-            perPage: 50,
-            perPageSelect: [25, 50, 100],
-            searchable: true,
-        });
+    if (draftTable && typeof jsdatatables !== 'undefined') {
+        try {
+            new jsdatatables.JSDataTable('#draftRankings1', {
+                paging: true,
+                perPage: 50,
+                perPageSelect: [25, 50, 100],
+                searchable: true,
+            });
+        } catch (error) {
+            console.warn('JSDataTable initialization failed:', error);
+        }
     }
 
     // Add click handlers
@@ -91,13 +95,17 @@ function handleDraftTableSwitch(e) {
         container.innerHTML = this.responseText;
         // Reinitialize datatable
         const newTable = container.querySelector('table');
-        if (newTable && !newTable.classList.contains('jsDataTable-table')) {
-            new jsdatatables.JSDataTable('#' + newTable.id, {
-                paging: true,
-                perPage: 50,
-                perPageSelect: [25, 50, 100],
-                searchable: true,
-            });
+        if (newTable && !newTable.classList.contains('jsDataTable-table') && typeof jsdatatables !== 'undefined') {
+            try {
+                new jsdatatables.JSDataTable('#' + newTable.id, {
+                    paging: true,
+                    perPage: 50,
+                    perPageSelect: [25, 50, 100],
+                    searchable: true,
+                });
+            } catch (error) {
+                console.warn('JSDataTable initialization failed:', error);
+            }
         }
         container.style.opacity = '1';
         spinner.style.display = 'none';

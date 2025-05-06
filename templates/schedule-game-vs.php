@@ -63,18 +63,23 @@ $time = $result->startTimeUTC;
             <img src="<?= $homeTeamLogo ?>" alt="<?= $homeName ?>" />
         </a>
     </div>
-    <div class="time ajax-check" data-game-id="<?= $gameID ?>">
+    <div class="extra ajax-check" data-game-id="<?= $gameID ?>">
     <?php 
     if ($gameState == 'OFF' || $gameState == 'OVER' || $gameState == 'FINAL') {
-        echo '<i class="bi bi-check-circle"></i>Final Score <a class="recap" href="https://players.brightcove.net/6415718365001/EXtG1xJ7H_default/index.html?videoId='. $gameVideo .'" target="_blank"><i class="bi bi-camera-video"></i></a>'; 
+        echo '<span class="game-status"><i class="bi bi-check-circle"></i>Final Score</span>'; 
     } elseif ($gameState == 'LIVE' || $gameState == 'CRIT') {
         echo '<div class="live-game-time-container">
                 <div class="live-indicator"></div>
                 <div class="live-data period"></div>
              </div>';
     } else {
-        echo '<i class="bi bi-clock"></i> <div class="theTime">'. $time .'</div>'; 
-    } 
+        echo '<span class="game-time"><i class="bi bi-clock"></i><div class="theTime">'. $time .'</div></span>'; 
+    }
     ?>
+    <?php if ($playoffs) { ?>
+    <div class="pseries">
+        <?= formatPlayoffSeriesStatus($result->seriesStatus) ?>
+    </div>
+    <?php } ?>
     </div>
 </div>

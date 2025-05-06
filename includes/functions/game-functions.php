@@ -209,6 +209,9 @@ function gameScores($scores) {
             if (!empty($gameDates->games)) {
                 foreach ($gameDates->games as $result) {
                     if ($result->gameState == 'OFF' || $result->gameState == 'FINAL') {
+                        if (isset($result->seriesStatus->round)) {
+                            $playoffs = true;
+                        }
                         // Get game information
                         $gameID = $result->id;
                         $awayID = $result->awayTeam->id;
@@ -247,6 +250,10 @@ function gameScores($scores) {
                                 </picture>
                             </div>
                         </div>
+                        <div class="more flex-default">
+                            <div class="period">'. $result->gameOutcome->lastPeriodType .'</div>
+                            '. ( $playoffs ? '<div class="series">'. formatPlayoffSeriesStatus($result->seriesStatus) .'</div>' : '') .'
+                        </div>
                         </div>';
 
                         $dateHasGames = true;
@@ -263,6 +270,26 @@ function gameScores($scores) {
         }
     } else {
         echo '<div class="alert" style="margin-top: 2rem; grid-column: 1/5;">No recent games played</div>';
+    }
+}
+
+function formatPlayoffSeriesStatus($seriesStatus) {
+    $topWins = $seriesStatus->topSeedWins;
+    $bottomWins = $seriesStatus->bottomSeedWins;
+    $topAbbr = $seriesStatus->topSeedTeamAbbrev;
+    $bottomAbbr = $seriesStatus->bottomSeedTeamAbbrev;
+    $neededToWin = $seriesStatus->neededToWin;
+    
+    if ($topWins == $neededToWin) {
+        return $topAbbr . ' wins ' . $topWins . '-' . $bottomWins;
+    } elseif ($bottomWins == $neededToWin) {
+        return $bottomAbbr . ' wins ' . $bottomWins . '-' . $topWins;
+    } elseif ($topWins > $bottomWins) {
+        return $topAbbr . ' leads ' . $topWins . '-' . $bottomWins;
+    } elseif ($bottomWins > $topWins) {
+        return $bottomAbbr . ' leads ' . $bottomWins . '-' . $topWins;
+    } else {
+        return 'Tied ' . $topWins . '-' . $bottomWins;
     }
 }
 
@@ -408,7 +435,7 @@ function renderSeasonSeries($seasonSeries) {
         }
         
         // Add disabled class for today's games
-        echo '<div class="game" data-tooltip="'. $gameDate->format('Y-m-d') .'">';
+        echo '<div class="game" data-tooltip="Season Series Game">';
         echo '<div class="teams">';
         echo '<span id="team-linko" href="#">';
         echo '<h3>'. $seriesGame->awayTeam->abbrev .'</h3>';

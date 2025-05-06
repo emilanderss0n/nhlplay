@@ -55,7 +55,7 @@ $playerBirthplaceLong = \Locale::getDisplayRegion('-' . $playerBirthplace, 'en')
     </div>
 </dialog>
 <div class="wrapper <?php if (isset($player->draftDetails->year) && $player->draftDetails->year == date("Y")) { echo 'rookie'; } ?>">
-    <div id="close"><i class="bi bi-x-lg"></i></div>
+    <button id="close" aria-label="close" tabindex="0"><i class="bi bi-x-lg"></i></button>
         <div class="player-header">
             <div class="left">
                 <div class="headshot">

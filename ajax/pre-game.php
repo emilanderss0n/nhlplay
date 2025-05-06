@@ -212,7 +212,12 @@ include_once '../includes/data/init-pre-game.php';
                 <h3 class="players-to-watch-title" >Team Point Leaders</h3>
                 <div class="home-leaders pre-game grid grid-300 grid-gap-lg grid-gap-row-lg" max-col-count="2">
                 <?php
-                $ApiUrl = 'https://api-web.nhle.com/v1/club-stats/'. $awayTeamAbbrev.'/'. $season .'/2';
+                if ($playoffs) {
+                    $type = 3;
+                } else {
+                    $type = 2;
+                }
+                $ApiUrl = 'https://api-web.nhle.com/v1/club-stats/'. $awayTeamAbbrev.'/'. $season .'/'. $type;
                 $curl = curlInit($ApiUrl);
                 $players = json_decode($curl)->skaters;
 
@@ -253,7 +258,12 @@ include_once '../includes/data/init-pre-game.php';
                     </div>
                 </div><!-- end leaders-box -->
                 <?php
-                $ApiUrl = 'https://api-web.nhle.com/v1/club-stats/'. $homeTeamAbbrev.'/'. $season .'/2';
+                if ($playoffs) {
+                    $type = 3;
+                } else {
+                    $type = 2;
+                }
+                $ApiUrl = 'https://api-web.nhle.com/v1/club-stats/'. $homeTeamAbbrev.'/'. $season .'/'. $type;
                 $curl = curlInit($ApiUrl);
                 $players = json_decode($curl)->skaters;
 

@@ -32,7 +32,7 @@ function updateLiveGame(gameId) {
     xhr.onload = function () {
         if (xhr.status === 200) {
             const data = xhr.response;
-            const gameContainer = document.querySelector(`.time[data-game-id="${gameId}"] .live-game-time-container`);
+            const gameContainer = document.querySelector(`.extra[data-game-id="${gameId}"] .live-game-time-container`);
             const awayScoreElement = document.querySelector(`.away-score[data-game-id="${gameId}"]`);
             const homeScoreElement = document.querySelector(`.home-score[data-game-id="${gameId}"]`);
 
