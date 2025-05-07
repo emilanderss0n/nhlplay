@@ -267,10 +267,6 @@
   text-transform: uppercase;
 }
 
-.selected-team .mobile-divider {
-  display: none;
-}
-
 .selected-team .team-quick-links {
   display: flex;
   gap: 1rem;

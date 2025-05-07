@@ -275,6 +275,9 @@ function renderPlayoffsBracket($season = '2025', $headerTitle = 'Stanley Cup Pla
     }
     
     echo '<div class="playoffs-bracket" id="standings-home">';
+    echo '<style>';
+    echo '.playoffs-bracket:not(:has(table))::before { background-image: url(assets/img/knights-stanley-cup.jpg); }';
+    echo '</style>';
     
     // Render each round
     foreach ($rounds as $round => $letters) {
@@ -300,7 +303,7 @@ function renderPlayoffsBracket($season = '2025', $headerTitle = 'Stanley Cup Pla
         }
     }
     
-    echo '</div>';
+    echo '</style>';
     
     return ob_get_clean();
 }
