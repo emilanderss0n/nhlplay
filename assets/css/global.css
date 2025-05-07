@@ -3467,11 +3467,11 @@ table.border-only tbody .home td:last-child {
 }
 
 .players-to-watch .player .name {
-  font-size: 1em;
+  font-size: 1.1rem;
   color: var(--heading-color);
   font-family: "Tomorrow", sans-serif;
   text-transform: uppercase;
-  font-style: italic;
+  font-weight: 600;
 }
 
 .players-to-watch .player .role {
