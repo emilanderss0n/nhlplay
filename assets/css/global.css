@@ -1570,7 +1570,8 @@ header .cont {
 }
 
 .schedule .game.preview .extra,
-.schedule .game.live .extra {
+.schedule .game.live .extra,
+.schedule .game .pseries {
   color: var(--paragraph-color);
 }
 
@@ -1931,18 +1932,6 @@ header .cont {
 
 .modal .close:hover {
   color: var(--main-link-color-hover);
-}
-
-.modal .modal-footer:has(> *) {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  border-top: 1px solid var(--border-stroke-weak);
-}
-
-.modal .modal-footer {
-  display: none;
 }
 
 .modal .series-game {
