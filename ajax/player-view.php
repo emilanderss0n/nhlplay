@@ -102,8 +102,8 @@ $playerBirthplaceLong = \Locale::getDisplayRegion('-' . $playerBirthplace, 'en')
             <h3 id="season-career" class="header-text">Season Stats</h3>
             <div class="btn-group player-filters">
                 <i class="bi bi-filter icon"></i>
-                <a href="#" class="btn sm" id="graph-toggle" data-player="<?= $playerID ?>" data-needs-stats="<?= $needsAdvancedStats ? 'true' : 'false' ?>" data-player-data='<?= htmlspecialchars(json_encode($player), ENT_QUOTES, 'UTF-8') ?>'>Radar</a>
-                <a href="#" class="btn sm" id="career-link" data-link="<?= $playerID ?>">Career</a>
+                <a href="javascript:void(0);" class="btn sm" id="graph-toggle" data-player="<?= $playerID ?>" data-needs-stats="<?= $needsAdvancedStats ? 'true' : 'false' ?>" data-player-data='<?= htmlspecialchars(json_encode($player), ENT_QUOTES, 'UTF-8') ?>'>Radar</a>
+                <a href="javascript:void(0);" class="btn sm" id="career-link" data-link="<?= $playerID ?>">Career</a>
             </div>
         </div>
         <div class="stats-player">

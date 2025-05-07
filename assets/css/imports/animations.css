@@ -1,0 +1,195 @@
+.fadeInTop {
+    opacity: 0;
+    transform: translateY(10px);
+    animation-name: elementIn;
+    animation-duration: 0.3s;
+    animation-timing-function: ease-in;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+    animation-delay: 0.2s;
+}
+
+.page-ani {
+    opacity: 0;
+    animation-name: fadeIn;
+    animation-delay: 0.3s;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: 1;
+}
+
+@keyframes rankHover {
+    0% {
+      transform: translateY(100px);
+      opacity: 0;
+    }
+  
+    50% {
+      transform: translateY(0px);
+      opacity: 0.5;
+    }
+  
+    100% {
+      transform: translateY(0px);
+      opacity: 1;
+    }
+}
+
+@keyframes animate {
+    0% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateY(-1000px);
+        opacity: 0;
+    }
+}
+
+@keyframes fadeIn {
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes elementIn {
+    100% {
+        opacity: 1;
+        transform: translateY(0px);
+    }
+}
+
+@keyframes elementInHalf {
+    100% {
+        opacity: 0.5;
+        transform: translateY(0px);
+    }
+}
+
+@keyframes rightIn {
+    100% {
+        opacity: 1;
+        transform: translateX(0px);
+    }
+}
+
+@keyframes lineExt {
+    100% {
+        width: 100%;
+    }
+}
+
+@keyframes loader {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse-green {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(51, 217, 178, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(51, 217, 178, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(51, 217, 178, 0);
+    }
+}
+
+@keyframes pulse-orange {
+    0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(216, 140, 43, 0.7);
+    }
+
+    70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 10px rgba(51, 217, 178, 0);
+    }
+
+    100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(51, 217, 178, 0);
+    }
+}
+
+@keyframes blurPulse {
+    0% {
+        scale: 1;
+        filter: blur(3px);
+        opacity: 0;
+    }
+
+    50% {
+        scale: 1.2;
+        filter: blur(20px);
+        opacity: 0.3;
+    }
+
+    100% {
+        scale: 1;
+        filter: blur(3px);
+        opacity: 0;
+    }
+}
+
+.post-game-cont .post-game-box,
+.post-game-cont::before,
+.pre-game-box,
+.post-game-stars,
+.post-game-boxscore,
+.boxscore-roster,
+.team-view-main,
+.team-view::before,
+.schedule-games,
+.team-roster-header,
+.team-roster,
+.team-game-log,
+.team-advanced-stats .schedule .game,
+.schedule .game .time,
+.schedule .game .extra {
+    opacity: 0;
+    transform: translateY(20px);
+    animation-name: elementIn;
+    animation-duration: 0.3s;
+    animation-delay: 0.5s;
+    animation-timing-function: ease-in;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+.schedule .game .time,
+.schedule .game .extra {
+    animation-delay: 0.3s;
+}
+
+.post-game-cont::before,
+.team-view::before {
+    animation-delay: 1.2s;
+}
+
+.post-game-stars,
+.schedule-games,
+.team-advanced-stats {
+    animation-delay: 0.7s;
+}
+
+.post-game-boxscore,
+.team-roster-header {
+    animation-delay: 0.9s;
+}
+
+.team-roster {
+    animation-delay: 1.1s;
+}

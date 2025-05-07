@@ -1,0 +1,51 @@
+@media (prefers-color-scheme: dark) {
+    .overlay {
+        background-color: rgb(2 2 3 / 91%);
+    }
+
+    #player-modal table {
+        border: 1px solid var(--border-stroke-weak);
+        box-shadow: none;
+    }
+
+    .header-title .logo svg {
+        --stop01: var(--heading-color);
+        --stop02: var(--low-contrast-color);
+    }
+
+    .schedule .game:not(.recap):hover .teams {
+        box-shadow: 0 0 0 2px var(--low-contrast-color);
+    }
+
+    .playoffs-bracket:not(:has(table))::before {
+        mix-blend-mode: multiply;
+    }
+
+    .playoffs-bracket:not(:has(table)) {
+        background-color: #1b2436 !important;
+    }
+
+    .team-view::before {
+        box-shadow: inset 0 100px 400px rgba(0, 0, 0, 0.5);
+    }
+
+    .conferenceTable tbody tr:nth-child(7) td,
+    .conferenceTable tbody tr:nth-child(8) td {
+        box-shadow: inset 0 0 60px #ad00ff52;
+    }
+
+    .game-recaps .game {
+        background-color: var(--content-box-bg);
+    }
+
+    .game-recaps .watch-recap a {
+        color: var(--paragraph-color);
+        background-color: var(--main-darker-bg);
+        box-shadow: var(--shadow-button);
+    }
+
+    .game-recaps .watch-recap a:hover {
+        background-color: var(--low-contrast-color);
+        color: var(--heading-color);
+    }
+  }
