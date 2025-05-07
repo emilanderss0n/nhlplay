@@ -171,12 +171,6 @@ $mergedCSS = $isDevelopment ? false : generateMergedCSS([
         </div>
     </div>
 
-    <dialog id="gameLogModal">
-        <div class="modal-header"><p>Post Game</p><a href="javascript:void(0);" id="closeGameLogModal"><i class="bi bi-x-lg"></i></a></div>
-        <div class="content"></div>
-    </dialog>
-    <div id="gameLogOverlay"></div>
-
     <div class="overlay">
         <div id="activity-player">
             <span class="loader"></span>

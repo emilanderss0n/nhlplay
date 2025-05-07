@@ -120,7 +120,7 @@ $injuredPlayerIds = getInjuredPlayerIds($teamAbbrev2);
                             <div class="schedule-game-date"><strong><?= $result->games[0]->gameDate ?></strong> at <?= $result->games[0]->venue->default ?></div>
                             <div class="schedule-game-visual">
                                 <div class="schedule-game-away">
-                                    <img class="game-team-logo" src="<?= rtrim(BASE_URL, '/') ?>/assets/img/teams/<?= $result->games[0]->awayTeam->id ?>.svg" alt="" />
+                                    <img class="game-team-logo" src="assets/img/teams/<?= $result->games[0]->awayTeam->id ?>.svg" alt="" />
                                     <div class="game-team-fill" style="background: linear-gradient(142deg, <?= teamToColor($result->games[0]->awayTeam->id) ?> 0%, rgba(255,255,255,0) 58%);"></div>
                                 </div>
                                 <div class="schedule-game-vs">
@@ -128,7 +128,7 @@ $injuredPlayerIds = getInjuredPlayerIds($teamAbbrev2);
                                     <div class="time theTimeSimple"><?= $result->games[0]->startTimeUTC ?></div>
                                 </div>
                                 <div class="schedule-game-home">
-                                    <img class="game-team-logo" src="<?= rtrim(BASE_URL, '/') ?>/assets/img/teams/<?= $result->games[0]->homeTeam->id ?>.svg" alt="" />
+                                    <img class="game-team-logo" src="assets/img/teams/<?= $result->games[0]->homeTeam->id ?>.svg" alt="" />
                                     <div class="game-team-fill" style="background: linear-gradient(-142deg, <?= teamToColor($result->games[0]->homeTeam->id) ?> 0%, rgba(255,255,255,0) 58%);"></div>
                                 </div>
                             </div>

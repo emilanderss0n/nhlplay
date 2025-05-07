@@ -1395,6 +1395,7 @@ header .cont {
   background-color: var(--semi-frost-bg);
   border-radius: 7px;
   backdrop-filter: blur(20px);
+  border: 1px solid var(--border-stroke-weak);
 }
 
 .team-header .record {
@@ -1763,25 +1764,36 @@ header .cont {
   width: 100%;
   position: relative;
   cursor: pointer;
-  transition: all 0.3s linear;
+  transition: all 0.2s linear;
+  user-select: none;
+}
+
+.team-game-log .log-game:hover {
+  box-shadow: 0 0 0 2px var(--main-link-color);
 }
 
 .team-game-log .log-game .log-game-date {
   padding: 0.7rem 1rem;
   text-align: center;
   font-size: 0.9rem;
-  color: var(--medium-contrast-color);
-  background-color: var(--black-white);
+  color: var(--paragraph-color);
+  background-color: var(--semi-frost-bg-2);
+  position: absolute;
+  z-index: 2;
+  width: 100%;
+  top: 0;
+  left: 0;
+  backdrop-filter: blur(20px);
 }
 
 .team-game-log .log-game .log-game-visual {
   display: flex;
   gap: 1rem;
-  padding: 1rem;
+  padding: 3rem 1rem 1rem;
   justify-content: space-evenly;
   align-items: center;
   overflow: hidden;
-  max-height: 60px;
+  max-height: 100px;
   position: relative;
 }
 
@@ -1792,14 +1804,15 @@ header .cont {
 }
 
 .team-game-log .log-game .game-team-logo.losing-team {
-  opacity: 0.5;
+  opacity: 0.35;
   filter: grayscale(1);
 }
 
 .team-game-log .log-game .log-game-score {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   font-weight: bold;
   color: var(--heading-color);
+  white-space: nowrap;
 }
 
 .team-game-log .break {
@@ -1833,9 +1846,12 @@ header .cont {
   top: 0;
   right: 0;
   padding: 0.3rem 0.5rem;
+  background-color: var(--low-contrast-color);
   font-weight: bold;
-  color: var(--low-contrast-color);
+  color: var(--paragraph-color);
   font-size: 0.9rem;
+  z-index: 3;
+  border-bottom-left-radius: 10px;
 }
 
 .modal {
@@ -1974,6 +1990,7 @@ header .cont {
   top: 55px;
   left: 0;
   width: 90vw;
+  max-height: 90vh;
   overflow: hidden;
   padding: 0;
   border-radius: 10px;
@@ -2776,6 +2793,7 @@ table.border-only tbody .home td:last-child {
   margin-bottom: 1rem;
   align-items: flex-start;
   opacity: 0;
+  align-items: center;
 }
 
 .home-leaders .player {
@@ -2790,6 +2808,7 @@ table.border-only tbody .home td:last-child {
   width: 65px;
   height: 65px;
   display: inline-block;
+  transform: none;
   border-radius: 50%;
   overflow: visible;
   background-color: var(--low-contrast-color);
@@ -2829,9 +2848,18 @@ table.border-only tbody .home td:last-child {
   color: var(--medium-contrast-color);
 }
 
+.home-leaders .player-text .more {
+  white-space: nowrap;
+}
+
+.home-leaders .player-text .more .tag {
+  padding: 0.2rem 0.4rem 0;
+  font-size: 0.7rem;
+}
+
 .home-leaders .value-top {
   display: none;
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: 700;
   font-family: "Tomorrow", sans-serif;
   line-height: 1.7rem;
@@ -5512,18 +5540,6 @@ footer .credit {
 }
 
 @media screen and (min-width: 1450px) {
-  .home-leaders .player-text .adv-title,
-  .home-leaders .player-text .more {
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    max-width: 120px;
-  }
-
-  .home-leaders .player-text .more {
-    max-width: 160px;
-  }
-
   .section-stats {
     grid-template-columns: repeat(3, 1fr);
   }
@@ -5742,10 +5758,6 @@ footer .credit {
 @media screen and (max-width: 1580px) {
   header {
     padding: 12px 30px;
-  }
-
-  .team-game-log .log-game .game-team-logo {
-    width: 120px;
   }
 }
 
@@ -6221,22 +6233,6 @@ footer .credit {
 
   .team-game-log .log-game .log-game-date .hide-mobile {
     display: none;
-  }
-
-  .team-game-log .log-game .log-game-visual {
-    padding: 0.5rem;
-  }
-
-  .team-game-log .log-game .game-team-logo {
-    width: 80px;
-    position: absolute;
-    left: 20px;
-    top: -50px;
-  }
-
-  .team-game-log .log-game .game-team-logo:last-child {
-    right: 20px;
-    left: auto;
   }
 
   #gameLogModal {
@@ -6994,21 +6990,6 @@ footer .credit {
 
   .team-roster-header .stats {
     margin-left: 0;
-  }
-
-  .team-game-log .log-game .log-game-visual {
-    max-height: 50px;
-  }
-
-  .team-game-log .log-game .game-team-logo {
-    width: 100px;
-    position: relative;
-    left: 0;
-    top: 0;
-  }
-
-  .team-game-log .log-game .game-team-logo:last-child {
-    right: auto;
   }
 
   .jsDataTable-top, .draft-rankings-table .jsDataTable-top, .jsDataTable-bottom {

@@ -167,8 +167,32 @@ export function initTeamHandlers(elements) {
             eventManager.addEventListener(logGame, 'click', function (e) {
                 e.preventDefault();
                 const gameId = this.dataset.postLink;
-                const postGameModal = document.getElementById('gameLogModal');
+                
+                // Check if modal exists, create it if it doesn't
+                let postGameModal = document.getElementById('gameLogModal');
+                if (!postGameModal) {
+                    postGameModal = document.createElement('div');
+                    postGameModal.id = 'gameLogModal';
+                    postGameModal.className = 'modal';
+                    postGameModal.innerHTML = '<div class="content"></div>';
+                    document.body.appendChild(postGameModal);
+                    
+                    // Create overlay if it doesn't exist
+                    if (!document.getElementById('gameLogOverlay')) {
+                        const overlay = document.createElement('div');
+                        overlay.id = 'gameLogOverlay';
+                        overlay.className = 'overlay';
+                        document.body.appendChild(overlay);
+                    }
+                }
+                
                 const postGameModalContent = postGameModal.querySelector('.content');
+                if (!postGameModalContent) {
+                    // Recreate the content div if it doesn't exist
+                    const contentDiv = document.createElement('div');
+                    contentDiv.className = 'content';
+                    postGameModal.appendChild(contentDiv);
+                }
 
                 elements.activityElement.style.display = 'block';
                 elements.activityElement.style.opacity = 1;
@@ -177,7 +201,10 @@ export function initTeamHandlers(elements) {
 
                 const xhr = new XMLHttpRequest();
                 xhr.onload = function () {
-                    postGameModalContent.innerHTML = xhr.responseText;
+                    const modalContent = document.querySelector('#gameLogModal .content');
+                    if (modalContent) {
+                        modalContent.innerHTML = xhr.responseText;
+                    }
                 };
 
                 xhr.onloadend = function () {
@@ -200,11 +227,19 @@ export function initTeamHandlers(elements) {
             eventManager.addEventListener(closeGameLogModalBtn, 'click', function (e) {
                 e.preventDefault();
                 const postGameModal = document.getElementById('gameLogModal');
-                postGameModal.style.display = 'none';
-                postGameModal.innerHTML = '';
+                if (postGameModal) {
+                    postGameModal.style.display = 'none';
+                    // Only clear the content, not the entire modal structure
+                    const modalContent = postGameModal.querySelector('.content');
+                    if (modalContent) {
+                        modalContent.innerHTML = '';
+                    }
+                }
 
                 const gameLogOverlay = document.getElementById('gameLogOverlay');
-                gameLogOverlay.style.display = 'none';
+                if (gameLogOverlay) {
+                    gameLogOverlay.style.display = 'none';
+                }
             });
         }
 

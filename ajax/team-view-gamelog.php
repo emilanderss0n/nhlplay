@@ -17,6 +17,12 @@ $gamesArray = array_filter($scores->games, function($game) {
 $gamesArray = array_reverse($gamesArray);
 ?>
 
+<dialog id="gameLogModal">
+    <div class="modal-header"><p>Post Game</p><a href="javascript:void(0);" id="closeGameLogModal"><i class="bi bi-x-lg"></i></a></div>
+    <div class="content"></div>
+</dialog>
+<div id="gameLogOverlay"></div>
+
 <div class="team-roster-header game-log">
     <div class="team-roster-header-cont">
         <div class="stats">
@@ -46,14 +52,24 @@ $gamesArray = array_reverse($gamesArray);
     $activeTeamWon = ($teamAbbr === $result->homeTeam->abbrev && $result->homeTeam->score > $result->awayTeam->score) || 
                      ($teamAbbr === $result->awayTeam->abbrev && $result->awayTeam->score > $result->homeTeam->score);
 ?>
-    <div data-post-link="<?= $result->id ?>" class="item log-game <?php if($result->gameType === 1) { echo 'preseason'; } elseif ($result->gameType === 2) { echo 'regular'; } elseif ($result->gameType === 3) { echo 'playoff'; } if($activeTeamWon) { echo ' win'; } else { echo ' loss'; } ?>">
+    <div 
+    data-post-link="<?= $result->id ?>" 
+    class="item log-game <?php if($result->gameType === 1) { echo 'preseason'; } elseif ($result->gameType === 2) { echo 'regular'; } elseif ($result->gameType === 3) { echo 'playoff'; } if($activeTeamWon) { echo ' win'; } else { echo ' loss'; } ?>"
+    style="background-image: linear-gradient(120deg, <?= teamToColor($result->awayTeam->id) ?> -50%, transparent 40%, transparent 60%, <?= teamToColor($result->homeTeam->id) ?> 150%);"
+    >
         <div class="log-game-date"><strong><?= $result->gameDate ?></strong><span class="hide-mobile"> at <?= $result->venue->default ?></span></div>
         <div class="log-game-visual">
-            <img class="game-team-logo <?php if($result->awayTeam->score < $result->homeTeam->score) echo 'losing-team'; ?>" src="<?= $result->awayTeam->logo ?>" alt="" />
+            <picture>
+                <source srcset="<?= $result->awayTeam->darkLogo ?>" media="(prefers-color-scheme: dark)" />
+                <img class="game-team-logo <?php if($result->awayTeam->score < $result->homeTeam->score) echo 'losing-team'; ?>" src="<?= $result->awayTeam->logo ?>" alt="" />
+            </picture>
             <div class="log-game-score">
                 <?= $result->awayTeam->score ?> <span>-</span> <?= $result->homeTeam->score ?>
             </div>
-            <img class="game-team-logo <?php if($result->homeTeam->score < $result->awayTeam->score) echo 'losing-team'; ?>" src="<?= $result->homeTeam->logo ?>" alt="" />
+            <picture>
+                <source srcset="<?= $result->homeTeam->darkLogo ?>" media="(prefers-color-scheme: dark)" />
+                <img class="game-team-logo <?php if($result->homeTeam->score < $result->awayTeam->score) echo 'losing-team'; ?>" src="<?= $result->homeTeam->logo ?>" alt="" />
+            </picture>
         </div>
     </div>
 <?php } ?>
