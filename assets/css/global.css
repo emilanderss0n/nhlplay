@@ -1572,7 +1572,7 @@ header .cont {
 .schedule .game.preview .extra,
 .schedule .game.live .extra,
 .schedule .game .pseries {
-  color: var(--paragraph-color);
+  color: var(--medium-contrast-color);
 }
 
 .schedule .game.live .extra .period {
@@ -1589,6 +1589,7 @@ header .cont {
   display: flex;
   align-items: center;
   gap: 0.3rem;
+  color: var(--paragraph-color);
 }
 
 .schedule .game .leads {
