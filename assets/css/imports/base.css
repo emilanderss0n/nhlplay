@@ -1315,4 +1315,227 @@
     .flex-default > :last-child {
         margin-left: auto;
     }
+
+    .btn-group {
+        display: flex;
+        align-items: center;
+        background-color: var(--button-group-bg);
+        color: var(--medium-contrast-color);
+        border-radius: 0.3rem;
+        gap: 0.2rem;
+        box-shadow: var(--shadow-box);
+        padding: 0 4px;
+    }
+
+    .btn-group > a,
+    .btn-group > i {
+        padding: 0.5rem 0.7rem;
+        background-color: transparent;
+        color: var(--medium-contrast-color);
+        box-shadow: none;
+    }
+
+    .btn-group > .icon {
+        padding: 8px 8px 8px 4px;
+        border-right: 1px solid var(--component-header-bg);
+    }
+
+    .btn-group .btn > i {
+        font-size: 0.9rem;
+    }
+
+    .btn-group .btn:hover {
+        color: var(--heading-color);
+        background-color: var(--main-darker-bg);
+    }
+
+    .btn-group .btn.active {
+        color: var(--main-link-color);
+        background-color: var(--component-header-bg);
+    }
+
+    .btn-group .btn:first-child {
+        border-top-left-radius: 3px;
+        border-bottom-left-radius: 3px;
+    }
+
+    .btn-group .btn:last-child {
+        border-top-right-radius: 3px;
+        border-bottom-right-radius: 3px;
+    }
+
+    table {
+        width: 100%;
+        color: var(--heading-color);
+    }
+
+    table thead th {
+        color: var(--medium-contrast-color);
+    }
+
+    table tbody tr.season td span {
+        color: var(--medium-contrast-color);
+        font-weight: normal;
+    }
+
+    table tbody tr.season td span.hot {
+        color: var(--secondary-link-color);
+    }
+
+    table thead td {
+        background-color: var(--table-td);
+        padding: 0.6rem 0.8rem;
+        font-size: 0.8em;
+        font-weight: bold;
+    }
+
+    table thead td:first-child {
+        border-top-left-radius: 5px;
+    }
+
+    table thead td:last-child {
+        border-top-right-radius: 5px;
+    }
+
+    table tbody tr:last-child td:first-child {
+        border-bottom-left-radius: 5px;
+    }
+
+    table tbody tr:last-child td:last-child {
+        border-bottom-right-radius: 5px;
+    }
+
+    table > tbody > tr > td {
+        background-color: var(--table-td);
+        padding: 0.5rem 0.8rem !important;
+        vertical-align: middle !important;
+        transition: all 0.3s;
+    }
+
+    table.jsDataTable-table.hover > tbody > tr:hover > td {
+        box-shadow: inset 0 0 0 9999px var(--table-hover-bg);
+        color: #fff;
+    }
+
+    table.jsDataTable-table.hover > tbody > tr:hover > td > a {
+        color: #fff;
+    }
+
+    table tbody tr:nth-child(odd) td {
+        background-color: var(--table-td-odd);
+    }
+
+    table tbody td img {
+        vertical-align: middle;
+        margin: 0 0.5em 0 0;
+    }
+
+    table tbody td.image {
+        display: flex;
+        align-items: center;
+    }
+
+    table tbody td.name strong {
+        width: 1em;
+        display: inline-block;
+    }
+
+    table.small thead td {
+        padding: 0.5em 1em;
+        font-weight: normal;
+    }
+
+    tbody .away td:first-child {
+        border-top-left-radius: 5px;
+    }
+
+    tbody .away td:last-child {
+        border-top-right-radius: 5px;
+    }
+
+    tbody .home td:first-child {
+        border-bottom-left-radius: 5px;
+    }
+
+    tbody .home td:last-child {
+        border-bottom-right-radius: 5px;
+    }
+
+    table thead th {
+        color: var(--heading-color);
+        font-size: 0.9rem;
+    }
+
+    table.border-only {
+        border-spacing: 0;
+    }
+
+    table.border-only thead {
+        height: 2rem;
+    }
+
+    table.border-only tbody td,
+    table.border-only tbody tr:nth-child(odd) td {
+        background-color: transparent;
+        border-left: 2px solid var(--border-stroke-weak);
+        border-top: 2px solid var(--border-stroke-weak);
+    }
+
+    table.border-only tbody tr td:first-child {
+        border-left: 2px solid var(--border-stroke-weak);
+    }
+
+    table.border-only tbody tr td:last-child {
+        border-right: 2px solid var(--border-stroke-weak);
+    }
+
+    table.border-only tbody tr:last-child td {
+        border-bottom: 2px solid var(--border-stroke-weak);
+    }
+
+    table.border-only tbody .away td:first-child {
+        border-top-left-radius: 8px;
+    }
+
+    table.border-only tbody .away td:last-child {
+        border-top-right-radius: 8px;
+    }
+
+    table.border-only tbody .home td:first-child {
+        border-bottom-left-radius: 8px;
+    }
+
+    table.border-only tbody .home td:last-child {
+        border-bottom-right-radius: 8px;
+    }
+
+    #player-modal table.small tbody td {
+        font-size: 1rem !important;
+        font-weight: bold;
+    }
+
+    .dataTables_info {
+        display: none !important;
+    }
+
+    .table-description {
+        margin: 1rem 0 2rem;
+        color: var(--medium-contrast-color);
+        display: flex;
+        width: 100%;
+        column-gap: 2rem;
+        row-gap: 1rem;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .table-description:hover p {
+        color: var(--heading-color);
+    }
+
+    .table-description p {
+        margin: 0;
+        font-size: 0.9rem;
+        transition: all 0.3s linear;
+    }
 }
