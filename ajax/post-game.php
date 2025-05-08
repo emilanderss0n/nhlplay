@@ -12,12 +12,12 @@ include_once '../includes/data/init-post-game.php';
     .team-banner-<?= $winnerTeam ?>::before {
         background-image: linear-gradient(
     to bottom, transparent, var(--main-bg-color)
-  ),url('assets/img/team-banners/<?= $winnerTeam ?>.jpg');
+  ),url('assets/img/team-banners/min/<?= $winnerTeam ?>-min.webp');
     }
   .post-recap-vid .inner-bg {
         background-image: linear-gradient(
     to bottom, transparent, var(--main-bg-color)
-  ),url('assets/img/team-banners/<?= $winnerTeam ?>.jpg');
+  ),url('assets/img/team-banners/min<?= $winnerTeam ?>-min.webp');
     }
 </style>
 <main>

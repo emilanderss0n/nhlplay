@@ -37,7 +37,7 @@ $injuredPlayerIds = getInjuredPlayerIds($teamAbbrev2);
 ?>
 
 <style>
-.team-banner-<?= $activeTeam ?>::before { background-image: linear-gradient( to bottom, transparent, var(--main-bg-color)),url('assets/img/team-banners/<?= $activeTeam ?>.jpg');}
+.team-banner-<?= $activeTeam ?>::before { background-image: linear-gradient( to bottom, transparent, var(--main-bg-color)),url('assets/img/team-banners/min/<?= $activeTeam ?>-min.webp');}
 </style>
 <main>
     <div class="wrap team-view team-banner-<?= htmlspecialchars($activeTeam) ?>">
