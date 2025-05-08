@@ -6,11 +6,7 @@
   --main-darker-bg: #f2f4f7;
   --content-box-bg: #fff;
   --main-link-color: #2e52ff;
-  --main-link-color-hover: #4c6afb;
-  --main-link-color-darker: #203ab6;
-  --main-link-color-darkest: #0b2392;
   --secondary-link-color: #e74343;
-  --secondary-link-color-hover: #f47474;
   --green: #00b894;
   --dark-bg-color: #f1f3f5;
   --switch-bg-color: #fff;
@@ -83,11 +79,7 @@
     --main-darker-bg: #1c222c;
     --content-box-bg: #161d27;
     --main-link-color: #45d0e7;
-    --main-link-color-hover: #74dff1;
-    --main-link-color-darker: #279bae;
-    --main-link-color-darkest: #087283;
     --secondary-link-color: #cb93fd;
-    --secondary-link-color-hover: #d7aaff;
     --green: #00b894;
     --paragraph-color: #9da1ab;
     --medium-contrast-color: #656d7c;
@@ -1321,7 +1313,7 @@
   }
 
   .home-leaders .points.active {
-    background-color: var(--main-link-color-darkest);
+    background-color: oklch(from var(--main-link-color) calc(1 - 0.5) c h);
   }
 
   .home-leaders .points .points-line {
