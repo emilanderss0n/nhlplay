@@ -353,12 +353,12 @@
     }
 
     .btn:hover {
-        background-color: oklch(from var(--main-link-color) calc(1 - 0.075) c h);
+        background-color: oklch(from var(--main-link-color) calc(1 - 0.35) c h);
         color: var(--main-bg-color);
     }
 
     .btn:active {
-        background-color: oklch(from var(--main-link-color) calc(1 - 0.35) c h);
+        background-color: oklch(from var(--main-link-color) calc(1 - 0.55) c h);
         transform: scale(0.9);
     }
 
