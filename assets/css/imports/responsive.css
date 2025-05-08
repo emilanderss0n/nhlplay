@@ -95,7 +95,6 @@
 
         .playoffs-bracket:not(:has(table)) {
             padding: 3rem;
-            background-color: #b5bac6;
             border-radius: 10px;
             position: relative;
         }

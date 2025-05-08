@@ -868,6 +868,7 @@
   .playoffs-bracket:not(:has(table)) {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
+    background-color: #b5bac6;
     gap: 2rem;
     max-width: 100%;
     align-items: center;
