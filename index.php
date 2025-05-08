@@ -45,7 +45,8 @@ if (!is_dir($cacheDir)) {
         </div>
         <div class="component-header">
             <h3 class="title">Games Today</h3>
-            <div class="see-score-check">
+            <div class="see-score-check flex-default">
+                <p>See Score</p>
                 <label class="switch">
                     <input type="checkbox">
                     <div class="slider">

@@ -197,6 +197,14 @@
     background-color: rgb(0 0 0 / 70%);
   }
 
+  .see-score-check p {
+    font-size: 0.9rem;
+    color: var(--medium-contrast-color);
+    font-weight: 700;
+    text-transform: uppercase;
+    line-height: 1;
+}
+
   .headshot {
     width: 200px;
     height: 200px;
