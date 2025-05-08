@@ -70,7 +70,7 @@ if (!is_dir($cacheDir)) {
         </div>
         <div class="component-header" style="margin-top: 5rem">
             <h3 class="title">Stat Leaders</h3>
-            <a href="<?= BASE_URL ?>/stat-leaders" rel="page" class="btn sm">See More</a>
+            <a href="<?= BASE_URL ?>/stat-leaders" rel="page" class="btn sm">More Stats</a>
         </div>
         <div class="home-leaders grid grid-300 grid-gap-lg grid-gap-row-lg">
             <?php
