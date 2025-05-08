@@ -322,48 +322,6 @@
             border-bottom-right-radius: 10px;
             border-left: none;
         }
-
-        .team-builder .team-lines {
-            display: grid;
-            grid-template-columns: 1fr;
-            grid-template-areas: 
-                "forwards"
-                "defense-goalie";
-            gap: 2rem;
-        }
-    
-        .team-builder .team-lines .forwards-lines {
-            grid-area: forwards;
-            width: 100%;
-        }
-    
-        .team-builder .team-lines .defense-lines {
-            grid-area: defense-goalie;
-        }
-    
-        .team-builder .team-lines .defense-lines > div:first-child {
-            display: grid;
-            grid-template-rows: repeat(3, minmax(110px, auto));
-            gap: 1rem;
-        }
-    
-        .team-builder .team-lines .defense-lines .line {
-            margin: 0;
-            height: 100%;
-        }
-    
-        .team-builder .team-lines .defense-lines .line-slots {
-            height: 100%;
-            display: flex;
-            align-items: stretch;
-        }
-    
-        .team-builder .team-lines .defense-lines .goalie-lines {
-            margin: 0;
-            align-self: start;
-            position: sticky;
-            top: 1rem;
-        }
     }
 
     @media screen and (max-width: 1200px) {
@@ -1181,32 +1139,6 @@
             width: 140px;
             height: 140px;
             mask: var(--logo-mask);
-        }
-
-        .tb-mobile-alert {
-            display: flex;
-        }
-    
-        .team-builder .line-label {
-            display: none;
-        }
-    
-        .team-builder .team-lines .defense-lines {
-            grid-template-columns: 1fr;
-        }
-    
-        .team-builder .team-lines .defense-lines > div:not(.goalie-lines),
-        .team-builder .team-lines .defense-lines .goalie-lines {
-            grid-column: 1;
-        }
-    
-        .team-builder .team-lines .defense-lines .goalie-lines {
-            position: static;
-            margin-top: 2rem;
-        }
-    
-        .team-builder .team-lines .defense-lines .goalie-lines .line-slots {
-            flex-direction: row;
         }
     }
 
