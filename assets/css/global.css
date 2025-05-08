@@ -143,7 +143,7 @@
   }
 }
 
-@layer base, darkmode, responsive, animations;
+@layer third_party, base, darkmode, responsive, animations;
 
 @layer base {
   #gameLogModal {

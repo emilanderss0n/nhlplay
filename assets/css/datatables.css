@@ -1,203 +1,205 @@
-.jsDataTable-wrapper.no-header .jsDataTable-container {
-    border-top: 1px solid var(--dark-bg-color);
-}
+@layer third_party {
+    .jsDataTable-wrapper.no-header .jsDataTable-container {
+        border-top: 1px solid var(--dark-bg-color);
+    }
 
-.jsDataTable-top,
-.jsDataTable-bottom {
-    padding: 1rem 0;
-    font-size: 0.9rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+    .jsDataTable-top,
+    .jsDataTable-bottom {
+        padding: 1rem 0;
+        font-size: 0.9rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 
-.jsDataTable-input {
-    padding: 0.5rem 0.8rem;
-    border-radius: 5px;
-    border: 1px solid var(--border-stroke-weak);
-    background-color: var(--form-bg-2);
-    color: var(--paragraph-color);
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
-}
+    .jsDataTable-input {
+        padding: 0.5rem 0.8rem;
+        border-radius: 5px;
+        border: 1px solid var(--border-stroke-weak);
+        background-color: var(--form-bg-2);
+        color: var(--paragraph-color);
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+    }
 
-.jsDataTable-info {
-    color: var(--paragraph-color);
-}
+    .jsDataTable-info {
+        color: var(--paragraph-color);
+    }
 
-.jsDataTable-dropdown label {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    color: var(--paragraph-color);
-}
+    .jsDataTable-dropdown label {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        color: var(--paragraph-color);
+    }
 
-.jsDataTable-selector {
-    padding: 0.5rem 0.8rem;
-    border-radius: 5px;
-    border: 1px solid var(--border-stroke-weak);
-    background-color: var(--form-bg-2);
-    color: var(--paragraph-color);
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
-}
+    .jsDataTable-selector {
+        padding: 0.5rem 0.8rem;
+        border-radius: 5px;
+        border: 1px solid var(--border-stroke-weak);
+        background-color: var(--form-bg-2);
+        color: var(--paragraph-color);
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+    }
 
-/* PAGER */
-.jsDataTable-pagination ul {
-    margin: 0;
-    padding-left: 0;
-    display: flex;
-}
+    /* PAGER */
+    .jsDataTable-pagination ul {
+        margin: 0;
+        padding-left: 0;
+        display: flex;
+    }
 
-.jsDataTable-pagination li {
-    list-style: none;
-    float: left;
-}
+    .jsDataTable-pagination li {
+        list-style: none;
+        float: left;
+    }
 
-.jsDataTable-pagination a {
-    float: left;
-    margin-left: 2px;
-    padding: 6px 12px;
-    position: relative;
-    text-decoration: none;
-    color: var(--main-link-color);
-    border-radius: 5px;
-}
+    .jsDataTable-pagination a {
+        float: left;
+        margin-left: 2px;
+        padding: 6px 12px;
+        position: relative;
+        text-decoration: none;
+        color: var(--main-link-color);
+        border-radius: 5px;
+    }
 
-.jsDataTable-pagination a:hover {
-    background-color: var(--low-contrast-color);
-    color: var(--heading-color);
-}
+    .jsDataTable-pagination a:hover {
+        background-color: var(--low-contrast-color);
+        color: var(--heading-color);
+    }
 
-.jsDataTable-pagination .active a,
-.jsDataTable-pagination .active a:focus,
-.jsDataTable-pagination .active a:hover {
-    background-color: var(--main-link-color);
-    color: var(--content-box-bg);
-    cursor: default;
-}
+    .jsDataTable-pagination .active a,
+    .jsDataTable-pagination .active a:focus,
+    .jsDataTable-pagination .active a:hover {
+        background-color: var(--main-link-color);
+        color: var(--content-box-bg);
+        cursor: default;
+    }
 
-.jsDataTable-pagination .ellipsis a,
-.jsDataTable-pagination .disabled a,
-.jsDataTable-pagination .disabled a:focus,
-.jsDataTable-pagination .disabled a:hover {
-    cursor: not-allowed;
-}
+    .jsDataTable-pagination .ellipsis a,
+    .jsDataTable-pagination .disabled a,
+    .jsDataTable-pagination .disabled a:focus,
+    .jsDataTable-pagination .disabled a:hover {
+        cursor: not-allowed;
+    }
 
-.jsDataTable-pagination .disabled a,
-.jsDataTable-pagination .disabled a:focus,
-.jsDataTable-pagination .disabled a:hover {
-    cursor: not-allowed;
-    opacity: 0.4;
-}
+    .jsDataTable-pagination .disabled a,
+    .jsDataTable-pagination .disabled a:focus,
+    .jsDataTable-pagination .disabled a:hover {
+        cursor: not-allowed;
+        opacity: 0.4;
+    }
 
-.jsDataTable-pagination .pager a {
-    font-weight: bold;
-}
+    .jsDataTable-pagination .pager a {
+        font-weight: bold;
+    }
 
-.jsDataTable-container {
-    position: relative;
-    display: block;
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    -ms-overflow-style: -ms-autohiding-scrollbar;
-    overflow-y: hidden;
-    border-radius: 7px;
-}
+    .jsDataTable-container {
+        position: relative;
+        display: block;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        -ms-overflow-style: -ms-autohiding-scrollbar;
+        overflow-y: hidden;
+        border-radius: 7px;
+    }
 
-/* TABLE */
-.jsDataTable-table {
-    max-width: 100%;
-    width: 100%;
-    border-spacing: 0;
-    border-collapse: separate;
-}
+    /* TABLE */
+    .jsDataTable-table {
+        max-width: 100%;
+        width: 100%;
+        border-spacing: 0;
+        border-collapse: separate;
+    }
 
-.jsDataTable-table>tbody>tr>td,
-.jsDataTable-table>tbody>tr>th,
-.jsDataTable-table>tfoot>tr>td,
-.jsDataTable-table>tfoot>tr>th,
-.jsDataTable-table>thead>tr>td,
-.jsDataTable-table>thead>tr>th {
-    vertical-align: top;
-    padding: 8px 10px;
-}
+    .jsDataTable-table > tbody > tr > td,
+    .jsDataTable-table > tbody > tr > th,
+    .jsDataTable-table > tfoot > tr > td,
+    .jsDataTable-table > tfoot > tr > th,
+    .jsDataTable-table > thead > tr > td,
+    .jsDataTable-table > thead > tr > th {
+        vertical-align: top;
+        padding: 8px 10px;
+    }
 
-.jsDataTable-table>thead>tr>th {
-    vertical-align: bottom;
-    text-align: left;
-    border-bottom: 1px solid #d9d9d9;
-}
+    .jsDataTable-table > thead > tr > th {
+        vertical-align: bottom;
+        text-align: left;
+        border-bottom: 1px solid #d9d9d9;
+    }
 
-.jsDataTable-table>tfoot>tr>th {
-    vertical-align: bottom;
-    text-align: left;
-    border-top: 1px solid #d9d9d9;
-}
+    .jsDataTable-table > tfoot > tr > th {
+        vertical-align: bottom;
+        text-align: left;
+        border-top: 1px solid #d9d9d9;
+    }
 
-.jsDataTable-table th {
-    vertical-align: bottom;
-    text-align: left;
-}
+    .jsDataTable-table th {
+        vertical-align: bottom;
+        text-align: left;
+    }
 
-.jsDataTable-table th a {
-    text-decoration: none;
-    color: inherit;
-}
+    .jsDataTable-table th a {
+        text-decoration: none;
+        color: inherit;
+    }
 
-.jsDataTable-sorter {
-    display: inline-block;
-    height: 100%;
-    position: relative;
-    width: 100%;
-}
+    .jsDataTable-sorter {
+        display: inline-block;
+        height: 100%;
+        position: relative;
+        width: 100%;
+    }
 
-.jsDataTable-sorter::before,
-.jsDataTable-sorter::after {
-    content: "";
-    height: 0;
-    width: 0;
-    position: absolute;
-    right: 4px;
-    border-left: 4px solid transparent;
-    border-right: 4px solid transparent;
-    opacity: 0.2;
-}
+    .jsDataTable-sorter::before,
+    .jsDataTable-sorter::after {
+        content: "";
+        height: 0;
+        width: 0;
+        position: absolute;
+        right: 4px;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        opacity: 0.2;
+    }
 
-.jsDataTable-sorter::before {
-    border-top: 4px solid var(--heading-color);
-    bottom: 0px;
-}
+    .jsDataTable-sorter::before {
+        border-top: 4px solid var(--heading-color);
+        bottom: 0px;
+    }
 
-.jsDataTable-sorter::after {
-    border-bottom: 4px solid var(--heading-color);
-    border-top: 4px solid transparent;
-    top: 0px;
-}
+    .jsDataTable-sorter::after {
+        border-bottom: 4px solid var(--heading-color);
+        border-top: 4px solid transparent;
+        top: 0px;
+    }
 
-thead.table-dark .jsDataTable-sorter::before {
-    border-top: 4px solid #fff;
-}
+    thead.table-dark .jsDataTable-sorter::before {
+        border-top: 4px solid #fff;
+    }
 
-thead.table-dark .jsDataTable-sorter::after {
-    border-bottom: 4px solid #fff;
-}
+    thead.table-dark .jsDataTable-sorter::after {
+        border-bottom: 4px solid #fff;
+    }
 
-.asc .jsDataTable-sorter::after,
-.desc .jsDataTable-sorter::before {
-    opacity: 0.6;
-}
+    .asc .jsDataTable-sorter::after,
+    .desc .jsDataTable-sorter::before {
+        opacity: 0.6;
+    }
 
-thead.table-dark .asc .jsDataTable-sorter::after,
-thead.table-dark .desc .jsDataTable-sorter::before {
-    opacity: 0.8;
-}
+    thead.table-dark .asc .jsDataTable-sorter::after,
+    thead.table-dark .desc .jsDataTable-sorter::before {
+        opacity: 0.8;
+    }
 
-.jsDataTables-empty {
-    text-align: center;
-}
+    .jsDataTables-empty {
+        text-align: center;
+    }
 
-.jsDataTable-select-cell {
-    width: 0.1% !important;
+    .jsDataTable-select-cell {
+        width: 0.1% !important;
+    }
 }

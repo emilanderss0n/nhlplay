@@ -59,7 +59,7 @@
 
     .tb-selection-players .swiper > .swiper-button-prev,
     .tb-selection-players .swiper > .swiper-button-next {
-        top: 40%;
+        top: 28%;
         background-color: var(--border-stroke-weak);
         box-shadow: var(--box-shadow-nice);
         backdrop-filter: blur(10px);
