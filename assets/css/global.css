@@ -1061,12 +1061,20 @@
     font-size: 0.9rem;
   }
 
+  .schedule-games:has(.schedule-game) {
+    margin-bottom: 4rem;
+  }
+
   .schedule-game {
     background-color: var(--dark-bg-color);
     border-radius: 10px;
     overflow: hidden;
     position: relative;
     width: 440px;
+  }
+
+  .schedule-game:has(.schedule-game-date) {
+    cursor: grab;
   }
 
   .schedule-game::after {
@@ -1382,7 +1390,6 @@
     background-color: var(--semi-frost-bg);
     border-radius: 7px;
     border: 1px solid var(--border-stroke-weak);
-    margin-top: 5rem;
     backdrop-filter: blur(20px);
   }
 

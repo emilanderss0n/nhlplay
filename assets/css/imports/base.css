@@ -56,57 +56,115 @@
     }
 
     .switch {
-        font-size: 1em;
-        position: relative;
-        display: flex;
-        height: 2em;
-        width: 180px;
-        align-items: center;
-        justify-content: flex-start;
+        /* switch */
+        --switch-width: 62px;
+        --switch-height: 32px;
+        --switch-bg: var(--low-contrast-color);
+        --switch-checked-bg: var(--secondary-link-color);
+        --switch-offset: calc((var(--switch-height) - var(--circle-diameter)) / 2);
+        --switch-transition: all .2s cubic-bezier(0.27, 0.2, 0.25, 1.51);
+        /* circle */
+        --circle-diameter: 24px;
+        --circle-bg: #fff;
+        --circle-shadow: var(--shadow-button);
+        --circle-checked-shadow: var(--circle-shadow);
+        --circle-transition: var(--switch-transition);
+        /* icon */
+        --icon-transition: all .2s cubic-bezier(0.27, 0.2, 0.25, 1.51);
+        --icon-cross-color: var(--switch-bg);
+        --icon-cross-size: 8px;
+        --icon-checkmark-color: var(--switch-checked-bg);
+        --icon-checkmark-size: 13px;
+        /* effect line */
+        --effect-width: calc(var(--circle-diameter) / 2);
+        --effect-height: calc(var(--effect-width) / 2 - 1px);
+        --effect-bg: var(--circle-bg);
+        --effect-border-radius: 1px;
+        --effect-transition: all .2s ease-in-out;
     }
 
     .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
+        display: none;
+    }
+
+    .switch {
+        display: inline-block;
+    }
+
+    .switch svg {
+        transition: var(--icon-transition);
+        position: absolute;
+        height: auto;
+    }
+
+    .switch .checkmark {
+        width: var(--icon-checkmark-size);
+        color: var(--icon-checkmark-color);
+        transform: scale(0);
+    }
+
+    .switch .cross {
+        width: var(--icon-cross-size);
+        color: var(--icon-cross-color);
     }
 
     .slider {
-        position: absolute;
+        width: var(--switch-width);
+        height: var(--switch-height);
+        background: var(--switch-bg);
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        position: relative;
+        transition: var(--switch-transition);
         cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: var(--low-contrast-color);
-        transition: 0.4s;
-        border-radius: 30px;
-        width: 64px;
-        margin-left: 110px;
     }
 
-    .slider:before {
+    .switch-circle {
+        width: var(--circle-diameter);
+        height: var(--circle-diameter);
+        background: var(--circle-bg);
+        border-radius: inherit;
+        box-shadow: var(--circle-shadow);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--circle-transition);
+        z-index: 1;
         position: absolute;
+        left: var(--switch-offset);
+    }
+
+    .slider::before {
         content: "";
-        height: 1.4em;
-        width: 1.4em;
-        border-radius: 20px;
-        left: 0.3em;
-        bottom: 0.3em;
-        background-color: var(--content-box-bg);
-        transition: 0.4s;
+        position: absolute;
+        width: var(--effect-width);
+        height: var(--effect-height);
+        left: calc(var(--switch-offset) + (var(--effect-width) / 2));
+        background: var(--effect-bg);
+        border-radius: var(--effect-border-radius);
+        transition: var(--effect-transition);
     }
 
-    input:checked + .slider {
-        background-color: var(--secondary-link-color);
+    .switch input:checked + .slider {
+        background: var(--switch-checked-bg);
     }
 
-    input:focus + .slider {
-        box-shadow: 0 0 1px var(--secondary-link-color);
+    .switch input:checked + .slider .checkmark {
+        transform: scale(1);
     }
 
-    input:checked + .slider:before {
-        transform: translateX(1.5em);
+    .switch input:checked + .slider .cross {
+        transform: scale(0);
+    }
+
+    .switch input:checked + .slider::before {
+        left: calc(100% - var(--effect-width) - (var(--effect-width) / 2) - var(--switch-offset));
+    }
+
+    .switch input:checked + .slider .switch-circle {
+        left: calc(100% - var(--circle-diameter) - var(--switch-offset));
+        box-shadow: var(--circle-checked-shadow);
     }
 
     a {
@@ -675,6 +733,7 @@
 
     .component-header:has(:nth-child(2)) > *:last-child {
         margin-right: 0.8rem;
+        display: flex;
     }
 
     header {
