@@ -13,6 +13,7 @@ import { convertUTCTimesToLocal } from './modules/utils.js';
 import { initPreGamePage } from './modules/pre-game-handlers.js';
 import { initDraftPage } from './modules/drafts.js';
 import { initTeamBuilder} from './modules/teambuilder.js';
+import { initRedditPosts } from './modules/reddit-handlers.js';
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -31,6 +32,7 @@ document.addEventListener('DOMContentLoaded', function () {
     convertUTCTimesToLocal();
     initDraftPage();
     initTeamBuilder();
+    initRedditPosts();
 
     if (document.querySelector('.pre-game-cont')) {
         initPreGamePage();

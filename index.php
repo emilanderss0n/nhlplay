@@ -161,7 +161,18 @@ if (!is_dir($cacheDir)) {
                 renderLeagueTable($standing, $detect);
                 ?>
             </div>
+        </div>        
+        <div class="component-header" style="margin-top: 5rem">
+            <h3 class="title">NHL - Popular @ r/hockey</h3>
+            <a href="https://www.reddit.com/r/hockey/" target="_blank" rel="noopener noreferrer" class="btn sm">Visit r/hockey</a>
         </div>
+        <div class="reddit-feed" id="reddit-feed-section">
+            <?php include 'templates/reddit-frontpage.php'; ?>
+        </div>
+        <script type="module">
+            import { initRedditPosts } from './assets/js/modules/reddit-handlers.js';
+            document.addEventListener('DOMContentLoaded', initRedditPosts);
+        </script>
     </div>
 </main>
 <?php if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {} else { include_once 'footer.php'; } ?>
