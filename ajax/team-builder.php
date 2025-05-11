@@ -13,7 +13,6 @@ $teamAbbrev = $activeTeam ? idToTeamAbbrev($activeTeam) : '';
 $teamRosterInfo = $activeTeam ? getTeamRosterInfo($teamAbbrev, $season) : null;
 $medianAge = $activeTeam ? getTeamMedianAge($teamRosterInfo) : 0;
 $teamInfo = $activeTeam ? getTeamStats($teamAbbrev) : null;
-$teamStatsAdv = $activeTeam ? getTeamStatsAdv($activeTeam, $season) : null;
 ?>
 
 <div popover id="team-builder-player-pool" class="tb-selection-pool">

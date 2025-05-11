@@ -1,5 +1,6 @@
 import { fadeInElement, fadeOutElement, eventManager } from './utils.js';
 import { fixAjaxResponseUrls } from './ajax-handler.js';
+import { initRedditPosts } from './reddit-handlers.js';
 
 function sortRosterByPoints(rosterElement) {
     const rosterItems = Array.from(rosterElement.children);
@@ -82,12 +83,15 @@ export function initTeamHandlers(elements) {
 
                 elements.mainElement.addEventListener('animationend', function () {
                     elements.mainElement.classList.remove('page-ani');
-                }, { once: true });
-
-                // Sort roster by points immediately after loading
+                }, { once: true });                // Sort roster by points immediately after loading
                 const teamRoster = elements.mainElement.querySelector(".team-roster");
                 if (teamRoster) {
                     sortRosterByPoints(teamRoster);
+                }
+                
+                // Initialize Reddit posts if there's a reddit feed in the loaded content
+                if (elements.mainElement.querySelector('.reddit-feed')) {
+                    initRedditPosts();
                 }
             };
 
@@ -258,108 +262,19 @@ export function initTeamHandlers(elements) {
                     container.innerHTML = previousContent;
 
                     // Clean up any game log related event listeners
-                    eventManager.removeEventListenersBySelector('.team-game-log .log-game, #closeGameLog, #closeGameLogModal');
-
-                    // Re-initialize content as needed
+                    eventManager.removeEventListenersBySelector('.team-game-log .log-game, #closeGameLog, #closeGameLogModal');                    // Re-initialize content as needed
                     initializeTeamContent(container);
+                    
+                    // Re-initialize Reddit posts if there's a reddit feed in the content
+                    if (container.querySelector('.reddit-feed')) {
+                        initRedditPosts();
+                    }
 
                     container.classList.add('ani');
                     fadeOutElement(elements.activityElement);
 
                     const gameLogOverlay = document.getElementById('gameLogOverlay');
                     if (gameLogOverlay) gameLogOverlay.style.display = 'none';
-                }
-            });
-        }
-    }
-
-    // Advanced Team Stats
-    eventManager.addDelegatedEventListener(document, '#showTeamAdvStats', 'click', function (e) {
-        e.preventDefault();
-        const activeTeam = this.dataset.value;
-        const container = document.getElementById('teamMain');
-
-        container.classList.remove('ani');
-        previousContent = container.innerHTML;
-
-        elements.activityElement.style.display = 'block';
-        elements.activityElement.style.opacity = 1;
-
-        const xhr = new XMLHttpRequest();
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                container.innerHTML = fixAjaxResponseUrls(xhr.responseText);
-                // Clean up any game log related event listeners
-                eventManager.removeEventListenersBySelector('#closeTeamAdvStats');
-                setupAdvTeamStatsEventListeners();
-            }
-        };
-
-        xhr.onloadend = function () {
-            fadeOutElement(elements.activityElement);
-            container.classList.add('ani');
-            let tas1 = new jsdatatables.JSDataTable('#teamAdvTable1', {
-                paging: false,
-                searchable: true,
-                sortable: false,
-            });
-            let tas2 = new jsdatatables.JSDataTable('#teamAdvTable2', {
-                paging: false,
-                searchable: true,
-                sortable: false,
-            });
-            let tas3 = new jsdatatables.JSDataTable('#teamAdvTable3', {
-                paging: false,
-                searchable: true,
-                sortable: false,
-            });
-            let tas4 = new jsdatatables.JSDataTable('#teamAdvTable4', {
-                paging: false,
-                searchable: true,
-                sortable: false,
-            });
-            let tas5 = new jsdatatables.JSDataTable('#teamAdvTable5', {
-                paging: false,
-                searchable: true,
-                sortable: false,
-            });
-            let tas6 = new jsdatatables.JSDataTable('#teamAdvTable6', {
-                paging: false,
-                searchable: true,
-                sortable: false,
-            });
-        };
-
-        const baseUrl = window.location.pathname.startsWith('/nhl') ? '/nhl' : '';
-        xhr.open('POST', baseUrl + '/ajax/team-view-adv-stats.php');
-        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-        xhr.send('active_team=' + activeTeam);
-    });
-
-    function setupAdvTeamStatsEventListeners() {
-        // Advanced Team Stats
-        const closeTeamAdvStats = document.getElementById('closeTeamAdvStats');
-        if (closeTeamAdvStats) {
-            eventManager.addEventListener(closeTeamAdvStats, 'click', function (e) {
-                e.preventDefault();
-                const container = document.getElementById('teamMain');
-
-                container.classList.remove('ani');
-                elements.activityElement.style.display = 'block';
-                elements.activityElement.style.opacity = 1;
-
-                if (previousContent) {
-                    container.innerHTML = previousContent;
-
-                    // Clean up any game log related event listeners
-                    eventManager.removeEventListenersBySelector('#closeTeamAdvStats');
-
-                    // Re-initialize content as needed
-                    initializeTeamContent(container);
-
-                    container.classList.add('ani');
-                    fadeOutElement(elements.activityElement);
                 }
             });
         }

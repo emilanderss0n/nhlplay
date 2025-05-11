@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initMenuHandlers();
     checkRecentTrades();
     initTeamHandlers(elements);
+    initRedditPosts();
     initGameHandlers(elements);
     initStandingsHandlers();
     initPlayerHandlers(elements);

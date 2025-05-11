@@ -365,3 +365,8 @@ function calculateAdvantagePoints($home, $away, $homeRecord, $awayRecord, $homeL
     
     return [$awayPercentage, $homePercentage];
 }
+
+function getTeamRedditSub($teamAbbrev) {
+    global $teamRedditSubs;
+    return isset($teamRedditSubs[$teamAbbrev]) ? $teamRedditSubs[$teamAbbrev] : null;
+}

@@ -49,7 +49,6 @@ $injuredPlayerIds = getInjuredPlayerIds($teamAbbrev2);
                         <h2><?= getValue($teamInfo->teamName->default, '') ?></h2>
                         <div class="team-quick-links">
                             <a href="javascript:void(0)" id="showGameLog" class="btn outline sm" data-value="<?= $activeTeam ?>">Game Log</a>
-                            <a href="javascript:void(0)" id="showTeamAdvStats" class="btn outline sm" data-value="<?= $activeTeam ?>">Advanced Stats</a>
                         </div>
                     </div>
                 </div>
@@ -155,11 +154,19 @@ $injuredPlayerIds = getInjuredPlayerIds($teamAbbrev2);
                 <div class="hidden-box" id="injury-list">
                     <?php getInjuriesTeam($teamAbbrev2) ?>
                 </div>
-            </div>
-            <div class="team-roster grid grid-300 grid-gap-lg grid-gap-row-lg" grid-max-col-count="3">
+            </div>            <div class="team-roster grid grid-300 grid-gap-lg grid-gap-row-lg" grid-max-col-count="3">
             <?php renderTeamRoster($teamRosterInfo, $teamRosterStats, $activeTeam, $injuredPlayerIds); ?>
-            </div><!-- END .team-roster -->
+            </div><!-- END .team-roster -->            <?php
+            // Check if this team has a subreddit before including the team reddit section
+            $teamSubreddit = getTeamRedditSub($teamAbbrev);
+            if ($teamSubreddit) {
+                // Always use the relative path from the current file location
+                include __DIR__ . '/../templates/team-reddit-feed.php';
+            }
+            ?>
+            
         </div> <!-- END #teamMain -->
     </div> <!-- END .wrap -->
 </main>
+
 <?php if(isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {} else { include_once '../footer.php'; } ?>

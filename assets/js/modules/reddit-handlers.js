@@ -1,13 +1,25 @@
 export function initRedditPosts() {
-    const redditContainer = document.querySelector('.reddit-feed');
-    if (!redditContainer) return;
+    // Initialize all Reddit feeds on the page
+    const redditFeeds = document.querySelectorAll('.reddit-feed');
+    redditFeeds.forEach(feedContainer => {
+        initRedditFeed(feedContainer);
+    });
+}
+
+/**
+ * Initialize a single Reddit feed container
+ * @param {HTMLElement} feedContainer - The feed container element
+ */
+function initRedditFeed(feedContainer) {
+    if (!feedContainer) return;
     
     // Create an Intersection Observer to detect when reddit-feed comes into view
     const redditFeedObserver = new IntersectionObserver((entries, observer) => {
         entries.forEach(entry => {
             // If the element is in view
             if (entry.isIntersecting) {
-                loadRedditFeed();
+                // Pass the container element to loadRedditFeed
+                loadRedditFeed(entry.target);
                 // Stop observing after loading once
                 observer.unobserve(entry.target);
             }
@@ -19,14 +31,12 @@ export function initRedditPosts() {
     });
     
     // Start observing the reddit-feed element
-    const redditFeed = document.querySelector('#reddit-feed-section');
-    if (redditFeed) {
-        redditFeedObserver.observe(redditFeed);
-    }
-    
-    // Setup event listeners for post interactions once they're loaded
-    function setupPostInteractions() {
-        const redditPosts = redditContainer.querySelector('.reddit-posts');
+    redditFeedObserver.observe(feedContainer);
+      // Setup event listeners for post interactions once they're loaded
+    function setupPostInteractions(container) {
+        if (!container) return;
+        
+        const redditPosts = container.querySelector('.reddit-posts');
         if (!redditPosts) return;
         
         // Add event listeners for post hover
@@ -41,36 +51,55 @@ export function initRedditPosts() {
             });
         });
     }
-    
-    // Create MutationObserver to watch for when posts are added to the DOM
+      // Create MutationObserver to watch for when posts are added to the DOM
     const observer = new MutationObserver((mutations) => {
         for (const mutation of mutations) {
             if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
                 // If posts were added to the DOM, setup interactions
-                setupPostInteractions();
+                setupPostInteractions(feedContainer);
             }
         }
     });
     
     // Start observing the reddit-posts container for added nodes
-    const redditPosts = redditContainer.querySelector('.reddit-posts');
+    const redditPosts = feedContainer.querySelector('.reddit-posts');
     if (redditPosts) {
         observer.observe(redditPosts, { childList: true });
     }
-    
-    // Function to load Reddit posts via AJAX
-    function loadRedditFeed() {
-        const redditPosts = document.querySelector('.reddit-posts');
+      /**
+     * Load Reddit posts for a specific feed container
+     * @param {HTMLElement} feedContainer - The feed container element
+     */
+    function loadRedditFeed(feedContainer) {
+        if (!feedContainer) return;
+        
+        const redditPosts = feedContainer.querySelector('.reddit-posts');
         if (!redditPosts) return;
         
         // Show loading indicator
         const loadElement = redditPosts.querySelector('.load');
         if (loadElement) {
             loadElement.style.display = 'flex';
+        }        // Get subreddit from data attribute or default to 'hockey'
+        const subreddit = feedContainer.dataset.subreddit || 'hockey';
+        
+        // Get limit from data attribute or default to 12
+        const limit = feedContainer.dataset.limit || 12;        // Determine which endpoint to use based on whether it's a team feed or main feed
+        const endpoint = feedContainer.id === 'team-reddit-feed-section' ? 'team-reddit-feed.php' : 'reddit-feed.php';
+        
+        // Determine the correct base URL for the environment
+        let baseUrl;
+        if (window.location.hostname === 'localhost') {
+            baseUrl = '/nhl/ajax/';
+        } else {
+            baseUrl = '/ajax/';
         }
         
+        // Build the final URL
+        const ajaxUrl = window.location.origin + baseUrl + endpoint;
+        
         // Fetch Reddit posts from our AJAX endpoint
-        fetch(ajaxPath + 'reddit-feed.php?subreddit=hockey&limit=12', {
+        fetch(`${ajaxUrl}?subreddit=${subreddit}&limit=${limit}`, {
             method: 'GET',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest'
@@ -102,12 +131,11 @@ export function initRedditPosts() {
                     if (comments >= 1000) {
                         comments = (comments / 1000).toFixed(1) + 'k';
                     }
-                    
-                    // Create post HTML
+                      // Create post HTML
                     postsHTML += `
                         <div class="reddit-post">
                             <div class="post-header">
-                                <div class="post-subreddit">r/hockey</div>
+                                <div class="post-subreddit">r/${subreddit}</div>
                                 <div class="post-time">${postedTime}</div>
                             </div>
                             <a href="https://www.reddit.com${post.permalink}" target="_blank" rel="noopener noreferrer" class="post-link">
@@ -135,13 +163,12 @@ export function initRedditPosts() {
                         post.style.animationDelay = `${(index * 0.1) + 0.2}s`;
                     });
                 }
-            } else {
-                // Show error message if no posts found
+            } else {                // Show error message if no posts found
                 redditPosts.innerHTML = `
                     <div class="alert info">
                         <div class="alert-content">
                             <i class="bi bi-info-circle"></i>
-                            <span>No posts available from r/hockey at the moment. Please try again later or <a href="https://www.reddit.com/r/hockey/" target="_blank" rel="noopener noreferrer">visit r/hockey directly</a>.</span>
+                            <span>No posts available from r/${subreddit} at the moment. Please try again later or <a href="https://www.reddit.com/r/${subreddit}/" target="_blank" rel="noopener noreferrer">visit r/${subreddit} directly</a>.</span>
                         </div>
                     </div>
                 `;
@@ -165,7 +192,6 @@ export function initRedditPosts() {
             }
         });
     }
-    
-    // If posts are already in the DOM (not lazy loaded), set up interactions
-    setupPostInteractions();
+      // If posts are already in the DOM (not lazy loaded), set up interactions
+    setupPostInteractions(feedContainer);
 }
