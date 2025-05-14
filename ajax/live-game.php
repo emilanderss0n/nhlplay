@@ -8,7 +8,13 @@ $detect = new \Detection\MobileDetect;
 $deviceType = ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'computer');
 
 include_once '../includes/data/init-live-game.php';
+
+// Store team name variables for Reddit search
+$awayTeamName = $awayTeam->commonName->default;
+$homeTeamName = $homeTeam->commonName->default;
 ?>
+<!-- No jQuery needed - using vanilla JavaScript instead -->
+
 <main>
     <div class="wrap">
         <div class="post-game-cont live">
@@ -42,6 +48,15 @@ include_once '../includes/data/init-live-game.php';
                                 <img src="<?= $homeTeam->logo ?>" alt="<?= $homeTeam->commonName->default ?>" />
                             </picture>
                         </div>
+                    </div>
+                </div>
+                <div class="reddit-game-thread">
+                    <div class="reddit-thread-info">
+                        <div class="thread-title" id="reddit-thread-title">Searching for game thread...</div>
+                        <a href="#" id="reddit-thread-link" target="_blank" rel="noopener noreferrer" style="display: none;">View on Reddit <i class="bi bi-box-arrow-up-right"></i></a>
+                    </div>
+                    <div class="reddit-thread-not-found" style="display: none;">
+                        <p><a href="https://www.reddit.com/r/hockey/search/?q=<?= urlencode($awayTeamName . ' ' . $homeTeamName . ' thread') ?>&sort=new" target="_blank" rel="noopener noreferrer" class="btn sm">Search on r/hockey <i class="bi bi-box-arrow-up-right"></i></a></p>
                     </div>
                 </div>
                 <div class="post-game-stats">
@@ -120,14 +135,14 @@ include_once '../includes/data/init-live-game.php';
                     <?= gameRosterStats($id = $awayTeamId, $name = $awayTeamName, $teamSide = 'awayTeam', $game) ?>
                 </div><!-- END .away -->
                 <div class="home box" id="home-roster-stats">
-                    <?= gameRosterStats($id = $homeTeamId, $name = $homeTeamName, $teamSide = 'homeTeam', $game) ?>
+                    <?= gameRosterStats($id = $homeTeamId, $name = $homeTeamName, $teamSide = 'homeTeam', $game) ?>                
                 </div><!-- END .home -->
             </div><!-- END .boxscore-roster -->
+
             <h2 class="header-dashed">Penalties</h2>
             <div class="penalties team-boxes grid grid-300 grid-gap grid-gap-row" id="game-penalties" grid-max-col-count="3">
                 <?= gamePenalties($gameContent) ?>
             </div>
-            <h2 class="header-dashed">Game Information</h2>
             <div class="game-misc">
                 <div class="arena item"><i class="bi bi-pin-map-fill"></i><span data-tooltip="Arena"><?= $game->venue->default ?>, <?= $game->venueLocation->default ?></span></div>
                 <div class="referee item"><i class="bi bi-person-gear"></i>
@@ -168,57 +183,65 @@ include_once '../includes/data/init-live-game.php';
         </div>
     </div>
 </main>
-<script>
-    $('#activity').fadeOut('slow');
+<script>    // Fade out activity indicator with vanilla JS
+    const activityElement = document.getElementById('activity');
+    if (activityElement) {
+        activityElement.style.opacity = 0;
+        setTimeout(() => {
+            activityElement.style.display = 'none';
+        }, 500);
+    }
+    
     function imageError(e){
         e.setAttribute("src","./assets/img/no-image.png");
         e.removeAttribute("onError");
         e.removeAttribute("onclick");
     }
-    <?php if (!$detect->isMobile()) { ?>
-    $(document).ready(function() {
-        $('.boxscore-table').DataTable( {
-            paging: false,
-            searching: false,
-            "order": [ 0, 'asc' ],
-            "columnDefs": [ {
-                "targets"  : 'no-sort',
-                "orderable": false,
-            }]
-        });
-    });
-    <?php } ?>
-
     function updateStats() {
-        $.ajax({
-            url: 'live-game.php',
-            type: 'POST',
-            data: { gameId: <?= $gameId ?> },
-            success: function(data) {
-                var parser = new DOMParser();
-                var doc = parser.parseFromString(data, 'text/html');
-                $('#score').html(doc.querySelector('#score').innerHTML);
-                $('#game-date').html(doc.querySelector('#game-date').innerHTML);
-                $('#away-sog').html(doc.querySelector('#away-sog').innerHTML);
-                $('#away-pp').html(doc.querySelector('#away-pp').innerHTML);
-                $('#away-pim').html(doc.querySelector('#away-pim').innerHTML);
-                $('#away-fo').html(doc.querySelector('#away-fo').innerHTML);
-                $('#away-hits').html(doc.querySelector('#away-hits').innerHTML);
-                $('#away-blks').html(doc.querySelector('#away-blks').innerHTML);
-                $('#home-sog').html(doc.querySelector('#home-sog').innerHTML);
-                $('#home-pp').html(doc.querySelector('#home-pp').innerHTML);
-                $('#home-pim').html(doc.querySelector('#home-pim').innerHTML);
-                $('#home-fo').html(doc.querySelector('#home-fo').innerHTML);
-                $('#home-hits').html(doc.querySelector('#home-hits').innerHTML);
-                $('#home-blks').html(doc.querySelector('#home-blks').innerHTML);
-                $('#game-scoring-plays').html(doc.querySelector('#game-scoring-plays').innerHTML);
-                $('#game-penalties').html(doc.querySelector('#game-penalties').innerHTML);
-                $('#away-roster-stats').html(doc.querySelector('#away-roster-stats').innerHTML);
-                $('#home-roster-stats').html(doc.querySelector('#home-roster-stats').innerHTML);
+        fetch('ajax/live-game.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: `gameId=<?= $gameId ?>`
+        })
+        .then(response => response.text())
+        .then(data => {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(data, 'text/html');
+            
+            // Update all stats with vanilla JS - with error handling for missing elements
+            function updateElement(id, selector) {
+                const element = document.getElementById(id);
+                const sourceElement = doc.querySelector(selector);
+                if (element && sourceElement) {
+                    element.innerHTML = sourceElement.innerHTML;
+                }
             }
-        });
-    }
-
-    setInterval(updateStats, 10000); // Update every 10 seconds
+            
+            // Update each element safely
+            updateElement('score', '#score');
+            updateElement('game-date', '#game-date');
+            updateElement('away-sog', '#away-sog');
+            updateElement('away-pp', '#away-pp');
+            updateElement('away-pim', '#away-pim');
+            updateElement('away-fo', '#away-fo');
+            updateElement('away-hits', '#away-hits');
+            updateElement('away-blks', '#away-blks');
+            updateElement('home-sog', '#home-sog');
+            updateElement('home-pp', '#home-pp');
+            updateElement('home-pim', '#home-pim');
+            updateElement('home-fo', '#home-fo');
+            updateElement('home-hits', '#home-hits');
+            updateElement('home-blks', '#home-blks');
+            updateElement('game-scoring-plays', '#game-scoring-plays');
+            updateElement('game-penalties', '#game-penalties');
+            updateElement('away-roster-stats', '#away-roster-stats');
+            updateElement('home-roster-stats', '#home-roster-stats');
+        })
+        .catch(error => console.error('Error updating stats:', error));
+    }    setInterval(updateStats, 10000); // Update every 10 seconds
+    
 </script>
 <?php if(isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {} else { include_once '../footer.php'; } ?>

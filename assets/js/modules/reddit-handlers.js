@@ -195,3 +195,69 @@ function initRedditFeed(feedContainer) {
       // If posts are already in the DOM (not lazy loaded), set up interactions
     setupPostInteractions(feedContainer);
 }
+
+ // Global variables
+const gameId = new URLSearchParams(window.location.search).get('gameId');
+
+// Wait for DOM to be fully loaded
+export function initRedditGameThread() {
+    // Elements
+    const threadTitle = document.getElementById('reddit-thread-title');
+    const threadLink = document.getElementById('reddit-thread-link');
+    const notFoundContainer = document.querySelector('.reddit-thread-not-found');
+
+    // Find a game thread automatically
+    findGameThread();
+
+    // Function to find game thread based on current game
+    function findGameThread() {
+        if (!gameId) return;
+        
+        // Get the base URL based on environment
+        const baseUrl = window.location.pathname.startsWith('/nhl') ? '/nhl' : '';
+        
+        // Show loading state
+        threadTitle.textContent = 'Searching for game thread...';
+        
+        // Fetch game thread for current game
+        fetch(`${baseUrl}/ajax/find-game-thread.php?gameId=${gameId}`, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data && data.found && data.id) {
+                // We found a game thread
+                threadTitle.textContent = data.title || 'Game Thread';
+                threadLink.href = `https://www.reddit.com/r/hockey/comments/${data.id}/`;
+                threadLink.style.display = 'flex';
+                
+                // Save to localStorage for persistence
+                localStorage.setItem('lastRedditGameThreadId', data.id);
+            } else {
+                // No game thread found - show not found message
+                if (threadTitle) threadTitle.textContent = 'Game Thread Not Found';
+                if (notFoundContainer) notFoundContainer.style.display = 'block';
+            }
+        })
+        .catch(error => {
+            console.error('Error finding game thread:', error);
+            if (threadTitle) threadTitle.textContent = 'Error Finding Game Thread';
+            if (notFoundContainer) notFoundContainer.style.display = 'block';
+        });
+    }
+
+    // Helper function to extract post ID from Reddit URL
+    function extractRedditPostId(input) {
+        // If it's already just a post ID, return it
+        if (/^[a-z0-9]{5,8}$/i.test(input.trim())) {
+            return input.trim();
+        }
+        
+        // Try to extract ID from Reddit URL
+        const match = input.match(/reddit\.com\/r\/[^\/]+\/comments\/([a-z0-9]{5,8})/i);
+        return match ? match[1] : input.trim();
+    }
+}

@@ -208,6 +208,119 @@ include_once '../includes/data/init-pre-game.php';
                     </div>
                 <?php }} else { echo '<div class="alert info">Not enough games played in current season or preseason is active</div>'; } ?>
             </div>
+            
+            <h3 class="players-to-watch-title">Goalies to Watch</h3>
+            <div class="players-to-watch grid grid-500 grid-gap-lg grid-gap-row-lg" grid-max-col-count="2">
+                <?php if (isset($game->matchup->goalieComparison) && 
+                          isset($game->matchup->goalieComparison->awayTeam->leaders) && 
+                          isset($game->matchup->goalieComparison->homeTeam->leaders) &&
+                          !empty($game->matchup->goalieComparison->awayTeam->leaders) &&
+                          !empty($game->matchup->goalieComparison->homeTeam->leaders)) {
+                    
+                    // Find the best goalie from each team based on games played and save percentage
+                    $awayGoalie = null;
+                    $awayMinGames = 3; // Minimum games threshold
+                    $awayBestSavePct = 0;
+                    
+                    foreach ($game->matchup->goalieComparison->awayTeam->leaders as $goalie) {
+                        if (isset($goalie->gamesPlayed) && isset($goalie->savePctg)) {
+                            // Prioritize goalies with at least minimum games
+                            if ($goalie->gamesPlayed >= $awayMinGames && $goalie->savePctg > $awayBestSavePct) {
+                                $awayGoalie = $goalie;
+                                $awayBestSavePct = $goalie->savePctg;
+                            }
+                        }
+                    }
+                    
+                    // If no goalie meets the criteria, take the one with most games
+                    if ($awayGoalie === null) {
+                        $mostGames = 0;
+                        foreach ($game->matchup->goalieComparison->awayTeam->leaders as $goalie) {
+                            if (isset($goalie->gamesPlayed) && $goalie->gamesPlayed > $mostGames) {
+                                $awayGoalie = $goalie;
+                                $mostGames = $goalie->gamesPlayed;
+                            }
+                        }
+                        // If still null, just take the first one
+                        if ($awayGoalie === null && !empty($game->matchup->goalieComparison->awayTeam->leaders)) {
+                            $awayGoalie = $game->matchup->goalieComparison->awayTeam->leaders[0];
+                        }
+                    }
+                    
+                    // Do the same for home team
+                    $homeGoalie = null;
+                    $homeMinGames = 3;
+                    $homeBestSavePct = 0;
+                    
+                    foreach ($game->matchup->goalieComparison->homeTeam->leaders as $goalie) {
+                        if (isset($goalie->gamesPlayed) && isset($goalie->savePctg)) {
+                            if ($goalie->gamesPlayed >= $homeMinGames && $goalie->savePctg > $homeBestSavePct) {
+                                $homeGoalie = $goalie;
+                                $homeBestSavePct = $goalie->savePctg;
+                            }
+                        }
+                    }
+                    
+                    if ($homeGoalie === null) {
+                        $mostGames = 0;
+                        foreach ($game->matchup->goalieComparison->homeTeam->leaders as $goalie) {
+                            if (isset($goalie->gamesPlayed) && $goalie->gamesPlayed > $mostGames) {
+                                $homeGoalie = $goalie;
+                                $mostGames = $goalie->gamesPlayed;
+                            }
+                        }
+                        if ($homeGoalie === null && !empty($game->matchup->goalieComparison->homeTeam->leaders)) {
+                            $homeGoalie = $game->matchup->goalieComparison->homeTeam->leaders[0];
+                        }
+                    }
+                    
+                    // Only proceed if we have both goalies
+                    if ($awayGoalie && $homeGoalie) {
+                ?>
+                <div class="goalie row">
+                    <a href="#" id="player-link" data-link="<?= $awayGoalie->playerId ?>" class="player">
+                        <div class="headshot head-1">
+                            <img class="head" width="180" height="180" src="<?= $awayGoalie->headshot ?>" onerror="imageError(this)"></img>
+                            <picture>
+                                <source srcset="<?= $awayTeam->darkLogo ?>" media="(prefers-color-scheme: dark)">
+                                <img class="team-img" src="<?= $awayTeam->logo ?>" />
+                            </picture>
+                            <div class="team-color" style="background: linear-gradient(142deg, <?= teamToColor($awayTeamId) ?> 0%, rgba(255,255,255,0) 58%); left:0;"></div>
+                        </div><!-- END .headshot -->
+                        <div class="player-desc">
+                            <div class="name"><?= $awayGoalie->name->default ?></div>
+                            <div class="role">#<?= $awayGoalie->sweaterNumber ?> - <?= positionCodeToName($awayGoalie->positionCode) ?></div>
+                        </div>
+                        <div class="stat-m">
+                            <?= isset($awayGoalie->savePctg) ? number_format((float)$awayGoalie->savePctg, 3, '.', '') : '-' ?>
+                            <span> SV%</span>
+                        </div>
+                    </a>
+                    <div class="stat"><?= isset($awayGoalie->savePctg) ? number_format((float)$awayGoalie->savePctg, 3, '.', '') : '-' ?></div>
+                    <div class="info"><span>SV%</span></div>
+                    <div class="stat"><?= isset($homeGoalie->savePctg) ? number_format((float)$homeGoalie->savePctg, 3, '.', '') : '-' ?></div>
+                    <a href="#" id="player-link" data-link="<?= $homeGoalie->playerId ?>" class="player">
+                        <div class="headshot head-2">
+                            <img class="head" width="180" height="180" src="<?= $homeGoalie->headshot ?>" onerror="imageError(this)"></img>
+                            <picture>
+                                <source srcset="<?= $homeTeam->darkLogo ?>" media="(prefers-color-scheme: dark)">
+                                <img class="team-img" src="<?= $homeTeam->logo ?>" />
+                            </picture>
+                            <div class="team-color" style="background: linear-gradient(-142deg, <?= teamToColor($homeTeamId) ?> 0%, rgba(255,255,255,0) 58%); right: 0;"></div>
+                        </div><!-- END .headshot -->
+                        <div class="player-desc">
+                            <div class="name"><?= $homeGoalie->name->default ?></div>
+                            <div class="role">#<?= $homeGoalie->sweaterNumber ?> - <?= positionCodeToName($homeGoalie->positionCode) ?></div>
+                        </div>
+                        <div class="stat-m">
+                            <?= isset($homeGoalie->savePctg) ? number_format((float)$homeGoalie->savePctg, 3, '.', '') : '-' ?>
+                            <span> SV%</span>
+                        </div>
+                    </a>
+                </div>
+                <?php } } else { echo '<div class="alert info">Goalie data not available</div>'; } ?>
+            </div>
+            
             <div class="leaders-wrap">
                 <h3 class="players-to-watch-title" >Team Point Leaders</h3>
                 <div class="home-leaders pre-game grid grid-300 grid-gap-lg grid-gap-row-lg" max-col-count="2">

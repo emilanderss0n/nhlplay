@@ -71,8 +71,7 @@
         }
 
         #player-modal table tbody tr td {
-            font-size: 1.4em;
-            font-weight: bold;
+            font-size: 1.6rem;
         }
 
         #player-modal #last-games tbody tr td {
@@ -138,6 +137,10 @@
 
         .pre-game-stats {
             padding: 2rem;
+        }
+
+        .reddit-game-thread {
+            display: block;
         }
 
         .post-game-summary {
@@ -814,7 +817,6 @@
         #player-modal .trophies .trophy {
             align-items: center;
             position: relative;
-            width: 47%;
         }
 
         #player-modal .trophies .trophy .trophy-count {

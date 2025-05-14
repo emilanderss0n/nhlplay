@@ -25,15 +25,6 @@
 <script>
     ajaxPath = '<?= BASE_URL ?>/ajax/'; 
     let season = '<?= $season ?>';
-
-    document.addEventListener("DOMContentLoaded", function() {
-        <?php if (!$detect->isMobile()) { ?>
-        let dt = new jsdatatables.JSDataTable('#leagueTable', {
-            paging: false,
-            searchable: true,
-        });
-        <?php } ?>
-    });
 </script>
 </body>
 </html>

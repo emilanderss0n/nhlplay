@@ -13,7 +13,7 @@ import { convertUTCTimesToLocal } from './modules/utils.js';
 import { initPreGamePage } from './modules/pre-game-handlers.js';
 import { initDraftPage } from './modules/drafts.js';
 import { initTeamBuilder} from './modules/teambuilder.js';
-import { initRedditPosts } from './modules/reddit-handlers.js';
+import { initRedditPosts, initRedditGameThread } from './modules/reddit-handlers.js';
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -23,7 +23,6 @@ document.addEventListener('DOMContentLoaded', function () {
     initMenuHandlers();
     checkRecentTrades();
     initTeamHandlers(elements);
-    initRedditPosts();
     initGameHandlers(elements);
     initStandingsHandlers();
     initPlayerHandlers(elements);
@@ -34,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initDraftPage();
     initTeamBuilder();
     initRedditPosts();
+    initRedditGameThread();
 
     if (document.querySelector('.pre-game-cont')) {
         initPreGamePage();

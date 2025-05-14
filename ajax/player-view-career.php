@@ -24,72 +24,8 @@ $careerAll = $careerData->seasonTotals;
 ?>
 <div class="stats-player-inner">
     <div class="career-stats">
-        <div class="awards">
-        <?php 
-        // Initialize an empty array to count trophies
-        $trophyCounts = [];
-
-        // Mapping array for trophy names to image file names
-        $trophyImageMap = [
-            "Art Ross Trophy" => "art_ross",
-            "Bill Masterton Memorial Trophy" => "bill_masterton_memorial",
-            "Calder Memorial Trophy" => "calder_memorial",
-            "Conn Smythe Trophy" => "conn_smythe",
-            "E.J. McGuire Award of Excellence" => "placeholder",
-            "Frank J. Selke Trophy" => "frank_selke",
-            "Hart Memorial Trophy" => "hart_memorial",
-            "Jack Adams Award" => "jack_adams",
-            "James Norris Memorial Trophy" => "james_norris_memorial",
-            "King Clancy Memorial Trophy" => "king_clancy",
-            "Lady Byng Memorial Trophy" => "lady_byng_memorial",
-            "Mark Messier NHL Leadership Award" => "mark_messier",
-            "Maurice “Rocket” Richard Trophy" => "maurice_richard",
-            "Presidents' Trophy" => "presidents_trophy",
-            "Ted Lindsay Award" => "ted_lindsay",
-            "Vezina Trophy" => "vezina",
-            "William M. Jennings Trophy" => "william_jennings",
-            "Stanley Cup" => "stanley_cup",
-        ];
-
-        // Check if awards property exists and is an array
-        if (isset($careerData->awards) && is_array($careerData->awards)) {
-            // Loop through awards to count trophies
-            foreach ($careerData->awards as $award) {
-                $trophyName = $award->trophy->default;
-                if (!isset($trophyCounts[$trophyName])) {
-                    $trophyCounts[$trophyName] = 0;
-                }
-                $trophyCounts[$trophyName] += count($award->seasons);
-            }
-        }
-
-        // Only display the trophies div if there are trophies to show
-        if (!empty($trophyCounts)) {
-            echo '<div class="trophies grid grid-150 grid-gap-lg grid-gap-row-xl">';
-            // Loop through trophy counts to display each trophy
-            foreach ($trophyCounts as $trophyName => $count) {
-                $imageFileName = isset($trophyImageMap[$trophyName]) ? $trophyImageMap[$trophyName] : strtolower(str_replace(' ', '_', $trophyName));
-                
-                // Get the first two words of the trophy name
-                $trophyNameWords = explode(' ', $trophyName);
-                $shortTrophyName = implode(' ', array_slice($trophyNameWords, 0, 2));
-                
-                echo '<div class="trophy">';
-                echo '<div class="trophy-wrapper">';
-                echo '<img src="'. BASE_URL .'/assets/img/trophies/' . $imageFileName . '.png" alt="' . $trophyName . '">';
-                echo '<div class="trophy-count-wrapper">';
-                echo '<h2 class="trophy-count">' . $count . '<span>x</span></h2>';
-                echo '<p class="trophy-name">' . $shortTrophyName . '</p>';
-                echo '</div>';
-                echo '</div>';
-                echo '</div>';
-            }
-            echo '</div>';
-        }
-        ?>
-        </div>
         <?php if ($careerData->position == 'G') { ?>
-        <table class="small phone-hide">
+        <table class="phone-hide">
             <thead>
                 <td>Games</td>
                 <td>Wins</td>
@@ -130,7 +66,7 @@ $careerAll = $careerData->seasonTotals;
         <div class="title stats">
             <h3 class="header-text" style="font-size: 1.3rem;">Playoffs</h3>
         </div>
-        <table class="small phone-hide">
+        <table class="phone-hide">
             <thead>
                 <td>Games</td>
                 <td>Wins</td>
@@ -244,7 +180,7 @@ $careerAll = $careerData->seasonTotals;
                 <td><?= $careerTotalsPlayoffs->goals ?></td>
                 <td><?= $careerTotalsPlayoffs->assists ?></td>
                 <td><?= $careerTotalsPlayoffs->points ?></td>
-                <td><?= $careerTotalsPlayoffs->gamesPlayed > 0 ? number_format((float)$careerTotalsPlayoffs->points / $careerTotalsPlayoffs->gamesPlayed, 2, '.', '') : 0 ?></td>
+                <td><?= ($careerTotalsPlayoffs->gamesPlayed > 0) ? number_format((float)$careerTotalsPlayoffs->points / $careerTotalsPlayoffs->gamesPlayed, 2, '.', '') : '0.00' ?></td>
                 <td><?= number_format((float)$careerTotalsPlayoffs->shootingPctg * 100, 1, '.', '') ?></td>
                 <td><?= $careerTotalsPlayoffs->plusMinus ?></td>
                 <td><?= $careerTotalsPlayoffs->pim ?></td>
@@ -269,7 +205,7 @@ $careerAll = $careerData->seasonTotals;
             </div>
             <div class="stat">
                 <div class="label">PPG</div>
-                <div class="value"><?= isset($careerTotalsPlayoffs->points) && isset($careerTotalsPlayoffs->gamesPlayed) ? number_format((float)$careerTotalsPlayoffs->points / $careerTotalsPlayoffs->gamesPlayed, 2, '.', '') : '' ?></div>
+                <div class="value"><?= isset($careerTotalsPlayoffs->points) && isset($careerTotalsPlayoffs->gamesPlayed) && $careerTotalsPlayoffs->gamesPlayed > 0 ? number_format((float)$careerTotalsPlayoffs->points / $careerTotalsPlayoffs->gamesPlayed, 2, '.', '') : '0.00' ?></div>
             </div>
             <div class="stat">
                 <div class="label">+/-</div>
@@ -285,6 +221,71 @@ $careerAll = $careerData->seasonTotals;
             </div>
         </div> <!-- FORWARD PLAYOFFS STATS .phone-show -->
         <?php } ?>
+    </div>
+
+    <div class="awards">
+        <?php 
+        // Initialize an empty array to count trophies
+        $trophyCounts = [];
+
+        // Mapping array for trophy names to image file names
+        $trophyImageMap = [
+            "Art Ross Trophy" => "art_ross",
+            "Bill Masterton Memorial Trophy" => "bill_masterton_memorial",
+            "Calder Memorial Trophy" => "calder_memorial",
+            "Conn Smythe Trophy" => "conn_smythe",
+            "E.J. McGuire Award of Excellence" => "placeholder",
+            "Frank J. Selke Trophy" => "frank_selke",
+            "Hart Memorial Trophy" => "hart_memorial",
+            "Jack Adams Award" => "jack_adams",
+            "James Norris Memorial Trophy" => "james_norris_memorial",
+            "King Clancy Memorial Trophy" => "king_clancy",
+            "Lady Byng Memorial Trophy" => "lady_byng_memorial",
+            "Mark Messier NHL Leadership Award" => "mark_messier",
+            "Maurice “Rocket” Richard Trophy" => "maurice_richard",
+            "Presidents' Trophy" => "presidents_trophy",
+            "Ted Lindsay Award" => "ted_lindsay",
+            "Vezina Trophy" => "vezina",
+            "William M. Jennings Trophy" => "william_jennings",
+            "Stanley Cup" => "stanley_cup",
+        ];
+
+        // Check if awards property exists and is an array
+        if (isset($careerData->awards) && is_array($careerData->awards)) {
+            // Loop through awards to count trophies
+            foreach ($careerData->awards as $award) {
+                $trophyName = $award->trophy->default;
+                if (!isset($trophyCounts[$trophyName])) {
+                    $trophyCounts[$trophyName] = 0;
+                }
+                $trophyCounts[$trophyName] += count($award->seasons);
+            }
+        }
+
+        // Only display the trophies div if there are trophies to show
+        if (!empty($trophyCounts)) {
+            echo '<div class="trophies grid grid-150 grid-gap-lg grid-gap-row-xl">';
+            // Loop through trophy counts to display each trophy
+            foreach ($trophyCounts as $trophyName => $count) {
+                $imageFileName = isset($trophyImageMap[$trophyName]) ? $trophyImageMap[$trophyName] : strtolower(str_replace(' ', '_', $trophyName));
+                
+                // Get the first two words of the trophy name
+                $trophyNameWords = explode(' ', $trophyName);
+                $shortTrophyName = implode(' ', array_slice($trophyNameWords, 0, 2));
+                
+                echo '<div class="trophy">';
+                echo '<div class="trophy-wrapper">';
+                echo '<img src="'. BASE_URL .'/assets/img/trophies/' . $imageFileName . '.png" alt="' . $trophyName . '">';
+                echo '<div class="trophy-count-wrapper">';
+                echo '<h2 class="trophy-count">' . $count . '<span>x</span></h2>';
+                echo '<p class="trophy-name">' . $shortTrophyName . '</p>';
+                echo '</div>';
+                echo '</div>';
+                echo '</div>';
+            }
+            echo '</div>';
+        }
+        ?>
     </div>
 
     <div class="career-stats-two">

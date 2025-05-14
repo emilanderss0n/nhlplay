@@ -413,8 +413,8 @@
     justify-content: space-between;
     margin-top: 0.5em;
     font-weight: 600;
-    font-size: 0.9rem;
-    padding: 0 0.6rem;
+    font-size: 0.85rem;
+    padding: 0 0.3rem;
   }
 
   .schedule .game.final .extra {
@@ -1949,15 +1949,16 @@
     border-radius: 10px;
     position: relative;
     overflow: clip;
+    background-blend-mode: luminosity;
   }
 
   #player-modal .stats-player .career-stats-two .season-career .team-logo {
     width: 800px;
     left: -200px;
     top: -100px;
-    mix-blend-mode: soft-light;
+    mix-blend-mode: overlay;
     mask: var(--logo-mask-card);
-    opacity: 0.3;
+    opacity: 0.7;
     position: absolute;
   }
 
@@ -1991,6 +1992,35 @@
     z-index: 2;
     position: relative;
     border: 1px solid var(--border-stroke-weak);
+  }
+
+  #player-modal table {
+    border-spacing: 0;
+  }
+
+  #player-modal table thead td {
+    background-color: var(--semi-frost-bg);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-stroke-weak);
+    color: var(--paragraph-color);
+  }
+
+  #player-modal table td {
+    border-right: 1px solid var(--border-stroke-weak);
+  }
+
+  #player-modal table td:last-child {
+    border-right: none;
+  }
+
+  #player-modal table tbody tr:nth-child(odd) td, #player-modal table tbody tr td {
+    background-color: var(--semi-frost-bg);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border-stroke-weak);
+  }
+
+  #player-modal table tbody tr:nth-child(odd):last-child td, #player-modal table tbody tr:last-child td {
+    border-bottom: none;
   }
 
   #player-modal .stats-player .career-stats-two .type,
@@ -2056,7 +2086,7 @@
   }
 
   #player-modal .awards:has(.trophies) {
-    margin: 3rem 0 4rem;
+    margin: 5rem 0;
   }
 
   .trophies .trophy {
@@ -3258,6 +3288,12 @@
     transform: none;
   }
 
+  .players-to-watch .goalie .player .headshot {
+    width: 140px;
+    height: 140px;
+    transform: none;
+  }
+
   .players-to-watch .player .headshot.head-1 {
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
@@ -3279,6 +3315,10 @@
   .players-to-watch .headshot .head {
     transform: scale(1.5);
   }
+
+  .players-to-watch .goalie .headshot .head {
+    transform: scale(1.5) translateY(5px);
+}
 
   .headshot .team-img {
     transform: scale(2.58) translateY(6px);
@@ -3349,6 +3389,10 @@
     background-color: var(--content-box-bg);
     width: 6px;
     justify-content: center;
+  }
+
+    .players-to-watch .goalie.row .info {
+    margin: 0 2em;
   }
 
   .players-to-watch .row .info span {
@@ -3990,4 +4034,153 @@
   .reddit-feed .post-comments i {
     font-size: 0.95rem;
   }
+.reddit-game-thread {
+  background-color: var(--content-box-bg);
+  border-radius: var(--border-radius);
+  padding: 1rem;
+  box-shadow: var(--shadow-box);
+  display: none;
+}
+
+.reddit-thread-settings {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--main-bg-color);
+}
+
+.reddit-thread-info {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.reddit-thread-info .thread-title {
+  flex: 1;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--paragraph-color);
+}
+
+.reddit-thread-info a {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  gap: 0.5rem;
+}
+
+.reddit-thread-info .thread-controls {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+.manual-search {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.manual-search input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid var(--main-bg-color);
+  border-radius: var(--border-radius);
+}
+
+#reddit-post-id {
+  flex: 1;
+  min-width: 150px;
+  padding: 0.5rem;
+  border: 1px solid var(--main-bg-color);
+  border-radius: var(--border-radius);
+}
+
+.sort-options, .auto-refresh {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+#sort-option {
+  padding: 0.5rem;
+  border: 1px solid var(--main-bg-color);
+  border-radius: var(--border-radius);
+}
+
+.reddit-thread-comments {
+  max-height: 500px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.loading-message {
+  text-align: center;
+  color: var(--medium-contrast-color);
+  padding: 2rem 0;
+}
+
+.loading-message .example {
+  font-size: 0.9rem;
+  color: var(--low-contrast-color);
+  margin-top: 0.5rem;
+}
+
+.reddit-comment {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background-color: var(--main-bg-color);
+  border-radius: var(--border-radius);
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.reddit-comment-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.reddit-comment-author {
+  font-weight: bold;
+  color: var(--main-link-color);
+}
+
+.reddit-comment-time {
+  font-size: 0.8rem;
+  color: var(--medium-contrast-color);
+}
+
+.reddit-comment-body {
+  line-height: 1.5;
+  overflow-wrap: break-word;
+}
+
+.reddit-comment-footer {
+  margin-top: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.reddit-comment-score {
+  font-size: 0.9rem;
+  color: var(--medium-contrast-color);
+}
+
+.reddit-loading {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.reddit-loading .loading-spinner {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+}
 }
