@@ -24,19 +24,6 @@ if (empty($homeTeam) || empty($awayTeam)) {
     exit;
 }
 
-// Cache file path
-$cacheKey = strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $homeTeam . $awayTeam));
-$cacheFile = "../cache/reddit-gamethread-{$cacheKey}.json";
-$cacheLifetime = 300; // 5 minutes
-
-// Use cached data if available and fresh
-if (file_exists($cacheFile) && (filemtime($cacheFile) > (time() - $cacheLifetime))) {
-    $result = json_decode(file_get_contents($cacheFile), true);
-    header('Content-Type: application/json');
-    echo json_encode($result);
-    exit;
-}
-
 // Function to find game thread posts
 function findGameThreadPosts($homeTeam, $awayTeam) {
     // First, fetch recent posts from r/hockey
@@ -130,9 +117,6 @@ if (!isset($result['error'])) {
 } else {
     $result['found'] = false;
 }
-
-// Cache the result
-file_put_contents($cacheFile, json_encode($result));
 
 // Return JSON response
 header('Content-Type: application/json');

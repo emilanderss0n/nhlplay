@@ -139,10 +139,6 @@
             padding: 2rem;
         }
 
-        .reddit-game-thread {
-            display: block;
-        }
-
         .post-game-summary {
             display: flex;
             flex-direction: row;

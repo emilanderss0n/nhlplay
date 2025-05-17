@@ -1,5 +1,6 @@
 import { initPreGamePage, cleanupPreGamePage } from './pre-game-handlers.js';
 import { fixAjaxResponseUrls } from './ajax-handler.js';
+import { checkRedditGameThread } from './reddit-thread-handler.js';
 
 export function initGameHandlers(elements) {
 
@@ -59,12 +60,21 @@ export function initGameHandlers(elements) {
                         window.history.pushState({ gameId: gameId, type: 'game' }, '', 'live-game?gameId=' + gameId);
                         elements.mainElement.classList.add('page-ani');
                         isFirstLoad = false;
-                    }
-
-                    elements.mainElement.innerHTML = fixAjaxResponseUrls(xhr.responseText);
+                    }                    elements.mainElement.innerHTML = fixAjaxResponseUrls(xhr.responseText);
                     elements.mainElement.addEventListener('animationend', function () {
                         elements.mainElement.classList.remove('page-ani');
-                    }, { once: true });
+                    }, { once: true });                    
+                    // Trigger the Reddit game thread check after the content is loaded
+                    // Use setTimeout to ensure DOM is fully ready before checking
+                    setTimeout(() => {
+                        // Get the game ID from the URL or DOM
+                        const gameId = new URLSearchParams(window.location.search).get('gameId') || 
+                                       document.querySelector('.reddit-game-thread[data-game-id]')?.dataset.gameId;
+                        
+                        if (gameId) {
+                            checkRedditGameThread(gameId);
+                        }
+                    }, 500);
                 };
 
                 xhr.onloadend = function () {

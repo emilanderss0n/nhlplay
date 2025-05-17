@@ -1,4 +1,5 @@
 import { fixAjaxResponseUrls } from './ajax-handler.js';
+import { checkRedditGameThread } from './reddit-thread-handler.js';
 
 export function initRouteHandler(elements) {
     function routeLink(url, callback) {
@@ -37,10 +38,20 @@ export function initRouteHandler(elements) {
                         });
                     }
                 }
-            }
-
-            // IMPORTANT: Dispatch custom event after content loads (used on draft page)
+            }            // IMPORTANT: Dispatch custom event after content loads (used on draft page)
             document.dispatchEvent(new CustomEvent('routeChanged'));
+            
+            // Check for Reddit game thread if we're on a live game page
+            if (url.includes('live-game')) {
+                setTimeout(() => {
+                    const gameId = new URLSearchParams(window.location.search).get('gameId') || 
+                                  document.querySelector('.reddit-game-thread[data-game-id]')?.dataset.gameId;
+                    
+                    if (gameId) {
+                        checkRedditGameThread(gameId);
+                    }
+                }, 500);
+            }
         };
 
         xhr.onloadend = function () {

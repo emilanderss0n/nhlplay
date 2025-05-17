@@ -18,6 +18,16 @@ $homeTeamName = $homeTeam->commonName->default;
 <main>
     <div class="wrap">
         <div class="post-game-cont live">
+                        <div class="reddit-game-thread" data-game-id="<?= $gameId ?>">
+                <div class="reddit-thread-info">
+                    <div class="thread-title" id="reddit-thread-title">Searching for game thread...</div>
+                    <a href="#" id="reddit-thread-link" class="btn sm" target="_blank" rel="noopener noreferrer" style="display: none;"><i class="bi bi-reddit"></i> Game Thread</a>
+                </div>
+                <div class="reddit-thread-not-found" style="display: none;"> 
+                    <a href="https://www.reddit.com/r/hockey/search/?q=<?= urlencode($awayTeamName . ' ' . $homeTeamName . ' thread') ?>&sort=new" target="_blank" rel="noopener noreferrer" class="btn sm">Search on r/hockey <i class="bi bi-box-arrow-up-right"></i></a>
+                    <button onclick="if(typeof window.checkRedditGameThread === 'function') window.checkRedditGameThread(true); return false;" class="btn sm subtle">Retry search <i class="bi bi-arrow-clockwise"></i></button>
+                </div>
+            </div>
             <div class="post-game-box">
                 <div class="post-game-header">
                     <div class="container" style="
@@ -49,16 +59,7 @@ $homeTeamName = $homeTeam->commonName->default;
                             </picture>
                         </div>
                     </div>
-                </div>
-                <div class="reddit-game-thread">
-                    <div class="reddit-thread-info">
-                        <div class="thread-title" id="reddit-thread-title">Searching for game thread...</div>
-                        <a href="#" id="reddit-thread-link" target="_blank" rel="noopener noreferrer" style="display: none;">View on Reddit <i class="bi bi-box-arrow-up-right"></i></a>
-                    </div>
-                    <div class="reddit-thread-not-found" style="display: none;">
-                        <p><a href="https://www.reddit.com/r/hockey/search/?q=<?= urlencode($awayTeamName . ' ' . $homeTeamName . ' thread') ?>&sort=new" target="_blank" rel="noopener noreferrer" class="btn sm">Search on r/hockey <i class="bi bi-box-arrow-up-right"></i></a></p>
-                    </div>
-                </div>
+                </div>                
                 <div class="post-game-stats">
                     <table class="border-only">
                         <thead>
@@ -190,14 +191,21 @@ $homeTeamName = $homeTeam->commonName->default;
         setTimeout(() => {
             activityElement.style.display = 'none';
         }, 500);
-    }
-    
-    function imageError(e){
+    }      function imageError(e){
         e.setAttribute("src","./assets/img/no-image.png");
         e.removeAttribute("onError");
         e.removeAttribute("onclick");
-    }
+    }    
     function updateStats() {
+        // Set a flag to track if this is the first update
+        if (!window.initialStatsUpdateDone) {
+            window.initialStatsUpdateDone = true;
+            // Trigger a Reddit thread check if the function is available
+            if (typeof window.checkRedditGameThread === 'function') {
+                window.checkRedditGameThread();
+            }
+        }
+        
         fetch('ajax/live-game.php', {
             method: 'POST',
             headers: {
@@ -218,9 +226,7 @@ $homeTeamName = $homeTeam->commonName->default;
                 if (element && sourceElement) {
                     element.innerHTML = sourceElement.innerHTML;
                 }
-            }
-            
-            // Update each element safely
+            }            // Update each element safely
             updateElement('score', '#score');
             updateElement('game-date', '#game-date');
             updateElement('away-sog', '#away-sog');
@@ -240,8 +246,12 @@ $homeTeamName = $homeTeam->commonName->default;
             updateElement('away-roster-stats', '#away-roster-stats');
             updateElement('home-roster-stats', '#home-roster-stats');
         })
-        .catch(error => console.error('Error updating stats:', error));
-    }    setInterval(updateStats, 10000); // Update every 10 seconds
+        .catch(error => console.error('Error updating stats:', error));    
+    }      setInterval(updateStats, 10000); // Update every 10 seconds
     
+    // Check for existing Reddit thread function and initialize if needed
+    if (typeof window.checkRedditGameThread === 'function') {
+        window.checkRedditGameThread();
+    }
 </script>
 <?php if(isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {} else { include_once '../footer.php'; } ?>

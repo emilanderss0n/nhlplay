@@ -14,6 +14,7 @@ import { initPreGamePage } from './modules/pre-game-handlers.js';
 import { initDraftPage } from './modules/drafts.js';
 import { initTeamBuilder} from './modules/teambuilder.js';
 import { initRedditPosts, initRedditGameThread } from './modules/reddit-handlers.js';
+import { initRedditThreadObservers } from './modules/reddit-thread-handler.js';
 
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -34,6 +35,7 @@ document.addEventListener('DOMContentLoaded', function () {
     initTeamBuilder();
     initRedditPosts();
     initRedditGameThread();
+    initRedditThreadObservers();
 
     if (document.querySelector('.pre-game-cont')) {
         initPreGamePage();
