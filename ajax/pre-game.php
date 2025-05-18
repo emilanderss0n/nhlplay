@@ -146,7 +146,7 @@ include_once '../includes/data/init-pre-game.php';
                 </div>
             </div>
             -->
-            <h3 class="players-to-watch-title" >Players to Watch - Last 5 Games</h3>
+            <h3 class="players-to-watch-title" >Players to Watch</h3>
             <div class="players-to-watch grid grid-500 grid-gap-lg grid-gap-row-lg" grid-max-col-count="2">
                 <?php if (isset($game->matchup->skaterComparison->leaders) && is_array($game->matchup->skaterComparison->leaders)) {
                     foreach ($game->matchup->skaterComparison->leaders as $categoryData) {
