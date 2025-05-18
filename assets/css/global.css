@@ -1,7 +1,5 @@
 :root {
   interpolate-size: allow-keywords;
-  --transparent: transparent;
-  --white: #fff;
   --main-bg-color: #e3e7eb;
   --main-darker-bg: #f2f4f7;
   --content-box-bg: #fff;
@@ -9,43 +7,21 @@
   --secondary-link-color: #e74343;
   --green: #00b894;
   --dark-bg-color: #f1f3f5;
-  --switch-bg-color: #fff;
   --heading-color: #161b28;
   --heading-inverse: #fff;
   --low-contrast-color: #c2c5d1;
   --medium-contrast-color: #7f86a1;
   --paragraph-color: #57617b;
   --shadow-box: 0px 24.7928px 24px -15px rgb(129 133 147 / 18%), 0px 15.32523px 10.64212px -8px rgb(147 151 162 / 11%), 0px 6.04819px 3.59618px -3px rgb(25 26 29 / 12%);
-  --big-shadow: 0 30px 40px -20px rgb(142 151 172 / 30%);
-  --main-logo: url(../img/logo.png);
   --odd-bg: #f7f9fb;
   --gradient-text: linear-gradient(280.8deg,
       var(--secondary-link-color) 15.21%,
       var(--main-link-color) 85.53%);
-  --gradient-bg: linear-gradient(335deg,
-      #ffffff85 0%,
-      rgb(255 255 255 / 49%) 45%,
-      rgb(255 255 255 / 0%) 52%,
-      #ffffff 100%);
   --semi-frost-bg: #ffffff7d;
   --semi-frost-bg-2: #ffffff94;
   --shadow-button: 0 3px 4px -1px rgb(0 0 0 / 15%);
   --black-white: #fff;
   --second-content-box-bg: #fbfdff;
-  --form-border: #8d94ab;
-  --black-main-link: var(--main-link-color);
-  --content-box-gradient: linear-gradient(337deg,
-      #ffffff 10%,
-      rgb(244 244 244) 40%,
-      #e9ecf2 100%);
-  --content-box-gradient-2: linear-gradient(335deg,
-      #ffffff 0%,
-      rgb(234 240 245) 45%,
-      rgb(255 255 255 / 0%) 52%,
-      #d0d6dc 100%);
-  --form-bg: var(--low-contrast-color);
-  --form-bg-2: var(--content-box-bg);
-  --hover-trans-bez: cubic-bezier(0.175, 0.885, 0.32, 1.275);
   --player-modal-bg: #ffffffe8;
   --invert-one: none;
   --box-shadow-nice: rgb(10 13 51 / 27%) 0px 30px 35px -30px, rgb(0 0 0 / 5%) 0px 5px 5px 0px;
@@ -89,33 +65,15 @@
     --heading-inverse: #161b28;
     --dark-bg-color: #070b11;
     --shadow-box: none;
-    --big-shadow: 0 30px 40px -20px rgb(13 16 21 / 39%);
     --odd-bg: #131821;
     --gradient-text: linear-gradient(280.8deg,
         var(--secondary-link-color) 15.21%,
         var(--main-link-color) 85.53%);
-    --gradient-bg: linear-gradient(337deg,
-        #22252e 0%,
-        rgb(233 233 233 / 0%) 48%,
-        rgb(255 255 255 / 1%) 49%,
-        #22252e 100%);
     --semi-frost-bg: #72798d14;
     --semi-frost-bg-2: #1a2129b3;
     --shadow-button: 0 3px 4px -1px rgb(0 0 0 / 33%);
     --black-white: #000;
     --second-content-box-bg: #282c37;
-    --form-border: #5c6174;
-    --black-main-link: #000;
-    --content-box-gradient: linear-gradient(337deg,
-        #2b333f 10%,
-        rgb(22 29 39) 40%,
-        #000000 100%);
-    --content-box-gradient-2: linear-gradient(337deg,
-        #272b36 10%,
-        rgb(26 28 34) 40%,
-        #000000 100%);
-    --form-bg: var(--black-white);
-    --form-bg-2: var(--content-box-bg);
     --player-modal-bg: #0c0f1678;
     --invert-one: invert(1);
     --box-shadow-nice: rgb(0 0 0 / 74%) 0px 30px 35px -30px,
@@ -1366,7 +1324,7 @@
   }
 
   .home-leaders .points.active .points-value {
-    color: var(--white) !important;
+    color: #fff !important;
   }
 
   .home-leaders .points .points-name {
