@@ -30,8 +30,8 @@ $mergedCSS = $isDevelopment ? false : generateMergedCSS([
     <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
     <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=5.0, user-scalable=yes" />
     <title>NHL PLAY</title>
-    <meta name="keywords" content="nhl, hockey, tracker, schedule, stats, statistics, live, stream, betting" />
-    <meta name="description" content="Keep track of advanced statistics in the NHL. Get the latest scores, stats, standings, and much more." />
+    <meta name="keywords" content="nhl, hockey, stream, schedule, stats, live, games, betting, reddit" />
+    <meta name="description" content="The number 1 hub for NHL hockey! Watch games, keep track of advanced statistics in the NHL. Get the latest scores, stats, standings, and much more." />
     <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
     <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="192x192" href="assets/img/favicon/favicon-192x192.png">
