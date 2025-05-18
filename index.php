@@ -161,7 +161,8 @@ if (!is_dir($cacheDir)) {
                 renderLeagueTable($standing, $detect);
                 ?>
             </div>
-        </div>          <div class="component-header" style="margin-top: 5rem">
+        </div>          
+        <div class="component-header" style="margin-top: 5rem">
             <h3 class="title">NHL - Popular @ r/hockey</h3>
             <a href="https://www.reddit.com/r/hockey/" target="_blank" rel="noopener noreferrer" class="btn sm">Visit r/hockey</a>
         </div>
