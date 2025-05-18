@@ -110,22 +110,17 @@ $homeTeamName = $homeTeam->commonName->default;
                             </tr>
                         </tbody>
                     </table>
-                    <!--
-                    <div class="watch-streams grid-template-4">
+                    <div class="watch-streams grid grid-300 grid-gap-lg grid-gap-row-lg" grid-max-col-count="4">
                         <div class="stream">
                             <a href="https://1stream.vip/nhl-streams/" target="_blank" class="btn subtle">1Stream <i class="bi right bi-arrow-right-short"></i></a>
                         </div>
                         <div class="stream">
-                            <a href="https://back.methstreamer.com/nhl-live-streams" target="_blank" class="btn subtle">MethStreams <i class="bi right bi-arrow-right-short"></i></a>
-                        </div>
-                        <div class="stream">
-                            <a href="https://reddit.nhlbite.com/" target="_blank" class="btn subtle">NHL Bite <i class="bi right bi-arrow-right-short"></i></a>
+                            <a href="https://nhlbite.com/" target="_blank" class="btn subtle">NHL Bite <i class="bi right bi-arrow-right-short"></i></a>
                         </div>
                         <div class="stream">
                             <a href="https://nhlstreamlinks.live/" target="_blank" class="btn subtle">NHL Stream Links <i class="bi right bi-arrow-right-short"></i></a>
                         </div>
                     </div>
-                                -->
                 </div>
             </div>
             <div class="post-game-boxscore grid grid-300 grid-gap-lg grid-gap-row-lg" id="game-scoring-plays" grid-max-col-count="3">

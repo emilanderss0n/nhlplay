@@ -1393,11 +1393,6 @@
             display: none;
         }
 
-        .watch-streams {
-            gap: 1rem;
-            margin-top: 2rem;
-        }
-
         .schedule-game {
             width: 100%;
         }

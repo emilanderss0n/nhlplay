@@ -130,22 +130,17 @@ include_once '../includes/data/init-pre-game.php';
                 </div><!-- end .pre-game-stats -->
                 </div><!-- end .pre-game-side -->
             </div>
-            <!--
-            <div class="watch-streams grid-template-4">
+            <div class="watch-streams grid grid-300 grid-gap-lg grid-gap-row-lg" grid-max-col-count="4">
                 <div class="stream">
-                    <a href="https://1stream.vip/nhl-streams/" target="_blank" class="btn subtle">1Stream <i class="bi right bi-arrow-right-short"></i></a>
+                    <a href="https://1stream.vip/nhl-streams/" target="_blank">1Stream <i class="bi right bi-arrow-right-short"></i></a>
                 </div>
                 <div class="stream">
-                    <a href="https://back.methstreamer.com/nhl-live-streams" target="_blank" class="btn subtle">MethStreams <i class="bi right bi-arrow-right-short"></i></a>
+                    <a href="https://nhlbite.com/" target="_blank">NHL Bite <i class="bi right bi-arrow-right-short"></i></a>
                 </div>
                 <div class="stream">
-                    <a href="https://reddit.nhlbite.com/" target="_blank" class="btn subtle">NHL Bite <i class="bi right bi-arrow-right-short"></i></a>
-                </div>
-                <div class="stream">
-                    <a href="https://nhlstreamlinks.live/" target="_blank" class="btn subtle">NHL Stream Links <i class="bi right bi-arrow-right-short"></i></a>
+                    <a href="https://nhlstreamlinks.live/" target="_blank">NHL Stream Links <i class="bi right bi-arrow-right-short"></i></a>
                 </div>
             </div>
-            -->
             <h3 class="players-to-watch-title" >Players to Watch</h3>
             <div class="players-to-watch grid grid-500 grid-gap-lg grid-gap-row-lg" grid-max-col-count="2">
                 <?php if (isset($game->matchup->skaterComparison->leaders) && is_array($game->matchup->skaterComparison->leaders)) {

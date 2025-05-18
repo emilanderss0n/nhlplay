@@ -1670,11 +1670,18 @@
   }
 
   .watch-streams {
-    display: grid;
-    grid-template-columns: repeat(minmax(300px, 1fr), 1fr);
-    gap: 1.5rem;
     margin-top: 3rem;
   }
+
+  .watch-streams a {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    align-items: center;
+    background-color: var(--content-box-bg);
+    border-radius: 7px;
+  }
+
 
   .post-game-box .watch-streams {
     margin-top: 2rem;
