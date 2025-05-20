@@ -94,9 +94,9 @@
   }
 }
 
-@layer third_party, base, widgets, darkmode, responsive, animations;
+@layer third_party, base, widgets, util, darkmode, responsive, animations;
 
-@layer base {
+@layer util {
   #gameLogModal {
     z-index: 99;
     top: 55px;
@@ -1640,6 +1640,9 @@
     border-radius: 7px;
   }
 
+  .watch-streams a:hover {
+    box-shadow: 0 0 0 2px var(--low-contrast-color);
+  }
 
   .post-game-box .watch-streams {
     margin-top: 2rem;

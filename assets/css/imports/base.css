@@ -215,11 +215,11 @@
         grid-template-columns: repeat(auto-fit,
                 minmax(var(--grid-col-min-size-calc), 1fr));
 
-        &.grid .grid-inline-text {
+        & .grid-inline-text {
             grid-column: 1 / -1;
         }
 
-        &.grid .break {
+        & .break {
             grid-column: 1 / -1;
         }
     }
