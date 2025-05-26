@@ -66,7 +66,7 @@ if (!is_dir($cacheDir)) {
                 </label>
             </div>
         </div>
-        <div class="schedule no-team-selected grid grid-300 grid-gap-lg grid-gap-row-sm" grid-max-col-count="4">
+        <div class="schedule no-team-selected grid grid-300 grid-gap-lg grid-gap-row" grid-max-col-count="4">
             <?php 
             $todaysGames = strtotime(date('Y-m-d'));
             $startDate = strtotime(date('Y-m-d', strtotime('-1 day')));

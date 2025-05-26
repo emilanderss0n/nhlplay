@@ -1,4 +1,4 @@
-@layer base {
+@layer util {
     .tb-mobile-alert {
         display: none;
     }

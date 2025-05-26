@@ -87,11 +87,6 @@
             justify-content: space-between;
         }
 
-        .schedule .game .teams img {
-            width: 7rem;
-            height: 7rem;
-        }
-
         .playoffs-bracket:not(:has(table)) {
             padding: 3rem;
             border-radius: 10px;
@@ -254,12 +249,6 @@
 
         .home-leaders {
             --grid-gap-vertical: 4rem;
-        }
-
-        .schedule.pre-game-series .game #team-linko img {
-            width: auto;
-            height: 100px;
-            position: absolute;
         }
 
         .post-game-stars .player .info {
@@ -501,10 +490,6 @@
             grid-template-columns: repeat(2, 1fr);
         }
 
-        .schedule.pre-game-series .game #team-linko img {
-            height: 50px;
-        }
-
         .post-game-stars .player-wrap {
             min-height: 120px;
         }
@@ -587,11 +572,6 @@
 
         .alert {
             gap: 1rem;
-        }
-
-        .schedule .game {
-            width: 100%;
-            margin: 0;
         }
 
         .standings table {
@@ -879,20 +859,6 @@
 
         #last-games tbody td.image p {
             display: none;
-        }
-
-        .schedule .game .teams #team-linko {
-            height: 3.2rem;
-        }
-
-        .schedule .game .teams img {
-            width: 12rem;
-            height: 12rem;
-        }
-
-        .schedule .game .extra {
-            padding: 0;
-            font-size: 0.8rem;
         }
 
         .table-description {
@@ -1302,15 +1268,6 @@
         .playoffs-round.final .round-games .team .team-img {
             width: 62px;
             height: 62px;
-        }
-
-        .schedule .game .teams img {
-            width: 7rem;
-            height: 7rem;
-        }
-
-        .schedule.pre-game-series .game #team-linko img {
-            height: 80px;
         }
 
         .injuries-home .injuries .team-injuries {

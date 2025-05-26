@@ -336,6 +336,7 @@
     position: relative;
     cursor: pointer;
     width: 100%;
+    container: game-schedule / inline-size;
     transition: all 0.3s linear;
   }
 
@@ -523,6 +524,13 @@
     height: 8rem;
     mask: var(--logo-mask);
     transition: all 1s;
+
+    @container game-schedule (min-width: 600px) {
+      & {
+      width: 20rem;
+      height: 20rem;
+      }
+    }
   }
 
   .schedule.last-game {
@@ -966,10 +974,6 @@
     height: 48px;
     max-width: fit-content;
     mask: var(--logo-mask-subtle);
-  }
-
-  .game {
-    margin-bottom: 1em;
   }
 
   .wrap.extended .standings {
