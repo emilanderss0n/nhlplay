@@ -25,7 +25,7 @@
 <a href="javascript:void(0);" data-value="19" data-abbr="STL"><span><img src="assets/img/teams/png/19.png" class="team-img" /></span>St. Louis Blues</a>
 <a href="javascript:void(0);" data-value="14" data-abbr="TBL"><span><img src="assets/img/teams/png/14.png" class="team-img" /></span>Tampa Bay Lightning</a>
 <a href="javascript:void(0);" data-value="10" data-abbr="TOR"><span><img src="assets/img/teams/png/10.png" class="team-img" /></span>Toronto Maple Leafs</a>
-<a href="javascript:void(0);" data-value="59" data-abbr="UTA"><span><img src="assets/img/teams/png/59.png" class="team-img" /></span>Utah Hockey Club</a>
+<a href="javascript:void(0);" data-value="59" data-abbr="UTA"><span><img src="assets/img/teams/png/59.png" class="team-img" /></span>Utah Mammoth</a>
 <a href="javascript:void(0);" data-value="23" data-abbr="VAN"><span><img src="assets/img/teams/png/23.png" class="team-img" /></span>Vancouver Canucks</a>
 <a href="javascript:void(0);" data-value="54" data-abbr="VGK"><span><img src="assets/img/teams/png/54.png" class="team-img" /></span>Vegas Golden Knights</a>
 <a href="javascript:void(0);" data-value="15" data-abbr="WPG"><span><img src="assets/img/teams/png/15.png" class="team-img" /></span>Washington Capitals</a>

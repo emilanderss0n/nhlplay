@@ -34,6 +34,8 @@ if (!is_dir($cacheDir)) {
                     echo '<span>There are recent player injuries reported, <a id="injuriesLink" href="#injuriesAnchor">click here</a> to examine them</span>';
                     echo '</div>';
                 }
+            } else {
+                echo '<a href="'.BASE_URL.'/pages/last-season-overview" class="season-break-winner" rel="page" style="display: inline-block; overflow: hidden; border-radius: 1rem;"><img src="'.BASE_URL.'/assets/img/stanley_cup_fla_2025.webp" alt="Stanley Cup Winner 2025" /></a>';
             } ?>
         </div>
         <?php if (!$seasonBreak) { ?>
