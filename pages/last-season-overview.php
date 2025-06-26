@@ -3,14 +3,6 @@ if(isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH
 include_once '../path.php';
 include_once '../includes/functions.php';
 
-function fetchPlayoffData($url) {
-    $curl = curlInit($url);
-    if ($curl === false) {
-        // Handle error
-        die('Error fetching playoff data');
-    }
-    return json_decode($curl);
-}
 ?>
 <main>
     <div class="wrap">
@@ -135,17 +127,17 @@ function fetchPlayoffData($url) {
                 <div class="component-header">
                     <h3 class="title">Regular Season Leaders</h3>
                 </div>
-                <div class="home-leaders grid grid-300 grid-gap-lg grid-gap-row-xl">
+                <div class="home-leaders grid grid-300 grid-gap-lg grid-gap-row-xl" style="margin-top: 2rem;">
                     <?php
-                        $skaterApiUrl = 'https://api-web.nhle.com/v1/skater-stats-leaders/' . $lastSeason . '/2?categories=points%2Cgoals';
-                        $goalieApiUrl = 'https://api-web.nhle.com/v1/goalie-stats-leaders/' . $lastSeason . '/2?categories=goalsAgainstAverage%2Cwins';
+                        define('SKATER_API_URL', 'https://api-web.nhle.com/v1/skater-stats-leaders/' . $lastSeason . '/2?categories=points,goals');
+                        define('GOALIE_API_URL', 'https://api-web.nhle.com/v1/goalie-stats-leaders/' . $lastSeason . '/2?categories=goalsAgainstAverage,wins');
 
-                        $apiUrls = [$skaterApiUrl, $goalieApiUrl];
-                        $cacheDir = '../cache/';
+                        $apiUrls = [SKATER_API_URL, GOALIE_API_URL];
+                        $cacheDir = dirname(__DIR__) . '/cache/';
                         $cacheLifetime = 90000;
 
                         foreach ($apiUrls as $apiUrl) {
-                            $fileName = ($apiUrl === $skaterApiUrl) ? 'skater-leaders-mini-lastseason' : 'goalie-leaders-mini-lastseason';
+                            $fileName = ($apiUrl === SKATER_API_URL) ? 'skater-leaders-mini-lastseason' : 'goalie-leaders-mini-lastseason';
                             $cacheFile = $cacheDir . $fileName . '.json';
 
                             $apiResponse = fetchData($apiUrl, $cacheFile, $cacheLifetime);
@@ -155,7 +147,36 @@ function fetchPlayoffData($url) {
                                     continue;
                                 }
                                 $leaders = $apiResponse->$category;
-                                include '../templates/leaders-mini.php';
+                                include dirname(__DIR__) . '/templates/leaders-mini.php';
+                            }
+                        }
+                    ?>
+                </div>
+
+                <div class="component-header" style="margin-top: 5rem;">
+                    <h3 class="title">Playoffs Leaders</h3>
+                </div>
+                <div class="home-leaders grid grid-300 grid-gap-lg grid-gap-row-xl" style="margin-top: 2rem;">
+                    <?php
+                        define('SKATER_API_URL_P', 'https://api-web.nhle.com/v1/skater-stats-leaders/' . $lastSeason . '/3?categories=points,goals');
+                        define('GOALIE_API_URL_P', 'https://api-web.nhle.com/v1/goalie-stats-leaders/' . $lastSeason . '/3?categories=goalsAgainstAverage,wins');
+
+                        $apiUrls = [SKATER_API_URL_P, GOALIE_API_URL_P];
+                        $cacheDir = dirname(__DIR__) . '/cache/';
+                        $cacheLifetime = 90000;
+
+                        foreach ($apiUrls as $apiUrl) {
+                            $fileName = ($apiUrl === SKATER_API_URL_P) ? 'skater-leaders-mini-lastseason-playoffs' : 'goalie-leaders-mini-lastseason-playoffs';
+                            $cacheFile = $cacheDir . $fileName . '.json';
+
+                            $apiResponse = fetchData($apiUrl, $cacheFile, $cacheLifetime);
+
+                            foreach (['points', 'goals', 'goalsAgainstAverage', 'wins'] as $category) {
+                                if (!isset($apiResponse->$category)) {
+                                    continue;
+                                }
+                                $leaders = $apiResponse->$category;
+                                include dirname(__DIR__) . '/templates/leaders-mini.php';
                             }
                         }
                     ?>
@@ -163,7 +184,7 @@ function fetchPlayoffData($url) {
             </div>
         </div>
         <div class="playoffs-table">
-            <?= renderPlayoffsBracket('2024', 'Stanley Cup Playoffs', true, false) ?>
+            <?= renderPlayoffsBracket('2025', 'Stanley Cup Playoffs', true, false) ?>
         </div>
         <dialog id="seriesModal" class="modal">
             <div class="modal-header">
