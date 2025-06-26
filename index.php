@@ -11,8 +11,6 @@ if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH']
 
 $page = 'home';
 
-
-// Create cache directory if it doesn't exist
 $cacheDir = __DIR__ . '/cache';
 if (!is_dir($cacheDir)) {
     mkdir($cacheDir, 0755, true);
@@ -22,9 +20,9 @@ if (!is_dir($cacheDir)) {
     <div class="wrap">
         <div class="hero-bar" style="margin-bottom: 3rem">
             <?php 
-            ob_start(); // Start output buffering
-            getInjuriesLeague(); // Capture the output of the function in a buffer
-            $injuriesOutput = ob_get_clean(); // Get the buffered output and stop output buffering
+            ob_start();
+            getInjuriesLeague();
+            $injuriesOutput = ob_get_clean();
             if (!empty($injuriesOutput)) {
                 echo '<div class="alert danger">';
                 echo '<div class="animated-health">';
@@ -38,6 +36,7 @@ if (!is_dir($cacheDir)) {
             }
             ?>
         </div>
+        <?php if (!$seasonBreak) { ?>
         <div class="injuries-home transition-zoom-in" id="injuriesAnchor">
             <div class="injuries team-boxes grid grid-400 grid-gap grid-gap-row" grid-max-col-count="2">
             <?php getInjuriesLeague() ?>
@@ -68,6 +67,7 @@ if (!is_dir($cacheDir)) {
         </div>
         <div class="schedule no-team-selected grid grid-300 grid-gap-lg grid-gap-row" grid-max-col-count="4">
             <?php 
+            
             $todaysGames = strtotime(date('Y-m-d'));
             $startDate = strtotime(date('Y-m-d', strtotime('-1 day')));
             $endDate = strtotime(date('Y-m-d', strtotime('+1 day')));
@@ -95,8 +95,8 @@ if (!is_dir($cacheDir)) {
         </div>
         <div class="home-leaders grid grid-300 grid-gap-lg grid-gap-row-lg">
             <?php
-            const SKATER_API_URL = 'https://api-web.nhle.com/v1/skater-stats-leaders/current/?categories=points,goals';
-            const GOALIE_API_URL = 'https://api-web.nhle.com/v1/goalie-stats-leaders/current/?categories=goalsAgainstAverage,wins';
+            define('SKATER_API_URL', 'https://api-web.nhle.com/v1/skater-stats-leaders/current/?categories=points,goals');
+            define('GOALIE_API_URL', 'https://api-web.nhle.com/v1/goalie-stats-leaders/current/?categories=goalsAgainstAverage,wins');
 
             $apiUrls = [SKATER_API_URL, GOALIE_API_URL];
             $cacheDir = 'cache/';
@@ -161,7 +161,8 @@ if (!is_dir($cacheDir)) {
                 renderLeagueTable($standing, $detect);
                 ?>
             </div>
-        </div>          
+        </div>
+        <?php } ?>
         <div class="component-header" style="margin-top: 5rem">
             <h3 class="title">NHL - Popular @ r/hockey</h3>
             <a href="https://www.reddit.com/r/hockey/" target="_blank" rel="noopener noreferrer" class="btn sm">Visit r/hockey</a>

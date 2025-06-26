@@ -12,8 +12,7 @@ define('ROOT_PATH', realpath(dirname(__FILE__)));
 define('BASE_URL', getBaseUrl());
 
 $season = '20242025';
-$lastSeason = '20232024';
 $draftYear = '2025';
 $draftYearLast = '2024';
-$playoffs = true;
-$seasonBreak = false;
+$playoffs = false;
+$seasonBreak = true;
