@@ -69,15 +69,14 @@ function generateTradeBackgroundStyle($team1, $team2) {
  * Render team logo HTML
  * @param object|null $team Team data
  * @param string $position Position class (team-logo-1 or team-logo-2)
- * @param string $assetsPath Path to assets directory (default: 'assets/')
  * @param bool $alternateLayout Whether to use alternate layout (logo inside team-info)
  * @return string HTML for team logo
  */
-function renderTeamLogo($team, $position, $assetsPath = 'assets/', $alternateLayout = false) {
+function renderTeamLogo($team, $position, $alternateLayout = false) {
     $html = '<div class="team-logo ' . $position . '">';
     
     if ($team && isset($team->team->term_id)) {
-        $html .= '<img src="' . $assetsPath . 'img/teams/' . teamSNtoID($team->team->term_id) . '.svg" alt="" />';
+        $html .= '<img src="assets/img/teams/' . teamSNtoID($team->team->term_id) . '.svg" alt="" />';
     } else {
         $html .= '<div style="width: 40px; height: 40px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff;">?</div>';
     }
@@ -114,11 +113,11 @@ function renderTeamAcquisitions($team) {
  * Render a complete team section
  * @param object|null $team Team data
  * @param string $side 'left' or 'right' for positioning
- * @param string $assetsPath Path to assets directory
  * @param bool $alternateLayout Whether to use alternate layout (logo inside team-info)
+ * @param bool $useShortName Whether to use team short name instead of full name
  * @return string HTML for complete team section
  */
-function renderTeamSection($team, $side = 'left', $assetsPath = 'assets/', $alternateLayout = false) {
+function renderTeamSection($team, $side = 'left', $alternateLayout = false, $useShortName = false) {
     $teamClass = $side === 'left' ? 'team-1' : 'team-2';
     $logoClass = $side === 'left' ? 'team-logo-1' : 'team-logo-2';
     
@@ -126,7 +125,7 @@ function renderTeamSection($team, $side = 'left', $assetsPath = 'assets/', $alte
     
     // Standard layout: logo outside team div
     if (!$alternateLayout && $side === 'left') {
-        $html .= renderTeamLogo($team, $logoClass, $assetsPath, $alternateLayout);
+        $html .= renderTeamLogo($team, $logoClass, $alternateLayout);
     }
     
     $html .= '<div class="team ' . $teamClass . '">';
@@ -134,10 +133,20 @@ function renderTeamSection($team, $side = 'left', $assetsPath = 'assets/', $alte
     
     // Alternate layout: logo inside team-info
     if ($alternateLayout) {
-        $html .= renderTeamLogo($team, $logoClass, $assetsPath, $alternateLayout);
+        $html .= renderTeamLogo($team, $logoClass, $alternateLayout);
     }
     
-    $html .= '<div class="name">' . ($team && isset($team->team->name) ? htmlspecialchars($team->team->name) : 'Team TBD') . '</div>';
+    // Determine team name to display
+    $teamName = 'Team TBD';
+    if ($team && isset($team->team)) {
+        if ($useShortName && isset($team->team->team_shortname)) {
+            $teamName = $team->team->team_shortname;
+        } elseif (isset($team->team->name)) {
+            $teamName = $team->team->name;
+        }
+    }
+    
+    $html .= '<div class="name">' . htmlspecialchars($teamName) . '</div>';
     $html .= '<div class="text">Acquire</div>';
     $html .= '</div>';
     $html .= '<div class="list">';
@@ -147,7 +156,7 @@ function renderTeamSection($team, $side = 'left', $assetsPath = 'assets/', $alte
     
     // Standard layout: logo outside team div (right side)
     if (!$alternateLayout && $side === 'right') {
-        $html .= renderTeamLogo($team, $logoClass, $assetsPath, $alternateLayout);
+        $html .= renderTeamLogo($team, $logoClass, $alternateLayout);
     }
     
     return $html;
@@ -156,11 +165,11 @@ function renderTeamSection($team, $side = 'left', $assetsPath = 'assets/', $alte
 /**
  * Render a complete trade HTML block
  * @param object $trade Trade data from API
- * @param string $assetsPath Path to assets directory
  * @param bool $alternateLayout Whether to use alternate layout (logo inside team-info)
+ * @param bool $useShortName Whether to use team short name instead of full name
  * @return string Complete HTML for trade block
  */
-function renderTrade($trade, $assetsPath = 'assets/', $alternateLayout = false) {
+function renderTrade($trade, $alternateLayout = false, $useShortName = false) {
     $teams = parseTradeTeams($trade);
     $team1 = $teams['team1'];
     $team2 = $teams['team2'];
@@ -188,15 +197,15 @@ function renderTrade($trade, $assetsPath = 'assets/', $alternateLayout = false) 
     
     // Render team sections
     if ($team1) {
-        $html .= renderTeamSection($team1, 'left', $assetsPath, $alternateLayout);
+        $html .= renderTeamSection($team1, 'left', $alternateLayout, $useShortName);
     } else {
-        $html .= renderTeamSection(null, 'left', $assetsPath, $alternateLayout);
+        $html .= renderTeamSection(null, 'left', $alternateLayout, $useShortName);
     }
     
     if ($team2) {
-        $html .= renderTeamSection($team2, 'right', $assetsPath, $alternateLayout);
+        $html .= renderTeamSection($team2, 'right', $alternateLayout, $useShortName);
     } else {
-        $html .= renderTeamSection(null, 'right', $assetsPath, $alternateLayout);
+        $html .= renderTeamSection(null, 'right', $alternateLayout, $useShortName);
     }
     
     $html .= '</div>';
@@ -207,12 +216,12 @@ function renderTrade($trade, $assetsPath = 'assets/', $alternateLayout = false) 
 
 /**
  * Render all trades from API data
- * @param string $assetsPath Path to assets directory
  * @param bool $alternateLayout Whether to use alternate layout (logo inside team-info)
  * @param int $limit Maximum number of trades to display (default: 10)
+ * @param bool $useShortName Whether to use team short name instead of full name
  * @return string Complete HTML for all trades
  */
-function renderAllTrades($assetsPath = 'assets/', $alternateLayout = false, $limit = 10) {
+function renderAllTrades($alternateLayout = false, $limit = 10, $useShortName = false) {
     $tradeTracker = fetchTradeData();
     $html = '';
     
@@ -223,7 +232,7 @@ function renderAllTrades($assetsPath = 'assets/', $alternateLayout = false, $lim
                 break;
             }
             
-            $tradeHtml = renderTrade($trade, $assetsPath, $alternateLayout);
+            $tradeHtml = renderTrade($trade, $alternateLayout, $useShortName);
             if (!empty($tradeHtml)) {
                 $html .= $tradeHtml;
                 $count++;
@@ -245,12 +254,12 @@ function renderAllTrades($assetsPath = 'assets/', $alternateLayout = false, $lim
 
 /**
  * Render just the trade content (for use inside existing .trades container)
- * @param string $assetsPath Path to assets directory
  * @param bool $alternateLayout Whether to use alternate layout (logo inside team-info)
  * @param int $limit Maximum number of trades to display (default: 10)
+ * @param bool $useShortName Whether to use team short name instead of full name
  * @return string Complete HTML for trade content only
  */
-function renderTradeContent($assetsPath = 'assets/', $alternateLayout = false, $limit = 10) {
-    return renderAllTrades($assetsPath, $alternateLayout, $limit);
+function renderTradeContent($alternateLayout = false, $limit = 10, $useShortName = false) {
+    return renderAllTrades($alternateLayout, $limit, $useShortName);
 }
 ?>

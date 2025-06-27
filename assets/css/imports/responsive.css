@@ -356,6 +356,10 @@
             text-align: center;
         }
 
+        .trades-frontpage .team .team-info:has(.team-logo) {
+            justify-content: center;
+        }
+
     }
 
     @media screen and (max-width: 1100px) {
@@ -1435,7 +1439,8 @@
             mask: var(--logo-mask-half);
         }
 
-        .trades-frontpage .team-info .name, .trades-frontpage .team-info .text {
+        .trades-frontpage .team-info .name,
+        .trades-frontpage .team-info .text {
             display: none;
         }
 
