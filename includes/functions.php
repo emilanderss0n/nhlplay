@@ -13,3 +13,4 @@ require_once __DIR__ . '/functions/injury-functions.php';
 require_once __DIR__ . '/functions/stats-functions.php';
 require_once __DIR__ . '/functions/utility-functions.php';
 require_once __DIR__ . '/functions/team-builder-functions.php';
+require_once __DIR__ . '/functions/trade-functions.php';

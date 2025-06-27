@@ -527,8 +527,8 @@
 
     @container game-schedule (min-width: 600px) {
       & {
-      width: 20rem;
-      height: 20rem;
+        width: 20rem;
+        height: 20rem;
       }
     }
   }
@@ -3516,6 +3516,84 @@
 
   .trades .team .list ul li::marker {
     color: var(--paragraph-color);
+  }
+
+  .trades-frontpage {
+    display: grid !important;
+    margin-bottom: 5rem;
+  }
+
+  .trades-frontpage .trade {
+    margin: 0;
+  }
+
+  .trades-frontpage .trade .date {
+      padding: 1rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-weight: bold;
+      font-size: 0.8rem;
+      color: var(--paragraph-color);
+  }
+
+  .trades-frontpage .team-logo{
+    flex: none;
+  }
+
+  .trades-frontpage .team-logo img {
+    width: 40px !important;
+    height: 40px !important;
+    margin: 0 !important;
+  }
+
+  .trades-frontpage .teams {
+    align-items: baseline;
+  }
+
+  .trades-frontpage .team {
+    padding: 1rem 2rem 1.5rem !important;
+  }
+
+  .trades-frontpage .team .list {
+    margin-top: 1rem;
+  }
+
+  .trades-frontpage .team-logo {
+        position: relative;
+        top: 0;
+        left: 0;
+        z-index: 0;
+        opacity: 1;
+        mix-blend-mode: normal;
+  }
+
+  .trades-frontpage .team-info:has(.team-logo) {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .trades-frontpage .team-2 .team-info:has(.team-logo) {
+    justify-content: flex-end;
+  }
+
+  .trades-frontpage .team-2 .team-info:has(.team-logo) .name {
+    flex: none;
+  }
+
+  .trades-frontpage .team-info:has(.team-logo) .text {
+    display: none;
+  }
+
+  .trades .team-info .name {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--paragraph-color);
+    font-style: normal;
+  }
+
+  .trades-frontpage .team .list ul li {
+    font-size: 0.9rem;
   }
 
   .feed-tweets {

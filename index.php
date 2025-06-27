@@ -35,6 +35,9 @@ if (!is_dir($cacheDir)) {
                     echo '</div>';
                 }
             } else {
+                echo '<div class="trades trades-frontpage grid grid-300 grid-gap-lg grid-gap-row-lg" grid-max-col-count="2">';
+                echo renderTradeContent($assetsPath = 'assets/', $alternateLayout = true, $limit = 6); 
+                echo '</div>';
                 echo '<a href="'.BASE_URL.'/pages/last-season-overview" class="season-break-winner" rel="page" style="display: inline-block; overflow: hidden; border-radius: 1rem;"><img src="'.BASE_URL.'/assets/img/stanley_cup_fla_2025.webp" alt="Stanley Cup Winner 2025" /></a>';
             } ?>
         </div>
