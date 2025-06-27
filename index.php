@@ -38,7 +38,15 @@ if (!is_dir($cacheDir)) {
                 echo '<div class="trades trades-frontpage grid grid-300 grid-gap-lg grid-gap-row-lg" grid-max-col-count="2">';
                 echo renderTradeContent(true, 6, true); 
                 echo '</div>';
-                echo '<a href="'.BASE_URL.'/pages/last-season-overview" class="season-break-winner" rel="page" style="display: inline-block; overflow: hidden; border-radius: 1rem;"><img src="'.BASE_URL.'/assets/img/stanley_cup_fla_2025.webp" alt="Stanley Cup Winner 2025" /></a>';
+                echo '<a href="'.BASE_URL.'/pages/last-season-overview" rel="page">';
+                echo '<div class="season-break-message" style="background-image: url('.BASE_URL.'/assets/img/stanley_cup_fla_2025.webp);">';
+                echo '<div class="inner">';
+                echo '<img class="season-break-logo" src="'.BASE_URL.'/assets/img/teams/13.svg" alt="Florida Panthers" />';
+                echo '<h3>Congratulations to the Florida Panthers for winning the Stanley Cup in 2025!</h3>';
+                echo '<p>Click here to see the last season overview</p>';
+                echo '</div>';
+                echo '</div>';
+                echo '</a>';
             } ?>
         </div>
         <?php if (!$seasonBreak) { ?>

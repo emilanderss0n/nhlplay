@@ -4380,4 +4380,53 @@
     width: 40px;
     height: 40px;
   }
+
+  .season-break-message {
+    border-radius: 10px;
+    min-height: 400px;
+    display: flex;
+    background-color: #e16565;
+    background-blend-mode: multiply;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .season-break-message {
+      background-color: #491414;
+      background-blend-mode: overlay;
+    }
+  }
+
+  .season-break-message .inner {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 15);
+    color: #fff;
+  }
+
+  .season-break-message .inner img {
+    width: 140px;
+    height: 140px;
+    margin-bottom: 1rem;
+  }
+
+  .season-break-message .inner h3 {
+    font-size: 1.3rem;
+    color: #fff;
+    max-width: 520px;
+  }
+
+  .season-break-message .inner p {
+    color: #fff;
+    margin-top: 1rem;;
+  }
 }

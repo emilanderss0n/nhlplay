@@ -613,6 +613,10 @@
             display: none;
         }
 
+        .season-break-message {
+            display: none;
+        }
+
         #player-modal table tbody tr.season td span {
             margin-left: 0.5em;
         }
