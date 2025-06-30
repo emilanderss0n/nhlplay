@@ -46,9 +46,15 @@ function getTeamRosterStats($teamAbbrev, $season) {
 }
 
 function getTeamRosterInfo($teamAbbrev, $season) {
-    $ApiUrl = 'https://api-web.nhle.com/v1/roster/'. $teamAbbrev .'/'. $season;
-    $curl = curlInit($ApiUrl);
-    return json_decode($curl);
+    // Use caching to avoid repeated API calls
+    $cacheFile = 'cache/team-roster-' . strtolower($teamAbbrev) . '-' . $season . '.json';
+    $cacheLifetime = 3600; // 1 hour cache
+    
+    return fetchData(
+        'https://api-web.nhle.com/v1/roster/' . $teamAbbrev . '/' . $season,
+        $cacheFile,
+        $cacheLifetime
+    );
 }
 
 function getTeamStats($teamAbbrev) {

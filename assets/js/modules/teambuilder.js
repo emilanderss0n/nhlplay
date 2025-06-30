@@ -1,6 +1,6 @@
 import { eventManager, debounce } from './utils.js';
 
-// Cache DOM elements
+// Cache DOM elements and performance-critical selectors
 const DOM = {
     dropArea: null,
     playerPools: null,
@@ -9,31 +9,56 @@ const DOM = {
     teamDropdownLabel: null,
     clearBtn: null,
     dropdownCheckbox: null,
-    playerPoolPopover: null
+    playerPoolPopover: null,
+    // Cache frequently accessed elements
+    allSlots: null,
+    poolPlayers: null,
+    activePoolButtons: null
 };
 
-// Position and slot caching for better performance
+// Performance caches
 const positionCache = new WeakMap();
 const positionSlotCache = new Map();
+const poolPlayerCache = new WeakMap();
+const slotStateCache = new Map();
+
+// Performance optimizations
+const BATCH_SIZE = 50;
+const DEBOUNCE_DELAY = 16; // ~60fps
 
 function getPositionSlots(position) {
     if (positionSlotCache.has(position)) {
         return positionSlotCache.get(position);
     }
-    const slots = document.querySelectorAll(`.player-slot[data-position="${position}"]`);
+    const slots = DOM.allSlots ? 
+        Array.from(DOM.allSlots).filter(slot => slot.dataset.position === position) :
+        document.querySelectorAll(`.player-slot[data-position="${position}"]`);
     positionSlotCache.set(position, slots);
     return slots;
 }
 
+// Optimized cleanup with better memory management
 function cleanupTeamBuilder() {
+    // Clear all caches
     positionCache.clear();
     positionSlotCache.clear();
-    Object.values(window.teamBuilderSwipers).forEach(swiper => {
-        if (swiper && swiper.destroy) {
-            swiper.destroy(true, true);
-        }
+    poolPlayerCache.clear();
+    slotStateCache.clear();
+    
+    // Destroy swipers efficiently
+    if (window.teamBuilderSwipers) {
+        Object.values(window.teamBuilderSwipers).forEach(swiper => {
+            if (swiper && swiper.destroy) {
+                swiper.destroy(true, true);
+            }
+        });
+        window.teamBuilderSwipers = {};
+    }
+    
+    // Clear DOM cache
+    Object.keys(DOM).forEach(key => {
+        DOM[key] = null;
     });
-    window.teamBuilderSwipers = {};
 }
 
 // Improved state management
@@ -59,6 +84,7 @@ const TeamBuilder = {
     
     getSerializableState() {
         return {
+            activeTeam: this.state.activeTeam,
             forward: this.getPositionState('forward'),
             defenseman: this.getPositionState('defenseman'),
             goalie: this.getPositionState('goalie')
@@ -86,28 +112,47 @@ const TeamBuilder = {
     }
 };
 
-// Optimized pool player states with batch DOM updates
-function updatePoolPlayerStates() {
-    if (!DOM.dropArea || !DOM.playerPools) return;
+// Optimized pool player states with batch DOM updates and caching
+const updatePoolPlayerStates = debounce(() => {
+    if (!DOM.dropArea || !DOM.poolPlayers) return;
 
+    // Use cached slotted players map
     const slottedPlayers = new Map();
+    const slottedPlayerElements = DOM.dropArea.querySelectorAll('.player-slot .player .name');
     
-    // Collect slotted players
-    DOM.dropArea.querySelectorAll('.player-slot .player .name').forEach(name => {
-        slottedPlayers.set(name.textContent, true);
+    // Batch collect slotted players
+    for (let i = 0; i < slottedPlayerElements.length; i++) {
+        const nameEl = slottedPlayerElements[i];
+        slottedPlayers.set(nameEl.textContent, true);
+    }
+    
+    // Batch update pool player states using DocumentFragment for efficiency
+    const updatesToMake = [];
+    
+    DOM.poolPlayers.forEach(poolPlayer => {
+        const nameEl = poolPlayer.querySelector('.name');
+        if (!nameEl) return;
+        
+        const name = nameEl.textContent;
+        const shouldBeInSlot = slottedPlayers.has(name);
+        const isCurrentlyInSlot = poolPlayer.classList.contains('in-slot');
+        
+        if (shouldBeInSlot !== isCurrentlyInSlot) {
+            updatesToMake.push({ player: poolPlayer, inSlot: shouldBeInSlot });
+        }
     });
     
-    // Update all pool players' states
-    DOM.playerPools.forEach(pool => {
-        pool.querySelectorAll('.player').forEach(poolPlayer => {
-            const name = poolPlayer.querySelector('.name').textContent;
-            poolPlayer.classList.toggle('in-slot', slottedPlayers.has(name));
-        });
+    // Apply all updates in one batch to minimize reflows
+    updatesToMake.forEach(({ player, inSlot }) => {
+        player.classList.toggle('in-slot', inSlot);
     });
-}
+}, DEBOUNCE_DELAY);
 
-// Event delegation optimization
+// Event delegation optimization with passive listeners where appropriate
 function initializeEventDelegation() {
+    if (!DOM.dropArea) return;
+    
+    // Use passive listeners for better scroll performance
     DOM.dropArea.addEventListener('click', (e) => {
         const player = e.target.closest('.player');
         const slot = e.target.closest('.player-slot');
@@ -117,7 +162,7 @@ function initializeEventDelegation() {
         } else if (slot && !slot.querySelector('.player')) {
             handleEmptySlotClick(slot);
         }
-    });
+    }, { passive: false }); // Need false for preventDefault in some cases
 }
 
 function handlePlayerClick(player, e) {
@@ -156,124 +201,182 @@ function getPoolTarget(position) {
     return poolTargets[position] || position;
 }
 
-// Optimized swiper updates
+// Optimized swiper updates with better throttling
 const debouncedSwiperUpdate = debounce((swiper) => {
+    if (!swiper || !swiper.update) return;
+    
     requestAnimationFrame(() => {
-        swiper.update();
-        swiper.updateSize();
-        swiper.updateSlides();
-        swiper.updateProgress();
-        swiper.updateSlidesClasses();
+        // Batch all swiper updates together
+        try {
+            swiper.update();
+            swiper.updateSize();
+            swiper.updateSlides();
+            swiper.updateProgress();
+            swiper.updateSlidesClasses();
+        } catch (error) {
+            console.warn('Swiper update error:', error);
+        }
     });
-}, 16);
+}, DEBOUNCE_DELAY);
 
+// More efficient swiper update with error handling
 function updateSwiper(swiper) {
+    if (!swiper) return;
     debouncedSwiperUpdate(swiper);
 }
 
-// Optimized slot state management
+// Optimized slot state management with caching
 function disableSlots(disabled = true) {
-    if (!DOM.dropArea) return;
-    const style = disabled ? { pointerEvents: 'none', opacity: '0.5' } : { pointerEvents: '', opacity: '' };
-    DOM.dropArea.querySelectorAll('.player-slot').forEach(slot => {
+    if (!DOM.allSlots) return;
+    
+    const cacheKey = disabled ? 'disabled' : 'enabled';
+    if (slotStateCache.get('currentState') === cacheKey) return;
+    
+    const style = disabled ? 
+        { pointerEvents: 'none', opacity: '0.5' } : 
+        { pointerEvents: '', opacity: '' };
+    
+    // Batch style updates
+    DOM.allSlots.forEach(slot => {
         Object.assign(slot.style, style);
     });
+    
+    slotStateCache.set('currentState', cacheKey);
 }
 
 function updateSlotsState() {
     disableSlots(!TeamBuilder.state.activeTeam);
 }
 
-// Optimized player drag initialization with cleanup
+// Optimized player drag initialization with better cleanup tracking
 function initializePlayerDrag(player) {
+    if (!player) return null;
+    
+    // Check if already initialized to avoid duplicate listeners
+    if (poolPlayerCache.has(player)) {
+        return poolPlayerCache.get(player);
+    }
+    
     const cleanup = [];
     
     player.setAttribute('draggable', 'true');
     player.style.cursor = 'grab';
     
+    // Use passive listeners where possible for better performance
     cleanup.push(
-        eventManager.addEventListener(player, 'dragstart', dragHandlers.start),
-        eventManager.addEventListener(player, 'dragend', dragHandlers.end)
+        eventManager.addEventListener(player, 'dragstart', dragHandlers.start, { passive: false }),
+        eventManager.addEventListener(player, 'dragend', dragHandlers.end, { passive: true })
     );
     
-    return () => cleanup.forEach(unsub => unsub());
+    const cleanupFunction = () => {
+        cleanup.forEach(unsub => unsub && unsub());
+        poolPlayerCache.delete(player);
+    };
+    
+    poolPlayerCache.set(player, cleanupFunction);
+    return cleanupFunction;
 }
 
-// Optimized drag handlers
+// Optimized drag handlers with better performance
 const dragHandlers = {
     start(e) {
-        if (!TeamBuilder.state.activeTeam) return;
+        if (!TeamBuilder.state.activeTeam) {
+            e.preventDefault();
+            return false;
+        }
+        
         TeamBuilder.setState({ draggedItem: this });
         this.classList.add('dragging');
         document.body.style.cursor = 'grabbing';
+        
         e.dataTransfer.effectAllowed = 'move';
         e.dataTransfer.setDragImage(this, this.offsetWidth / 2, this.offsetHeight / 2);
         e.dataTransfer.setData('position', getPlayerPosition(this));
+        
+        // Pre-cache position for better performance during drag
+        const position = getPlayerPosition(this);
+        e.dataTransfer.setData('text/plain', position);
     },
 
     end() {
         this.classList.remove('dragging');
         document.body.style.cursor = '';
+        
+        // Use requestAnimationFrame for better performance
         requestAnimationFrame(() => {
-            DOM.dropArea?.querySelectorAll('.player-slot').forEach(slot => 
-                slot.classList.remove('drag-over')
-            );
+            if (DOM.allSlots) {
+                DOM.allSlots.forEach(slot => slot.classList.remove('drag-over'));
+            }
         });
     },
 
     enter(e) {
         e.preventDefault();
-        if (TeamBuilder.state.draggedItem && this.dataset.position === getPlayerPosition(TeamBuilder.state.draggedItem)) {
+        if (TeamBuilder.state.draggedItem && 
+            this.dataset.position === getPlayerPosition(TeamBuilder.state.draggedItem)) {
             this.classList.add('drag-over');
         }
     },
 
     leave(e) {
-        this.classList.remove('drag-over');
+        // Use throttling to reduce excessive class removals
+        if (!this.contains(e.relatedTarget)) {
+            this.classList.remove('drag-over');
+        }
     },
 
     over(e) {
         e.preventDefault();
-        e.dataTransfer.dropEffect = this.dataset.position === getPlayerPosition(TeamBuilder.state.draggedItem) ? 'move' : 'none';
+        const draggedPosition = TeamBuilder.state.draggedItem ? 
+            getPlayerPosition(TeamBuilder.state.draggedItem) : null;
+        e.dataTransfer.dropEffect = this.dataset.position === draggedPosition ? 'move' : 'none';
     },
 
     drop(e) {
         e.preventDefault();
         this.classList.remove('drag-over');
         
-        if (!TeamBuilder.state.draggedItem || this.dataset.position !== getPlayerPosition(TeamBuilder.state.draggedItem)) return;
+        if (!TeamBuilder.state.draggedItem || 
+            this.dataset.position !== getPlayerPosition(TeamBuilder.state.draggedItem)) {
+            return;
+        }
 
         const existingPlayer = this.querySelector('.player');
         const isFromSlot = TeamBuilder.state.draggedItem.parentElement.classList.contains('player-slot');
         const draggedPlayerName = TeamBuilder.state.draggedItem.querySelector('.name').textContent;
 
-        // Check if player is already in another slot
+        // Optimized duplicate check using cached DOM elements
         if (!isFromSlot) {
-            const isAlreadyInSlot = Array.from(DOM.dropArea.querySelectorAll('.player-slot .player')).some(
-                player => player.querySelector('.name').textContent === draggedPlayerName
-            );
+            const isAlreadyInSlot = Array.from(DOM.allSlots).some(slot => {
+                const player = slot.querySelector('.player');
+                return player && player.querySelector('.name').textContent === draggedPlayerName;
+            });
             if (isAlreadyInSlot) return;
         }
 
+        // Use DocumentFragment for better performance during DOM manipulation
+        const fragment = document.createDocumentFragment();
+        
         if (existingPlayer && isFromSlot) {
             // Swap players between slots
             TeamBuilder.state.draggedItem.parentElement.appendChild(existingPlayer);
             TeamBuilder.state.draggedItem.style.opacity = '1';
             this.appendChild(TeamBuilder.state.draggedItem);
         } else if (!isFromSlot) {
-            // Clone from pool to slot
+            // Clone from pool to slot with optimized copying
             const clone = TeamBuilder.state.draggedItem.cloneNode(true);
             Object.assign(clone.style, { opacity: '1', cursor: 'grab' });
-            // Preserve team ID and player ID when cloning
             Object.assign(clone.dataset, {
                 teamId: TeamBuilder.state.draggedItem.dataset.teamId,
                 playerId: TeamBuilder.state.draggedItem.dataset.playerId
             });
+            
             initializePlayerDrag(clone);
             clone.querySelectorAll('*').forEach(el => {
                 el.removeAttribute('draggable');
                 el.removeAttribute('href');
             });
+            
             if (existingPlayer) existingPlayer.remove();
             this.appendChild(clone);
         } else {
@@ -283,11 +386,17 @@ const dragHandlers = {
             this.appendChild(TeamBuilder.state.draggedItem);
         }
 
-        // Reset cursor and update states
+        // Batch state updates
         document.body.style.cursor = '';
-        if (TeamBuilder.state.draggedItem) TeamBuilder.state.draggedItem.style.cursor = 'grab';
-        updatePoolPlayerStates();
-        TeamBuilder.notifyStateChange();
+        if (TeamBuilder.state.draggedItem) {
+            TeamBuilder.state.draggedItem.style.cursor = 'grab';
+        }
+        
+        // Debounced updates for better performance
+        requestAnimationFrame(() => {
+            updatePoolPlayerStates();
+            TeamBuilder.notifyStateChange();
+        });
     }
 };
 
@@ -357,6 +466,9 @@ function initializeDroppedPlayerActions() {
     });
 }
 
+// Cache for loaded team rosters to avoid repeated requests
+const teamRosterCache = new Map();
+
 async function loadTeamState() {
     const savedState = localStorage.getItem('teamBuilderState');
     if (!savedState) return;
@@ -373,59 +485,63 @@ async function loadTeamState() {
             });
         });
 
+        if (teamIds.size === 0) return;
+
         // Clear all slots first
         document.querySelectorAll('.player-slot').forEach(slot => {
             slot.innerHTML = '';
         });
 
-        // Load rosters for all teams that have saved players
-        for (const teamId of teamIds) {
-            const formData = new FormData();
-            formData.append('active_team', teamId);
+        // Load all team rosters in a single bulk request
+        const teamRosters = await loadTeamRostersBulk(Array.from(teamIds));
+        if (!teamRosters) return;
+
+        // Create a map of all players for quick lookup
+        const allPlayersMap = new Map();
+        
+        Object.values(teamRosters).forEach(teamData => {
+            if (!teamData.html) return;
             
-            const response = await fetch('ajax/team-builder.php', {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest'
-                }
-            });
-            
-            if (!response.ok) continue;
-            
-            const html = await response.text();
             const tempDiv = document.createElement('div');
-            tempDiv.innerHTML = html;
-
-            // For each position type, restore players to their exact slots
-            ['forward', 'defenseman', 'goalie'].forEach(position => {
-                const players = teamState[position] || [];
-                for (const savedPlayer of players) {
-                    if (!savedPlayer || savedPlayer.teamId !== teamId) continue;
-
-                    // Use the saved slot index to find the exact slot
-                    const slotIndex = savedPlayer.slotIndex;
-                    const slots = document.querySelectorAll(`.player-slot[data-position="${position}"]`);
-                    const slot = slots[slotIndex];
-                    if (!slot || slot.querySelector('.player')) continue;
-
-                    // Find player in the loaded roster
-                    const poolPlayer = tempDiv.querySelector(`.tb-pool .player[data-player-id="${savedPlayer.playerId}"]`);
-                    if (!poolPlayer) continue;
-
-                    // Create and place the player in the exact slot
-                    const clone = poolPlayer.cloneNode(true);
-                    clone.style.cursor = 'grab';
-                    clone.style.opacity = '1';
-                    initializePlayerDrag(clone);
-                    clone.querySelectorAll('*').forEach(el => {
-                        el.removeAttribute('draggable');
-                        el.removeAttribute('href');
-                    });
-                    slot.appendChild(clone);
+            tempDiv.innerHTML = teamData.html;
+            
+            // Index all players by their ID for fast lookup
+            const players = tempDiv.querySelectorAll('.player[data-player-id]');
+            players.forEach(player => {
+                const playerId = player.dataset.playerId;
+                if (playerId) {
+                    allPlayersMap.set(playerId, player.cloneNode(true));
                 }
             });
-        }
+        });
+
+        // Restore players to their exact slots using the indexed map
+        ['forward', 'defenseman', 'goalie'].forEach(position => {
+            const players = teamState[position] || [];
+            const slots = document.querySelectorAll(`.player-slot[data-position="${position}"]`);
+            
+            players.forEach(savedPlayer => {
+                if (!savedPlayer || savedPlayer.slotIndex >= slots.length) return;
+                
+                const slot = slots[savedPlayer.slotIndex];
+                if (!slot || slot.querySelector('.player')) return;
+
+                // Get player from the indexed map
+                const poolPlayer = allPlayersMap.get(savedPlayer.playerId);
+                if (!poolPlayer) return;
+
+                // Create and place the player in the exact slot
+                const clone = poolPlayer.cloneNode(true);
+                clone.style.cursor = 'grab';
+                clone.style.opacity = '1';
+                initializePlayerDrag(clone);
+                clone.querySelectorAll('*').forEach(el => {
+                    el.removeAttribute('draggable');
+                    el.removeAttribute('href');
+                });
+                slot.appendChild(clone);
+            });
+        });
 
         // After restoring all players, update pool player states
         updatePoolPlayerStates();
@@ -434,14 +550,81 @@ async function loadTeamState() {
     }
 }
 
+// Optimized bulk team roster loading
+async function loadTeamRostersBulk(teamIds) {
+    if (!teamIds || teamIds.length === 0) return null;
+    
+    // Check cache first
+    const cacheKey = teamIds.sort().join(',');
+    if (teamRosterCache.has(cacheKey)) {
+        return teamRosterCache.get(cacheKey);
+    }
+    
+    // Show loading indicator for better UX
+    const loadingIndicator = showLoadingIndicator('Loading team rosters...');
+    
+    try {
+        const formData = new FormData();
+        teamIds.forEach(teamId => {
+            formData.append('team_ids[]', teamId);
+        });
+        
+        const response = await fetch('ajax/team-builder-bulk.php', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+        
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const teamRosters = await response.json();
+        
+        if (teamRosters.error) {
+            throw new Error(teamRosters.error);
+        }
+        
+        // Cache the result
+        teamRosterCache.set(cacheKey, teamRosters);
+        
+        return teamRosters;
+    } catch (error) {
+        console.error('Error loading team rosters in bulk:', error);
+        return null;
+    } finally {
+        // Hide loading indicator
+        hideLoadingIndicator(loadingIndicator);
+    }
+}
+
+// Simple loading indicator functions
+function showLoadingIndicator(message = 'Loading...') {
+    const indicator = document.createElement('div');
+    indicator.className = 'loading-indicator';
+    indicator.innerHTML = `
+        <div class="loading-spinner"></div>
+        <div class="loading-message">${message}</div>
+    `;
+    document.body.appendChild(indicator);
+    return indicator;
+}
+
+function hideLoadingIndicator(indicator) {
+    if (indicator && indicator.parentNode) {
+        indicator.parentNode.removeChild(indicator);
+    }
+}
+
+// Optimized team selection with better batch processing
 async function handleTeamSelection(teamElement, skipStateRestore = false) {
     const teamId = teamElement.dataset.value;
     const teamName = teamElement.textContent.trim();
     
-    if (DOM.dropdownCheckbox) {
-        DOM.dropdownCheckbox.checked = false;
-    }
-    
+    // Batch DOM updates
+    if (DOM.dropdownCheckbox) DOM.dropdownCheckbox.checked = false;
     if (DOM.teamDropdownLabel) {
         DOM.teamDropdownLabel.innerHTML = `${teamName} <i class="bi bi-arrow-down-short"></i>`;
     }
@@ -451,82 +634,94 @@ async function handleTeamSelection(teamElement, skipStateRestore = false) {
         TeamBuilder.setState({ activeTeam: teamId });
         window.activeTeam = teamId;
 
-        if (DOM.selectPlayersBtn) {
-            DOM.selectPlayersBtn.classList.remove('disabled');
-        }
-        
+        // Batch UI updates
+        if (DOM.selectPlayersBtn) DOM.selectPlayersBtn.classList.remove('disabled');
         updateSlotsState();
 
         const formData = new FormData();
         formData.append('active_team', teamId);
         
-        // Fetch new roster before making any UI changes
+        // Use fetch with better error handling and timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+        
         const response = await fetch('ajax/team-builder.php', {
             method: 'POST',
             body: formData,
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
-            }
+            headers: { 'X-Requested-With': 'XMLHttpRequest' },
+            signal: controller.signal
         });
         
-        if (!response.ok) throw new Error('Network response was not ok');
+        clearTimeout(timeoutId);
+        
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         
         const html = await response.text();
         
-        // Create a temporary container to parse the HTML
+        // Use DocumentFragment for better performance
         const tempDiv = document.createElement('div');
         tempDiv.innerHTML = html;
         
-        // Update player pools without clearing slots
-        ['forwards', 'defensemen', 'goalies'].forEach((type, index) => {
+        // Batch update player pools with error handling
+        const poolUpdates = ['forwards', 'defensemen', 'goalies'].map((type, index) => {
             const poolNumber = index + 1;
             const newPool = tempDiv.querySelector(`#tb-pool-${poolNumber}`);
             const currentPool = document.querySelector(`#tb-pool-${poolNumber}`);
             
+            return { newPool, currentPool, poolNumber };
+        });
+        
+        // Apply all pool updates in batch
+        poolUpdates.forEach(({ newPool, currentPool, poolNumber }) => {
             if (newPool && currentPool) {
-                // Clear existing content first
-                currentPool.innerHTML = '';
-                // Add new content
+                // Clear existing content efficiently
+                currentPool.replaceChildren();
+                
+                // Use DocumentFragment for batch DOM operations
+                const fragment = document.createDocumentFragment();
                 Array.from(newPool.children).forEach(child => {
-                    currentPool.appendChild(child.cloneNode(true));
+                    const clonedChild = child.cloneNode(true);
+                    initializePlayerDrag(clonedChild);
+                    fragment.appendChild(clonedChild);
                 });
                 
-                // Reinitialize drag for new players
-                currentPool.querySelectorAll('.player').forEach(initializePlayerDrag);
+                currentPool.appendChild(fragment);
             }
         });
         
-        // Update Swipers and ensure they're properly initialized
-        Object.values(window.teamBuilderSwipers).forEach(swiper => {
-            if (swiper && swiper.update) {
-                requestAnimationFrame(() => {
-                    swiper.update();
-                    swiper.updateSize();
-                    swiper.updateSlides();
-                });
-            }
+        // Cache pool players for better performance
+        DOM.poolPlayers = document.querySelectorAll('.tb-pool .player');
+        
+        // Batch update Swipers
+        requestAnimationFrame(() => {
+            Object.values(window.teamBuilderSwipers || {}).forEach(swiper => {
+                if (swiper && swiper.update) {
+                    updateSwiper(swiper);
+                }
+            });
         });
 
-        // Only restore state when explicitly requested (not during initial load)
+        // Restore state if needed
         if (!skipStateRestore) {
             await loadTeamState();
         }
 
-        // Update pool player states after everything is done
+        // Final state update
         updatePoolPlayerStates();
+        
     } catch (error) {
         console.error('Error loading team roster:', error);
+        
+        // Rollback state on error
         TeamBuilder.setState({ activeTeam: previousTeamId });
         window.activeTeam = previousTeamId;
-        if (DOM.selectPlayersBtn) {
-            DOM.selectPlayersBtn.classList.add('disabled');
-        }
+        if (DOM.selectPlayersBtn) DOM.selectPlayersBtn.classList.add('disabled');
         updateSlotsState();
     }
 }
 
 export function initTeamBuilder() {
-    // Cache DOM elements
+    // Cache all DOM elements upfront for better performance
     Object.assign(DOM, {
         dropArea: document.querySelector('#team-builder-drop-area'),
         playerPools: document.querySelectorAll('.tb-selection-players .tb-pool'),
@@ -535,39 +730,53 @@ export function initTeamBuilder() {
         teamDropdownLabel: document.querySelector('.custom-select .for-dropdown'),
         clearBtn: document.getElementById('btn-clear-tb'),
         dropdownCheckbox: document.getElementById('dropdownBuilder'),
-        playerPoolPopover: document.getElementById('team-builder-player-pool')
+        playerPoolPopover: document.getElementById('team-builder-player-pool'),
+        // Cache frequently accessed elements for better performance
+        allSlots: document.querySelectorAll('.player-slot'),
+        poolPlayers: document.querySelectorAll('.tb-pool .player'),
+        activePoolButtons: document.querySelectorAll('.tb-selection-header .btn:not([popovertarget])')
     });
 
-    if (!DOM.dropArea || !DOM.playerPools || !DOM.teamSelect || !DOM.selectPlayersBtn || !DOM.teamDropdownLabel) return;
+    // Early return if essential elements are missing
+    if (!DOM.dropArea || !DOM.playerPools || !DOM.teamSelect || 
+        !DOM.selectPlayersBtn || !DOM.teamDropdownLabel) {
+        console.warn('Team builder: Essential DOM elements not found');
+        return;
+    }
 
-    // Initialize event delegation
+    // Initialize event delegation with better performance
     initializeEventDelegation();
 
     // Initialize state management
     window.activeTeam = TeamBuilder.state.activeTeam;
     window.draggedItem = TeamBuilder.state.draggedItem;
 
-    // Add clear button functionality
+    // Add clear button functionality with confirmation
     if (DOM.clearBtn) {
         eventManager.addEventListener(DOM.clearBtn, 'click', function() {
             if (confirm('Are you sure you want to clear all players?')) {
-                // Remove all players from slots
-                DOM.dropArea.querySelectorAll('.player-slot .player').forEach(player => {
-                    player.remove();
+                // Use more efficient clearing method
+                const slotsWithPlayers = Array.from(DOM.allSlots).filter(slot => 
+                    slot.querySelector('.player')
+                );
+                
+                // Batch remove all players
+                slotsWithPlayers.forEach(slot => {
+                    const player = slot.querySelector('.player');
+                    if (player) player.remove();
                 });
-                // Clear localStorage
+                
+                // Clear localStorage and update states
                 localStorage.removeItem('teamBuilderState');
-                // Update pool player states to reflect cleared slots
                 updatePoolPlayerStates();
             }
         });
     }
 
-    // Initialize Swiper for each pool
+    // Initialize Swiper with performance optimizations
     const pools = ['forwards', 'defensemen', 'goalies'];
     window.teamBuilderSwipers = {};
 
-    // Initialize pools
     pools.forEach((poolType, index) => {
         const poolNumber = index + 1;
         const swiperContainer = document.getElementById(`swiper-pool-${poolNumber}`);
@@ -575,155 +784,235 @@ export function initTeamBuilder() {
         
         if (!swiperContainer || !poolElement) return;
 
-        // Set initial visibility
-        [swiperContainer.style.display, poolElement.style.display] = 
-            index === 0 ? ['block', 'flex'] : ['none', 'none'];
+        // Batch set initial visibility
+        const isFirst = index === 0;
+        swiperContainer.style.display = isFirst ? 'block' : 'none';
+        poolElement.style.display = isFirst ? 'flex' : 'none';
 
-        // Initialize Swiper
-        window.teamBuilderSwipers[poolNumber] = new Swiper(swiperContainer, {
-            slidesPerView: 5,
-            spaceBetween: 10,
-            enabled: true,
-            allowTouchMove: false,
-            preventInteractionOnTransition: true,
-            noSwiping: true,
-            noSwipingClass: 'player',
-            touchStartPreventDefault: false,
-            simulateTouch: false,
-            navigation: {
-                nextEl: `#swiper-pool-${poolNumber} .swiper-button-next`,
-                prevEl: `#swiper-pool-${poolNumber} .swiper-button-prev`,
-                disabledClass: 'swiper-button-disabled',
-                hiddenClass: 'swiper-button-hidden',
-                lockClass: 'swiper-button-lock'
-            },
-            scrollbar: {
-                el: `#swiper-pool-${poolNumber} .swiper-scrollbar`,
-                draggable: true,
-                hide: false,
-                lockClass: 'swiper-scrollbar-lock'
-            },
-            breakpoints: {
-                320: { slidesPerView: 1 },
-                480: { slidesPerView: 2 },
-                768: { slidesPerView: 3 },
-                1024: { slidesPerView: 4 },
-                1280: { slidesPerView: 5 }
-            },
-            on: {
-                init: function() {
-                    poolElement.querySelectorAll('.player').forEach(initializePlayerDrag);
+        // Initialize Swiper with performance settings
+        try {
+            window.teamBuilderSwipers[poolNumber] = new Swiper(swiperContainer, {
+                slidesPerView: 5,
+                spaceBetween: 10,
+                enabled: true,
+                allowTouchMove: false,
+                preventInteractionOnTransition: true,
+                noSwiping: true,
+                noSwipingClass: 'player',
+                touchStartPreventDefault: false,
+                simulateTouch: false,
+                watchOverflow: true, // Better performance
+                observer: true, // Watch for changes
+                observeParents: true,
+                navigation: {
+                    nextEl: `#swiper-pool-${poolNumber} .swiper-button-next`,
+                    prevEl: `#swiper-pool-${poolNumber} .swiper-button-prev`,
+                    disabledClass: 'swiper-button-disabled',
+                    hiddenClass: 'swiper-button-hidden',
+                    lockClass: 'swiper-button-lock'
+                },
+                scrollbar: {
+                    el: `#swiper-pool-${poolNumber} .swiper-scrollbar`,
+                    draggable: true,
+                    hide: false,
+                    lockClass: 'swiper-scrollbar-lock'
+                },
+                breakpoints: {
+                    320: { slidesPerView: 1 },
+                    480: { slidesPerView: 2 },
+                    768: { slidesPerView: 3 },
+                    1024: { slidesPerView: 4 },
+                    1280: { slidesPerView: 5 }
+                },
+                on: {
+                    init: function() {
+                        // Batch initialize drag for all players
+                        const players = poolElement.querySelectorAll('.player');
+                        players.forEach(initializePlayerDrag);
+                    }
                 }
-            }
-        });
+            });
+        } catch (error) {
+            console.error(`Failed to initialize swiper for pool ${poolNumber}:`, error);
+        }
     });
 
     // Initial slots state
     updateSlotsState();
 
-    // Handle player pool filtering using event delegation
-    eventManager.addDelegatedEventListener(document, '.tb-selection-header .btn:not([popovertarget])', 'click', function() {
-        // Remove active class from all buttons
-        document.querySelectorAll('.tb-selection-header .btn').forEach(btn => {
-            if (!btn.hasAttribute('popovertarget')) {
-                btn.classList.remove('active');
+    // Handle player pool filtering with better performance
+    if (DOM.activePoolButtons) {
+        eventManager.addDelegatedEventListener(
+            document, 
+            '.tb-selection-header .btn:not([popovertarget])', 
+            'click', 
+            function() {
+                // Batch remove active class
+                DOM.activePoolButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Efficient pool switching
+                const target = this.dataset.target;
+                const swiperContainers = document.querySelectorAll('.swiper');
+                
+                // Batch visibility updates
+                const updates = [];
+                swiperContainers.forEach(swiperContainer => {
+                    const poolElement = swiperContainer.querySelector('.tb-pool');
+                    if (!poolElement) return;
+                    
+                    const shouldShow = poolElement.classList.contains(target);
+                    updates.push({
+                        container: swiperContainer,
+                        pool: poolElement,
+                        show: shouldShow,
+                        swiperKey: poolElement.id.replace('tb-pool-', '')
+                    });
+                });
+                
+                // Apply all updates at once
+                updates.forEach(({ container, pool, show, swiperKey }) => {
+                    container.style.display = show ? 'block' : 'none';
+                    pool.style.display = show ? 'flex' : 'none';
+                    
+                    if (show && window.teamBuilderSwipers[swiperKey]) {
+                        updateSwiper(window.teamBuilderSwipers[swiperKey]);
+                    }
+                });
             }
-        });
-        this.classList.add('active');
-        
-        // Switch pools
-        const target = this.dataset.target;
-        document.querySelectorAll('.swiper').forEach(swiperContainer => {
-            const poolElement = swiperContainer.querySelector('.tb-pool');
-            if (!poolElement) return;
-            
-            const show = poolElement.classList.contains(target);
-            [swiperContainer.style.display, poolElement.style.display] = 
-                show ? ['block', 'flex'] : ['none', 'none'];
-            
-            if (show) {
-                const swiperKey = poolElement.id.replace('tb-pool-', '');
-                const swiper = window.teamBuilderSwipers[swiperKey];
-                if (swiper) updateSwiper(swiper);
-            }
-        });
+        );
+    }
+
+    // Batch initialize all slots with drag handlers
+    DOM.allSlots.forEach(slot => {
+        eventManager.addEventListener(slot, 'dragenter', dragHandlers.enter, { passive: false });
+        eventManager.addEventListener(slot, 'dragleave', dragHandlers.leave, { passive: true });
+        eventManager.addEventListener(slot, 'dragover', dragHandlers.over, { passive: false });
+        eventManager.addEventListener(slot, 'drop', dragHandlers.drop, { passive: false });
     });
 
-    // Initialize all slots
-    DOM.dropArea.querySelectorAll('.player-slot').forEach(slot => {
-        eventManager.addEventListener(slot, 'dragenter', dragHandlers.enter);
-        eventManager.addEventListener(slot, 'dragleave', dragHandlers.leave);
-        eventManager.addEventListener(slot, 'dragover', dragHandlers.over);
-        eventManager.addEventListener(slot, 'drop', dragHandlers.drop);
-    });
-
-    // Add popover show event listener to update Swiper
+    // Optimized popover event handling
     if (DOM.playerPoolPopover) {
         eventManager.addEventListener(DOM.playerPoolPopover, 'toggle', function(e) {
             if (e.newState === 'open') {
-                document.querySelectorAll('.swiper').forEach(swiperContainer => {
-                    if (swiperContainer.style.display !== 'none') {
+                // Only update visible swipers for better performance
+                requestAnimationFrame(() => {
+                    const visibleSwipers = document.querySelectorAll('.swiper[style*="display: block"], .swiper:not([style*="display: none"])');
+                    visibleSwipers.forEach(swiperContainer => {
                         const poolElement = swiperContainer.querySelector('.tb-pool');
                         if (poolElement) {
                             const swiperKey = poolElement.id.replace('tb-pool-', '');
                             const swiper = window.teamBuilderSwipers[swiperKey];
                             if (swiper) updateSwiper(swiper);
                         }
-                    }
+                    });
                 });
             }
         });
     }
 
-    // First load all saved players from all teams
-    loadTeamState().then(() => {
-        // After loading players, set up team selection
-        // Get saved state to determine initial team
+    // Enhanced team state restoration and initialization
+    async function initializeTeamBuilderState() {
         const savedState = localStorage.getItem('teamBuilderState');
         let initialTeamId = null;
-        
+        let hasExistingPlayers = false;
+
         if (savedState) {
             try {
                 const teamState = JSON.parse(savedState);
-                // Find the first player with a teamId
-                for (const position of ['forward', 'defenseman', 'goalie']) {
+                
+                // Use the saved active team if available
+                if (teamState.activeTeam) {
+                    initialTeamId = teamState.activeTeam;
+                }
+                
+                // Check if there are any existing players
+                const positions = ['forward', 'defenseman', 'goalie'];
+                for (const position of positions) {
                     const players = teamState[position] || [];
-                    const firstPlayer = players.find(p => p.teamId);
-                    if (firstPlayer) {
-                        initialTeamId = firstPlayer.teamId;
+                    if (players.length > 0) {
+                        hasExistingPlayers = true;
+                        // If no saved active team, use the team from the last placed player
+                        if (!initialTeamId) {
+                            const lastPlayer = players[players.length - 1];
+                            if (lastPlayer && lastPlayer.teamId) {
+                                initialTeamId = lastPlayer.teamId;
+                            }
+                        }
                         break;
                     }
+                }
+                
+                // If we have existing players, load their state first
+                if (hasExistingPlayers) {
+                    await loadTeamState();
                 }
             } catch (error) {
                 console.error('Error parsing saved state:', error);
             }
         }
 
-        // Select initial team based on saved state or first team
+        // Set the initial team selection and load roster
         const initialTeamLink = initialTeamId ? 
             DOM.teamSelect.querySelector(`a[data-value="${initialTeamId}"]`) : 
             DOM.teamSelect.querySelector('a');
 
         if (initialTeamLink) {
-            // Set initial dropdown label
-            DOM.teamDropdownLabel.innerHTML = `${initialTeamLink.textContent.trim()} <i class="bi bi-arrow-down-short"></i>`;
-            // Initialize the pool with this team's roster
-            handleTeamSelection(initialTeamLink);
+            const teamName = initialTeamLink.textContent.trim();
+            
+            // Update dropdown label to reflect the correct team
+            if (DOM.teamDropdownLabel) {
+                DOM.teamDropdownLabel.innerHTML = `${teamName} <i class="bi bi-arrow-down-short"></i>`;
+            }
+            
+            // Set the active team state
+            TeamBuilder.setState({ activeTeam: initialTeamLink.dataset.value });
+            window.activeTeam = initialTeamLink.dataset.value;
+            
+            // Enable the Add Players button
+            if (DOM.selectPlayersBtn) {
+                DOM.selectPlayersBtn.classList.remove('disabled');
+            }
+            
+            // Update slots state
+            updateSlotsState();
+            
+            // Load the team roster but skip state restore since we already did it
+            await handleTeamSelection(initialTeamLink, true);
         }
 
+        return { initialTeamId, hasExistingPlayers };
+    }
+
+    // Optimized initialization sequence
+    initializeTeamBuilderState().then(({ initialTeamId, hasExistingPlayers }) => {
         // Handle team selection clicks
         eventManager.addDelegatedEventListener(DOM.teamSelect, 'a', 'click', function(e) {
             e.preventDefault();
             handleTeamSelection(this);
         });
+    }).catch(error => {
+        console.error('Failed to initialize team builder:', error);
+        
+        // Fallback to basic initialization
+        const fallbackTeamLink = DOM.teamSelect.querySelector('a');
+        if (fallbackTeamLink) {
+            handleTeamSelection(fallbackTeamLink);
+        }
     });
 
     // Initialize dropped player actions
     initializeDroppedPlayerActions();
 
-    // Initialize the initial state of pool players
+    // Initial update of pool player states
     updatePoolPlayerStates();
 
-    // Cleanup when leaving page
-    window.addEventListener('unload', cleanupTeamBuilder);
+    // Enhanced cleanup when leaving page
+    const cleanup = () => {
+        cleanupTeamBuilder();
+        eventManager.removeAllEventListeners();
+    };
+    
+    window.addEventListener('beforeunload', cleanup);
+    window.addEventListener('unload', cleanup);
 }
