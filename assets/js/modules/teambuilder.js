@@ -45,6 +45,9 @@ function cleanupTeamBuilder() {
     poolPlayerCache.clear();
     slotStateCache.clear();
     
+    // Remove scroll support if active
+    removeScrollSupportDuringDrag();
+    
     // Destroy swipers efficiently
     if (window.teamBuilderSwipers) {
         Object.values(window.teamBuilderSwipers).forEach(swiper => {
@@ -277,7 +280,7 @@ function initializePlayerDrag(player) {
     return cleanupFunction;
 }
 
-// Optimized drag handlers with better performance
+// Optimized drag handlers with better performance and scroll support
 const dragHandlers = {
     start(e) {
         if (!TeamBuilder.state.activeTeam) {
@@ -296,11 +299,17 @@ const dragHandlers = {
         // Pre-cache position for better performance during drag
         const position = getPlayerPosition(this);
         e.dataTransfer.setData('text/plain', position);
+        
+        // Add scroll event listeners during drag
+        addScrollSupportDuringDrag();
     },
 
     end() {
         this.classList.remove('dragging');
         document.body.style.cursor = '';
+        
+        // Remove scroll event listeners
+        removeScrollSupportDuringDrag();
         
         // Use requestAnimationFrame for better performance
         requestAnimationFrame(() => {
@@ -1015,4 +1024,108 @@ export function initTeamBuilder() {
     
     window.addEventListener('beforeunload', cleanup);
     window.addEventListener('unload', cleanup);
+}
+
+// Scroll support during drag operations
+let scrollDuringDragHandler = null;
+let autoScrollInterval = null;
+
+function addScrollSupportDuringDrag() {
+    // Enable mouse wheel scrolling during drag
+    scrollDuringDragHandler = function(e) {
+        // Don't prevent default - allow normal scrolling
+        const scrollAmount = e.deltaY * 2; // Multiply for more responsive scrolling
+        
+        // Scroll the window directly
+        window.scrollBy(0, scrollAmount);
+    };
+    
+    // Add wheel event listener - use capture phase to catch before other handlers
+    document.addEventListener('wheel', scrollDuringDragHandler, { 
+        passive: false, 
+        capture: true 
+    });
+    
+    // Add keyboard scroll support
+    const keyboardScrollHandler = function(e) {
+        if (!TeamBuilder.state.draggedItem) return;
+        
+        const scrollAmount = 50;
+        switch(e.key) {
+            case 'ArrowUp':
+                e.preventDefault();
+                window.scrollBy(0, -scrollAmount);
+                break;
+            case 'ArrowDown':
+                e.preventDefault();
+                window.scrollBy(0, scrollAmount);
+                break;
+            case 'PageUp':
+                e.preventDefault();
+                window.scrollBy(0, -window.innerHeight * 0.8);
+                break;
+            case 'PageDown':
+                e.preventDefault();
+                window.scrollBy(0, window.innerHeight * 0.8);
+                break;
+        }
+    };
+    
+    document.addEventListener('keydown', keyboardScrollHandler, { passive: false });
+    
+    // Store reference for cleanup
+    scrollDuringDragHandler.keyboardHandler = keyboardScrollHandler;
+    
+    // Add auto-scroll near edges with improved detection
+    autoScrollInterval = setInterval(() => {
+        if (!TeamBuilder.state.draggedItem) return;
+        
+        const mouseY = window.lastMouseY || 0;
+        const windowHeight = window.innerHeight;
+        const scrollZone = 80; // pixels from edge to trigger auto-scroll
+        const scrollSpeed = 8;
+        
+        if (mouseY < scrollZone && window.scrollY > 0) {
+            // Scroll up
+            window.scrollBy(0, -scrollSpeed);
+        } else if (mouseY > windowHeight - scrollZone) {
+            // Scroll down
+            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+            if (window.scrollY < maxScroll) {
+                window.scrollBy(0, scrollSpeed);
+            }
+        }
+    }, 16); // ~60fps
+    
+    // Track mouse position for auto-scroll - use multiple events
+    document.addEventListener('dragover', trackMousePosition, { passive: true });
+    document.addEventListener('mousemove', trackMousePosition, { passive: true });
+}
+
+function removeScrollSupportDuringDrag() {
+    if (scrollDuringDragHandler) {
+        document.removeEventListener('wheel', scrollDuringDragHandler, { capture: true });
+        
+        // Remove keyboard handler if it exists
+        if (scrollDuringDragHandler.keyboardHandler) {
+            document.removeEventListener('keydown', scrollDuringDragHandler.keyboardHandler);
+        }
+        
+        scrollDuringDragHandler = null;
+    }
+    
+    if (autoScrollInterval) {
+        clearInterval(autoScrollInterval);
+        autoScrollInterval = null;
+    }
+    
+    document.removeEventListener('dragover', trackMousePosition);
+    document.removeEventListener('mousemove', trackMousePosition);
+    
+    // Clear stored mouse position
+    delete window.lastMouseY;
+}
+
+function trackMousePosition(e) {
+    window.lastMouseY = e.clientY;
 }

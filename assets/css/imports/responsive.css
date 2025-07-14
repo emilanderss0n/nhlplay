@@ -360,6 +360,12 @@
             justify-content: center;
         }
 
+        .trades-frontpage .team-logo img {
+            width: 100px;
+            height: 100px;
+            transform: translateY(1.6rem);
+        }
+
     }
 
     @media screen and (max-width: 1100px) {

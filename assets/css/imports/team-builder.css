@@ -5,17 +5,10 @@
 
     .team-builder {
         user-select: none;
-        /* Performance optimizations */
-        contain: layout style paint;
-        will-change: auto;
     }
 
-    /* Optimize dragging performance */
     #team-builder-drop-area .player {
         cursor: grab;
-        /* Ensure GPU acceleration for smoother drag */
-        transform: translateZ(0);
-        backface-visibility: hidden;
     }
 
     #team-builder-drop-area .player.defenseman,
@@ -25,37 +18,10 @@
 
     #team-builder-drop-area .player.dragging {
         cursor: grabbing;
-        /* Optimize dragging performance */
-        will-change: transform;
-        opacity: 0.8;
-        transform: translateZ(0) scale(1.02);
-        z-index: 1000;
     }
 
     #team-builder-drop-area .player.drag-over {
         border: 2px dashed var(--border-stroke);
-    }
-
-    /* Loading state optimizations */
-    .player-slot {
-        /* Optimize slot repainting during drag operations */
-        contain: style paint;
-        transform: translateZ(0);
-    }
-
-    .player-slot.drag-over {
-        /* Smooth drag over animation */
-        background-color: rgba(var(--accent-color-rgb), 0.1);
-        transition: background-color 0.15s ease;
-        will-change: background-color;
-    }
-
-    /* Pool player state optimizations */
-    .tb-pool .player.in-slot {
-        opacity: 0.5;
-        pointer-events: none;
-        /* Smooth opacity transition */
-        transition: opacity 0.2s ease;
     }
 
     .tb-selection-pool {
@@ -219,7 +185,6 @@
         color: var(--main-link-color);
         font-size: 1.2rem;
     }
-
 
     .team-builder .team-lines {
         display: grid;
@@ -425,67 +390,6 @@
     #tb-pool-2,
     #tb-pool-3 {
         display: none;
-    }
-
-    /* Loading indicator styles */
-    .loading-indicator {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: var(--card-background);
-        border: 1px solid var(--border-stroke);
-        border-radius: 12px;
-        padding: 2rem;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1rem;
-        z-index: 10000;
-        backdrop-filter: blur(10px);
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-    }
-
-    .loading-spinner {
-        width: 40px;
-        height: 40px;
-        border: 3px solid var(--border-stroke);
-        border-top: 3px solid var(--accent-color);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-    }
-
-    .loading-message {
-        font-size: 0.9rem;
-        color: var(--text-secondary);
-        font-weight: 500;
-    }
-
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-    @keyframes slide-up-reveal {
-        from {
-            opacity: 0;
-            transform: translateY(100%);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    @keyframes slide-out-down-dismiss {
-        from {
-            opacity: 1;
-            transform: translateY(0);
-        }
-        to {
-            opacity: 0;
-            transform: translateY(100%);
-        }
     }
 
     @media screen and (max-width: 1350px) {

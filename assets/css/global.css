@@ -3652,7 +3652,7 @@
     right: 0;
   }
 
-  .trades .team-logo img {
+  .trades:not(.trades-frontpage) .team-logo img {
     width: 240px;
     height: 240px;
     mask: var(--logo-mask);
@@ -3705,12 +3705,15 @@
   }
 
   .trades-frontpage .trade .date {
-    padding: 1rem;
+    padding: 0.7rem 1rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     font-weight: bold;
     font-size: 0.8rem;
     color: var(--paragraph-color);
+    position: absolute;
+    z-index: 3;
+    backdrop-filter: blur(20px);
   }
 
   .trades-frontpage .team-logo {
@@ -3718,21 +3721,29 @@
   }
 
   .trades-frontpage .team-logo img {
-    width: 60px !important;
-    height: 60px !important;
     margin: 0 !important;
+    opacity: 0.3;
+    width: 120px;
+    height: 120px;
+    mask: var(--logo-mask);
   }
 
   .trades-frontpage .teams {
-    align-items: baseline;
+    align-items: center;
+    margin: 0;
+    z-index: 1;
+    position: relative;
+    gap: 0 !important;
+    height: 100%;
   }
 
   .trades-frontpage .team {
-    padding: 1rem 2rem 1.5rem !important;
+    padding: 0 !important;
   }
 
   .trades-frontpage .team .list {
-    margin-top: 1rem;
+    margin-top: 3.5rem;
+    margin-bottom: 1rem;
   }
 
   .trades-frontpage .team-logo {
@@ -3748,6 +3759,9 @@
     display: flex;
     align-items: center;
     gap: 1rem;
+    position: absolute;
+    width: 100%;
+    z-index: -1;
   }
 
   .trades-frontpage .team-2 .team-info:has(.team-logo) {
@@ -3755,7 +3769,7 @@
   }
 
   .trades-frontpage .team-info:has(.team-logo) .name {
-    flex: none;
+    display: none;
   }
 
   .trades-frontpage .team-info:has(.team-logo) .text {
@@ -3771,6 +3785,7 @@
 
   .trades-frontpage .team .list ul li {
     font-size: 0.9rem;
+    margin: 0 1rem 0.5rem;
   }
 
   .feed-tweets {
@@ -4121,17 +4136,6 @@
     border: 1px solid var(--border-stroke-weak);
     position: relative;
     overflow: hidden;
-  }
-
-  .reddit-feed .reddit-post:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background-color: var(--reddit-color);
-    opacity: 0.7;
   }
 
   .reddit-feed .reddit-post:hover {
