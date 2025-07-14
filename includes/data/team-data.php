@@ -38,6 +38,7 @@ $teamColors = array(
     '62'=>'#124eb5',
     '66'=>'#e0af0b',
     '67'=>'#1d3573',
+    '68'=>'#0072AB',
 );
 
 $teamNames = array(
@@ -75,11 +76,13 @@ $teamNames = array(
     '53'=>'Arizona Coyotes',
     '54'=>'Vegas Golden Knights',
     '55'=>'Seattle Kraken',
+    '58'=>'Utah Mammoth',
     '59'=>'Utah Mammoth',
     '60'=>'Canada',
     '62'=>'Finland',
     '66'=>'Sweden',
     '67'=>'USA',
+    '68'=>'Utah Mammoth',
 );
 
 $teamNameToId = array(
