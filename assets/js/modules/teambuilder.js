@@ -340,7 +340,7 @@ function initializeDragAndDrop() {
                 appendTo: 'body',
                 constrainDimensions: false
             },
-            delay: 500,
+            delay: 100,
             distance: 0,
             classes: {
                 'source:dragging': 'draggable-source--is-dragging',

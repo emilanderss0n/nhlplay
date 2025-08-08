@@ -127,21 +127,21 @@ $mergedCSS = $isDevelopment ? false : generateMergedCSS([
                             <div class="suggestion-box"></div>
                         </div>
                         <div class="menu-links">
-                            <input class="dropdown" type="checkbox" id="dropdown1" name="dropdown1"/>
-                            <label class="for-dropdown" for="dropdown1">Links <i class="bi bi-arrow-down-short"></i></label>
-                            <div class="section-dropdown"> 
-                                <a id="link-game-scores" href="<?= BASE_URL ?>/scores" rel="page">Scores <i class="bi bi-arrow-right-short"></i></a>
-                                <a id="link-stat-leaders" href="<?= BASE_URL ?>/stat-leaders" rel="page">Stat Leaders <i class="bi bi-arrow-right-short"></i></a>
-                                <a id="link-game-recaps" href="<?= BASE_URL ?>/recaps" rel="page">Game Recaps <i class="bi bi-arrow-right-short"></i></a>
+                            <input class="dropdown" type="checkbox" id="dropdown1" name="dropdown1" tabindex="-1" />
+                            <label class="for-dropdown" for="dropdown1" tabindex="0" role="button" aria-expanded="false" aria-haspopup="true">Links <i class="bi bi-arrow-down-short"></i></label>
+                            <div class="section-dropdown" role="menu" aria-labelledby="dropdown1"> 
+                                <a id="link-game-scores" href="<?= BASE_URL ?>/scores" rel="page" role="menuitem">Scores <i class="bi bi-arrow-right-short"></i></a>
+                                <a id="link-stat-leaders" href="<?= BASE_URL ?>/stat-leaders" rel="page" role="menuitem">Stat Leaders <i class="bi bi-arrow-right-short"></i></a>
+                                <a id="link-game-recaps" href="<?= BASE_URL ?>/recaps" rel="page" role="menuitem">Game Recaps <i class="bi bi-arrow-right-short"></i></a>
                                 <?php if ($deviceType == 'tablet' || $deviceType == 'computer'): ?>
-                                    <a id="link-builder" href="<?= BASE_URL ?>/team-builder" rel="page">Team Builder <i class="bi bi-arrow-right-short"></i></a>
+                                    <a id="link-builder" href="<?= BASE_URL ?>/team-builder" rel="page" role="menuitem">Team Builder <i class="bi bi-arrow-right-short"></i></a>
                                 <?php endif; ?>
-                                <a id="link-trades" href="<?= BASE_URL ?>/trades" rel="page">
+                                <a id="link-trades" href="<?= BASE_URL ?>/trades" rel="page" role="menuitem">
                                     <span>Trades</span>
                                     <i class="bi bi-arrow-right-short"></i>
                                 </a>
-                                <a id="link-draft" href="<?= BASE_URL ?>/draft" rel="page">Draft <i class="bi bi-arrow-right-short"></i></a>
-                                <a id="link-last-season" href="<?= BASE_URL ?>/last-season-overview" rel="page">Last Season <i class="bi bi-arrow-right-short"></i></a>
+                                <a id="link-draft" href="<?= BASE_URL ?>/draft" rel="page" role="menuitem">Draft <i class="bi bi-arrow-right-short"></i></a>
+                                <a id="link-last-season" href="<?= BASE_URL ?>/last-season-overview" rel="page" role="menuitem">Last Season <i class="bi bi-arrow-right-short"></i></a>
                             </div>
                         </div>
                         <ul class="menu-teams" aria-haspopup="true" style="display: none">
@@ -155,9 +155,9 @@ $mergedCSS = $isDevelopment ? false : generateMergedCSS([
                             </li>
                         </ul>
                         <div class="menu-teams">
-                            <input class="dropdown" type="checkbox" id="dropdown2" name="dropdown2"/>
-                            <label class="for-dropdown" for="dropdown2">Teams <i class="bi bi-arrow-down-short"></i></label>
-                            <div class="section-dropdown" id="team-selection"> 
+                            <input class="dropdown" type="checkbox" id="dropdown2" name="dropdown2" tabindex="-1"/>
+                            <label class="for-dropdown" for="dropdown2" tabindex="0" role="button" aria-expanded="false" aria-haspopup="true">Teams <i class="bi bi-arrow-down-short"></i></label>
+                            <div class="section-dropdown" id="team-selection" role="menu" aria-labelledby="dropdown2"> 
                                 <div class="fader-top"></div>
                                 <div class="container">
                                 <?php include('includes/teamSelection.php'); ?>

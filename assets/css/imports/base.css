@@ -629,87 +629,84 @@
         position: fixed;
         top: 0;
         width: 100%;
-    }
 
-    header .cont {
-        width: 100%;
-        max-width: 1380px;
-        margin: 0 auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .header-title {
-        font-family: "Tomorrow", sans-serif;
-        font-size: 1.8em;
-        text-transform: uppercase;
-        position: relative;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-
-        .logo {
+        & .cont {
+            width: 100%;
+            max-width: 1380px;
+            margin: 0 auto;
             display: flex;
-            color: var(--heading-color);
+            justify-content: space-between;
+            align-items: center;
 
-            h3 {
-                line-height: 1;
-                font-size: 2rem;
-                margin-right: 0.3rem;
-                font-family: "Inter", sans-serif;
-                font-weight: 700;
-                letter-spacing: -1px;
-            }
+            & .header-title {
+                font-family: "Tomorrow", sans-serif;
+                font-size: 1.8em;
+                text-transform: uppercase;
+                position: relative;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
 
-            svg {
-                background-color: transparent;
-                --stop02: var(--heading-color);
-                --stop01: var(--medium-contrast-color);
-                --light-color: rgba(255, 255, 255, 0.1);
+                & .logo {
+                    display: flex;
+                    color: var(--heading-color);
+
+                    & h3 {
+                        line-height: 1;
+                        font-size: 2rem;
+                        margin-right: 0.3rem;
+                        font-family: "Inter", sans-serif;
+                        font-weight: 700;
+                        letter-spacing: -1px;
+                    }
+
+                    & svg {
+                        background-color: transparent;
+                        --stop02: var(--heading-color);
+                        --stop01: var(--medium-contrast-color);
+                        --light-color: rgba(255, 255, 255, 0.1);
+                    }
+                }
             }
         }
-    }
-
-    .sm-only {
-        display: none;
     }
 
     .hamburger {
         cursor: pointer;
         line-height: 0;
-    }
+        user-select: none;
 
-    .hamburger input {
-        display: none;
-    }
+        & input {
+            display: none;
 
-    .hamburger svg {
-        height: 2.4rem;
-        transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
-    }
+            &:checked + svg {
+                transform: rotate(-45deg);
+            }
 
-    .line {
-        fill: none;
-        stroke: var(--heading-color);
-        stroke-linecap: round;
-        stroke-linejoin: round;
-        stroke-width: 3;
-        transition: stroke-dasharray 600ms cubic-bezier(0.4, 0, 0.2, 1),
-            stroke-dashoffset 600ms cubic-bezier(0.4, 0, 0.2, 1);
-    }
+            &:checked + svg .line-top-bottom {
+                stroke-dasharray: 20 300;
+                stroke-dashoffset: -32.42;
+            }
+        }
 
-    .line-top-bottom {
-        stroke-dasharray: 12 63;
-    }
+        & svg {
+            height: 2.4rem;
+            transition: transform 600ms cubic-bezier(0.4, 0, 0.2, 1);
 
-    .hamburger input:checked + svg {
-        transform: rotate(-45deg);
-    }
+            & .line {
+                fill: none;
+                stroke: var(--heading-color);
+                stroke-linecap: round;
+                stroke-linejoin: round;
+                stroke-width: 3;
+                transition: stroke-dasharray 600ms cubic-bezier(0.4, 0, 0.2, 1),
+                    stroke-dashoffset 600ms cubic-bezier(0.4, 0, 0.2, 1);
+            }
 
-    .hamburger input:checked + svg .line-top-bottom {
-        stroke-dasharray: 20 300;
-        stroke-dashoffset: -32.42;
+            & .line-top-bottom {
+                stroke-dasharray: 12 63;
+            }
+        }
     }
 
     #main-menu .wrapper {
@@ -781,6 +778,38 @@
     .custom-select .dropdown:checked + label:hover,
     .custom-select .dropdown:not(:checked) + label:hover {
         border: 1px solid var(--border-stroke);
+    }
+
+    .menu-links .dropdown:checked + label:focus,
+    .menu-links .dropdown:not(:checked) + label:focus,
+    .menu-teams .dropdown:checked + label:focus,
+    .menu-teams .dropdown:not(:checked) + label:focus,
+    .custom-select .dropdown:checked + label:focus,
+    .custom-select .dropdown:not(:checked) + label:focus {
+        outline: 2px solid var(--main-link-color);
+        outline-offset: 2px;
+        border: 1px solid var(--border-stroke);
+    }
+
+    .menu-links .dropdown:checked + label:focus,
+    .menu-teams .dropdown:checked + label:focus,
+    .custom-select .dropdown:checked + label:focus {
+        background-color: var(--main-link-color);
+        color: var(--black-white);
+        outline: 2px solid var(--secondary-link-color);
+    }
+
+    .suggestion-box a:focus {
+        background-color: var(--main-link-color);
+        color: var(--black-white);
+        outline: 2px solid var(--main-link-color);
+        outline-offset: -2px;
+    }
+
+    #player-search:focus,
+    #player-search-mobile:focus {
+        outline: 2px solid var(--main-link-color);
+        outline-offset: 2px;
     }
 
     .menu-links .dropdown:checked + label,
@@ -931,6 +960,21 @@
         background-color: var(--main-link-color);
     }
 
+    .menu-links .section-dropdown a:focus,
+    .menu-teams .section-dropdown a:focus,
+    .menu-links .dropdown-sub:checked + label:focus,
+    .menu-teams .dropdown-sub:checked + label:focus,
+    .menu-links .dropdown-sub:not(:checked) + label:focus,
+    .menu-teams .dropdown-sub:not(:checked) + label:focus,
+    .custom-select .section-dropdown a:focus,
+    .custom-select:checked + label:focus,
+    .custom-select .dropdown-sub:not(:checked) + label:focus {
+        color: var(--black-white);
+        background-color: var(--main-link-color);
+        outline: 2px solid var(--main-link-color);
+        outline-offset: -2px;
+    }
+
     .menu-links .section-dropdown a > i,
     .menu-teams .section-dropdown a > i,
     .custom-select .section-dropdown a > i {
@@ -1024,6 +1068,10 @@
         width: 24px;
         height: 24px;
         margin-right: 10px;
+    }
+
+    .sm-only {
+        display: none;
     }
 
     #activity {

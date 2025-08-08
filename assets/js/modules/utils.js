@@ -362,3 +362,331 @@ export function debounce(fn, delay) {
         timeoutId = setTimeout(() => fn.apply(this, args), delay);
     };
 }
+
+// Accessibility Features
+export function initDropdownKeyboardNavigation() {
+    // Handle keyboard events for dropdown labels
+    const dropdownLabels = document.querySelectorAll('.menu-links .for-dropdown, .menu-teams .for-dropdown');
+    
+    dropdownLabels.forEach(label => {
+        label.addEventListener('keydown', (e) => {
+            // Toggle dropdown with Enter or Space
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                const checkbox = label.previousElementSibling;
+                if (checkbox && checkbox.type === 'checkbox') {
+                    checkbox.checked = !checkbox.checked;
+                    
+                    // Update aria-expanded attribute
+                    label.setAttribute('aria-expanded', checkbox.checked.toString());
+                    
+                    // Update tabindex for dropdown links
+                    updateDropdownLinksTabIndex(label.nextElementSibling, checkbox.checked);
+                    
+                    // If dropdown is now open, focus first link
+                    if (checkbox.checked) {
+                        setTimeout(() => {
+                            const firstLink = label.nextElementSibling?.querySelector('a');
+                            if (firstLink) {
+                                firstLink.focus();
+                            }
+                        }, 100);
+                    }
+                }
+            }
+            // Close dropdown with Escape
+            else if (e.key === 'Escape') {
+                const checkbox = label.previousElementSibling;
+                if (checkbox && checkbox.type === 'checkbox' && checkbox.checked) {
+                    checkbox.checked = false;
+                    label.setAttribute('aria-expanded', 'false');
+                    // Update tabindex for dropdown links
+                    updateDropdownLinksTabIndex(label.nextElementSibling, false);
+                    label.focus();
+                }
+            }
+        });
+
+        // Also handle click events to update aria-expanded and tabindex
+        label.addEventListener('click', () => {
+            setTimeout(() => {
+                const checkbox = label.previousElementSibling;
+                if (checkbox && checkbox.type === 'checkbox') {
+                    label.setAttribute('aria-expanded', checkbox.checked.toString());
+                    // Update tabindex for dropdown links
+                    updateDropdownLinksTabIndex(label.nextElementSibling, checkbox.checked);
+                }
+            }, 0);
+        });
+    });
+
+    // Handle keyboard navigation within dropdowns
+    const dropdownContainers = document.querySelectorAll('.menu-links .section-dropdown, .menu-teams .section-dropdown');
+    
+    dropdownContainers.forEach(container => {
+        container.addEventListener('keydown', (e) => {
+            const links = Array.from(container.querySelectorAll('a'));
+            const currentIndex = links.indexOf(document.activeElement);
+            
+            switch (e.key) {
+                case 'ArrowDown':
+                    e.preventDefault();
+                    const nextIndex = currentIndex < links.length - 1 ? currentIndex + 1 : 0;
+                    links[nextIndex]?.focus();
+                    break;
+                    
+                case 'ArrowUp':
+                    e.preventDefault();
+                    const prevIndex = currentIndex > 0 ? currentIndex - 1 : links.length - 1;
+                    links[prevIndex]?.focus();
+                    break;
+                    
+                case 'Escape':
+                    e.preventDefault();
+                    // Close dropdown and focus back to label
+                    const menuContainer = container.closest('.menu-links, .menu-teams');
+                    const checkbox = menuContainer?.querySelector('input[type="checkbox"]');
+                    const label = menuContainer?.querySelector('.for-dropdown');
+                    
+                    if (checkbox && label) {
+                        checkbox.checked = false;
+                        label.setAttribute('aria-expanded', 'false');
+                        // Update tabindex for dropdown links
+                        updateDropdownLinksTabIndex(container, false);
+                        label.focus();
+                    }
+                    break;
+                    
+                case 'Tab':
+                    // Allow normal tab behavior, but close dropdown if tabbing out
+                    setTimeout(() => {
+                        if (!container.contains(document.activeElement)) {
+                            const menuContainer = container.closest('.menu-links, .menu-teams');
+                            const checkbox = menuContainer?.querySelector('input[type="checkbox"]');
+                            const label = menuContainer?.querySelector('.for-dropdown');
+                            if (checkbox && label) {
+                                checkbox.checked = false;
+                                label.setAttribute('aria-expanded', 'false');
+                                // Update tabindex for dropdown links
+                                updateDropdownLinksTabIndex(container, false);
+                            }
+                        }
+                    }, 0);
+                    break;
+            }
+        });
+    });
+
+    // Initialize all dropdown links as non-focusable by default
+    initializeDropdownTabIndex();
+}
+
+function updateDropdownLinksTabIndex(dropdownContainer, isOpen) {
+    if (!dropdownContainer) return;
+    
+    const links = dropdownContainer.querySelectorAll('a');
+    links.forEach(link => {
+        link.setAttribute('tabindex', isOpen ? '0' : '-1');
+    });
+}
+
+function initializeDropdownTabIndex() {
+    // Set all dropdown links to tabindex="-1" initially since dropdowns start closed
+    const allDropdownContainers = document.querySelectorAll('.menu-links .section-dropdown, .menu-teams .section-dropdown');
+    allDropdownContainers.forEach(container => {
+        updateDropdownLinksTabIndex(container, false);
+    });
+}
+
+export function initDropdownClickOutside() {
+    document.addEventListener('click', (e) => {
+        const dropdownContainers = document.querySelectorAll('.menu-links, .menu-teams');
+        
+        dropdownContainers.forEach(container => {
+            const checkbox = container.querySelector('input[type="checkbox"]');
+            const label = container.querySelector('.for-dropdown');
+            const dropdownContent = container.querySelector('.section-dropdown');
+            
+            // If click is outside the dropdown container and dropdown is open
+            if (checkbox && checkbox.checked && !container.contains(e.target)) {
+                checkbox.checked = false;
+                if (label) {
+                    label.setAttribute('aria-expanded', 'false');
+                }
+                // Update tabindex for dropdown links
+                updateDropdownLinksTabIndex(dropdownContent, false);
+            }
+        });
+    });
+}
+
+export function initTeamLinksAccessibility() {
+    // Add role="menuitem" to all team selection links
+    const teamLinks = document.querySelectorAll('.menu-teams .section-dropdown a');
+    teamLinks.forEach(link => {
+        link.setAttribute('role', 'menuitem');
+    });
+}
+
+// Player Search Accessibility
+export function initPlayerSearchAccessibility() {
+    const searchInputs = document.querySelectorAll('#player-search, #player-search-mobile');
+    
+    searchInputs.forEach(searchInput => {
+        // Add ARIA attributes to search input
+        searchInput.setAttribute('role', 'combobox');
+        searchInput.setAttribute('aria-autocomplete', 'list');
+        searchInput.setAttribute('aria-expanded', 'false');
+        searchInput.setAttribute('aria-haspopup', 'listbox');
+        
+        const suggestionBox = searchInput.closest('.suggestion-input').querySelector('.suggestion-box');
+        if (suggestionBox) {
+            suggestionBox.setAttribute('role', 'listbox');
+            suggestionBox.setAttribute('aria-label', 'Player suggestions');
+        }
+        
+        // Handle keyboard navigation for search
+        searchInput.addEventListener('keydown', handleSearchKeyNavigation);
+        
+        // Monitor for suggestion box content changes
+        observeSuggestionChanges(searchInput, suggestionBox);
+    });
+}
+
+function handleSearchKeyNavigation(e) {
+    const searchInput = e.target;
+    const suggestionBox = searchInput.closest('.suggestion-input').querySelector('.suggestion-box');
+    
+    if (!suggestionBox || suggestionBox.style.display === 'none') return;
+    
+    const suggestions = Array.from(suggestionBox.querySelectorAll('a[data-link]'));
+    const currentFocused = suggestionBox.querySelector('a:focus');
+    const currentIndex = currentFocused ? suggestions.indexOf(currentFocused) : -1;
+    
+    switch (e.key) {
+        case 'ArrowDown':
+            e.preventDefault();
+            if (suggestions.length > 0) {
+                const nextIndex = currentIndex < suggestions.length - 1 ? currentIndex + 1 : 0;
+                suggestions[nextIndex]?.focus();
+                searchInput.setAttribute('aria-activedescendant', suggestions[nextIndex]?.getAttribute('id') || '');
+            }
+            break;
+            
+        case 'ArrowUp':
+            e.preventDefault();
+            if (suggestions.length > 0) {
+                if (currentIndex > 0) {
+                    suggestions[currentIndex - 1]?.focus();
+                    searchInput.setAttribute('aria-activedescendant', suggestions[currentIndex - 1]?.getAttribute('id') || '');
+                } else {
+                    // Return focus to search input
+                    searchInput.focus();
+                    searchInput.removeAttribute('aria-activedescendant');
+                }
+            }
+            break;
+            
+        case 'Escape':
+            e.preventDefault();
+            closeSuggestionBox(searchInput, suggestionBox);
+            searchInput.focus();
+            break;
+            
+        case 'Enter':
+            if (currentFocused) {
+                e.preventDefault();
+                currentFocused.click();
+            }
+            break;
+            
+        case 'Tab':
+            // Close suggestions when tabbing away
+            setTimeout(() => {
+                if (!suggestionBox.contains(document.activeElement) && 
+                    document.activeElement !== searchInput) {
+                    closeSuggestionBox(searchInput, suggestionBox);
+                }
+            }, 0);
+            break;
+    }
+}
+
+function observeSuggestionChanges(searchInput, suggestionBox) {
+    if (!suggestionBox) return;
+    
+    const observer = new MutationObserver(() => {
+        const suggestions = suggestionBox.querySelectorAll('a[data-link]');
+        const isVisible = suggestionBox.style.display !== 'none' && suggestions.length > 0;
+        
+        // Update aria-expanded based on visibility
+        searchInput.setAttribute('aria-expanded', isVisible.toString());
+        
+        if (isVisible) {
+            // Add accessibility attributes to suggestion items
+            suggestions.forEach((suggestion, index) => {
+                suggestion.setAttribute('role', 'option');
+                suggestion.setAttribute('tabindex', '-1');
+                if (!suggestion.id) {
+                    suggestion.id = `player-suggestion-${index}`;
+                }
+            });
+            
+            // Handle keyboard navigation within suggestions
+            suggestions.forEach(suggestion => {
+                suggestion.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') {
+                        e.preventDefault();
+                        closeSuggestionBox(searchInput, suggestionBox);
+                        searchInput.focus();
+                    } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                        // Let the search input handle arrow navigation
+                        searchInput.dispatchEvent(new KeyboardEvent('keydown', {
+                            key: e.key,
+                            bubbles: true,
+                            cancelable: true
+                        }));
+                        e.preventDefault();
+                    }
+                });
+            });
+        }
+    });
+    
+    observer.observe(suggestionBox, { 
+        childList: true, 
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['style']
+    });
+    
+    // Store observer for cleanup if needed
+    if (!searchInput._suggestionObserver) {
+        searchInput._suggestionObserver = observer;
+    }
+}
+
+function closeSuggestionBox(searchInput, suggestionBox) {
+    suggestionBox.style.display = 'none';
+    searchInput.value = '';
+    searchInput.setAttribute('aria-expanded', 'false');
+    searchInput.removeAttribute('aria-activedescendant');
+}
+
+// Handle clicks outside search to close suggestions
+export function initSearchClickOutside() {
+    document.addEventListener('click', (e) => {
+        const searchContainers = document.querySelectorAll('.suggestion-input');
+        
+        searchContainers.forEach(container => {
+            const searchInput = container.querySelector('input[type="text"]');
+            const suggestionBox = container.querySelector('.suggestion-box');
+            
+            if (searchInput && suggestionBox && 
+                !container.contains(e.target) && 
+                suggestionBox.style.display !== 'none') {
+                closeSuggestionBox(searchInput, suggestionBox);
+            }
+        });
+    });
+}

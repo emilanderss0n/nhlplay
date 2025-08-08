@@ -3,7 +3,14 @@ import { PageDetector } from './core/page-detector.js';
 import { FeatureObserver } from './core/feature-observer.js';
 import { appState } from './core/app-state.js';
 import { initDOMElements } from './modules/dom-elements.js';
-import { convertUTCTimesToLocal } from './modules/utils.js';
+import { 
+    convertUTCTimesToLocal, 
+    initDropdownKeyboardNavigation, 
+    initDropdownClickOutside, 
+    initTeamLinksAccessibility,
+    initPlayerSearchAccessibility,
+    initSearchClickOutside
+} from './modules/utils.js';
 
 class App {
     constructor() {
@@ -120,6 +127,13 @@ class App {
         window.addEventListener('error', (e) => {
             console.error('Global error:', e.error);
         });
+
+        // Initialize accessibility features
+        initDropdownKeyboardNavigation();
+        initDropdownClickOutside();
+        initTeamLinksAccessibility();
+        initPlayerSearchAccessibility();
+        initSearchClickOutside();
     }
 }
 
