@@ -16,6 +16,12 @@ const DOM = {
     activePoolButtons: null
 };
 
+// Shopify Draggable instances
+let draggableInstances = {
+    poolToDrop: null,
+    slotToSlot: null
+};
+
 // Performance caches
 const positionCache = new WeakMap();
 const positionSlotCache = new Map();
@@ -45,8 +51,15 @@ function cleanupTeamBuilder() {
     poolPlayerCache.clear();
     slotStateCache.clear();
     
-    // Remove scroll support if active
-    removeScrollSupportDuringDrag();
+    // Destroy Draggable instances
+    if (draggableInstances.poolToDrop) {
+        draggableInstances.poolToDrop.destroy();
+        draggableInstances.poolToDrop = null;
+    }
+    if (draggableInstances.slotToSlot) {
+        draggableInstances.slotToSlot.destroy();
+        draggableInstances.slotToSlot = null;
+    }
     
     // Destroy swipers efficiently
     if (window.teamBuilderSwipers) {
@@ -251,163 +264,239 @@ function updateSlotsState() {
     disableSlots(!TeamBuilder.state.activeTeam);
 }
 
-// Optimized player drag initialization with better cleanup tracking
-function initializePlayerDrag(player) {
-    if (!player) return null;
-    
-    // Check if already initialized to avoid duplicate listeners
-    if (poolPlayerCache.has(player)) {
-        return poolPlayerCache.get(player);
-    }
-    
-    const cleanup = [];
-    
-    player.setAttribute('draggable', 'true');
-    player.style.cursor = 'grab';
-    
-    // Use passive listeners where possible for better performance
-    cleanup.push(
-        eventManager.addEventListener(player, 'dragstart', dragHandlers.start, { passive: false }),
-        eventManager.addEventListener(player, 'dragend', dragHandlers.end, { passive: true })
-    );
-    
-    const cleanupFunction = () => {
-        cleanup.forEach(unsub => unsub && unsub());
-        poolPlayerCache.delete(player);
-    };
-    
-    poolPlayerCache.set(player, cleanupFunction);
-    return cleanupFunction;
-}
-
-// Optimized drag handlers with better performance and scroll support
-const dragHandlers = {
-    start(e) {
-        if (!TeamBuilder.state.activeTeam) {
-            e.preventDefault();
-            return false;
-        }
-        
-        TeamBuilder.setState({ draggedItem: this });
-        this.classList.add('dragging');
-        document.body.style.cursor = 'grabbing';
-        
-        e.dataTransfer.effectAllowed = 'move';
-        e.dataTransfer.setDragImage(this, this.offsetWidth / 2, this.offsetHeight / 2);
-        e.dataTransfer.setData('position', getPlayerPosition(this));
-        
-        // Pre-cache position for better performance during drag
-        const position = getPlayerPosition(this);
-        e.dataTransfer.setData('text/plain', position);
-        
-        // Add scroll event listeners during drag
-        addScrollSupportDuringDrag();
-    },
-
-    end() {
-        this.classList.remove('dragging');
-        document.body.style.cursor = '';
-        
-        // Remove scroll event listeners
-        removeScrollSupportDuringDrag();
-        
-        // Use requestAnimationFrame for better performance
-        requestAnimationFrame(() => {
-            if (DOM.allSlots) {
-                DOM.allSlots.forEach(slot => slot.classList.remove('drag-over'));
-            }
-        });
-    },
-
-    enter(e) {
-        e.preventDefault();
-        if (TeamBuilder.state.draggedItem && 
-            this.dataset.position === getPlayerPosition(TeamBuilder.state.draggedItem)) {
-            this.classList.add('drag-over');
-        }
-    },
-
-    leave(e) {
-        // Use throttling to reduce excessive class removals
-        if (!this.contains(e.relatedTarget)) {
-            this.classList.remove('drag-over');
-        }
-    },
-
-    over(e) {
-        e.preventDefault();
-        const draggedPosition = TeamBuilder.state.draggedItem ? 
-            getPlayerPosition(TeamBuilder.state.draggedItem) : null;
-        e.dataTransfer.dropEffect = this.dataset.position === draggedPosition ? 'move' : 'none';
-    },
-
-    drop(e) {
-        e.preventDefault();
-        this.classList.remove('drag-over');
-        
-        if (!TeamBuilder.state.draggedItem || 
-            this.dataset.position !== getPlayerPosition(TeamBuilder.state.draggedItem)) {
+// Function to dynamically load Shopify Draggable library
+function loadShopifyDraggable() {
+    return new Promise((resolve, reject) => {
+        // Check if already loaded
+        if (window.Draggable && window.Draggable.Droppable) {
+            resolve();
             return;
         }
 
-        const existingPlayer = this.querySelector('.player');
-        const isFromSlot = TeamBuilder.state.draggedItem.parentElement.classList.contains('player-slot');
-        const draggedPlayerName = TeamBuilder.state.draggedItem.querySelector('.name').textContent;
-
-        // Optimized duplicate check using cached DOM elements
-        if (!isFromSlot) {
-            const isAlreadyInSlot = Array.from(DOM.allSlots).some(slot => {
-                const player = slot.querySelector('.player');
-                return player && player.querySelector('.name').textContent === draggedPlayerName;
-            });
-            if (isAlreadyInSlot) return;
-        }
-
-        // Use DocumentFragment for better performance during DOM manipulation
-        const fragment = document.createDocumentFragment();
-        
-        if (existingPlayer && isFromSlot) {
-            // Swap players between slots
-            TeamBuilder.state.draggedItem.parentElement.appendChild(existingPlayer);
-            TeamBuilder.state.draggedItem.style.opacity = '1';
-            this.appendChild(TeamBuilder.state.draggedItem);
-        } else if (!isFromSlot) {
-            // Clone from pool to slot with optimized copying
-            const clone = TeamBuilder.state.draggedItem.cloneNode(true);
-            Object.assign(clone.style, { opacity: '1', cursor: 'grab' });
-            Object.assign(clone.dataset, {
-                teamId: TeamBuilder.state.draggedItem.dataset.teamId,
-                playerId: TeamBuilder.state.draggedItem.dataset.playerId
-            });
+        // Check if script is already being loaded
+        if (document.querySelector('script[src*="shopify/draggable"]')) {
+            // Wait for it to load
+            const checkInterval = setInterval(() => {
+                if (window.Draggable && window.Draggable.Droppable) {
+                    clearInterval(checkInterval);
+                    resolve();
+                }
+            }, 100);
             
-            initializePlayerDrag(clone);
-            clone.querySelectorAll('*').forEach(el => {
-                el.removeAttribute('draggable');
-                el.removeAttribute('href');
-            });
-            
-            if (existingPlayer) existingPlayer.remove();
-            this.appendChild(clone);
-        } else {
-            // Move between slots
-            if (existingPlayer) existingPlayer.remove();
-            TeamBuilder.state.draggedItem.style.opacity = '1';
-            this.appendChild(TeamBuilder.state.draggedItem);
+            // Timeout after 10 seconds
+            setTimeout(() => {
+                clearInterval(checkInterval);
+                reject(new Error('Shopify Draggable failed to load after timeout'));
+            }, 10000);
+            return;
         }
 
-        // Batch state updates
-        document.body.style.cursor = '';
-        if (TeamBuilder.state.draggedItem) {
-            TeamBuilder.state.draggedItem.style.cursor = 'grab';
-        }
+        // Load the script dynamically
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@shopify/draggable@1.0.0-beta.11/lib/draggable.bundle.js';
+        script.onload = () => {
+            // Wait a bit for the library to initialize
+            setTimeout(() => {
+                if (window.Draggable && window.Draggable.Droppable) {
+                    resolve();
+                } else {
+                    reject(new Error('Shopify Draggable library did not initialize properly'));
+                }
+            }, 100);
+        };
+        script.onerror = () => {
+            reject(new Error('Failed to load Shopify Draggable script'));
+        };
         
-        // Debounced updates for better performance
-        requestAnimationFrame(() => {
-            updatePoolPlayerStates();
-            TeamBuilder.notifyStateChange();
-        });
+        document.head.appendChild(script);
+    });
+}
+// Initialize Shopify Draggable for player drag and drop
+function initializeDragAndDrop() {
+    if (!DOM.dropArea || !DOM.playerPools) return;
+    
+    // Check if Shopify Draggable is available
+    if (!window.Draggable || !window.Draggable.Droppable) {
+        console.warn('Shopify Draggable library not found. Please ensure the script is loaded.');
+        return;
     }
-};
+
+    // Destroy existing instances
+    if (draggableInstances.poolToDrop) {
+        draggableInstances.poolToDrop.destroy();
+    }
+    if (draggableInstances.slotToSlot) {
+        draggableInstances.slotToSlot.destroy();
+    }
+
+    // Get all containers that can have draggable items
+    const containers = [DOM.playerPools, DOM.dropArea];
+
+    try {
+        // Use basic Draggable with simplified mirror settings
+        draggableInstances.poolToDrop = new window.Draggable.Draggable(containers, {
+            draggable: '.player',
+            mirror: {
+                appendTo: 'body',
+                constrainDimensions: false
+            },
+            delay: 500,
+            distance: 0,
+            classes: {
+                'source:dragging': 'draggable-source--is-dragging',
+                'body:dragging': 'draggable--is-dragging',
+                'container:dragging': 'draggable-container--is-dragging',
+                'mirror': 'draggable-mirror'
+            }
+        });
+
+        // Handle drag start
+        draggableInstances.poolToDrop.on('drag:start', (e) => {
+            if (!TeamBuilder.state.activeTeam) {
+                e.cancel();
+                return;
+            }
+            
+            TeamBuilder.setState({ draggedItem: e.source });
+            e.source.classList.add('dragging');
+            document.body.style.cursor = 'grabbing';
+        });
+
+        // Handle drag over - check if over a valid drop zone
+        draggableInstances.poolToDrop.on('drag:over', (e) => {
+            if (e.over && e.over.classList.contains('player-slot')) {
+                const draggedPosition = getPlayerPosition(e.source);
+                const dropZonePosition = e.over.dataset.position;
+                
+                if (dropZonePosition && dropZonePosition !== draggedPosition) {
+                    e.over.style.backgroundColor = '#ff000020';
+                } else {
+                    e.over.style.backgroundColor = '#00ff0020';
+                }
+            }
+        });
+
+        // Handle drag out - remove visual feedback
+        draggableInstances.poolToDrop.on('drag:out', (e) => {
+            if (e.over && e.over.classList.contains('player-slot')) {
+                e.over.style.backgroundColor = '';
+            }
+        });
+
+        // Handle successful drop
+        draggableInstances.poolToDrop.on('drag:stop', (e) => {
+            e.source.classList.remove('dragging');
+            document.body.style.cursor = '';
+            
+            // Remove any visual feedback
+            document.querySelectorAll('.player-slot').forEach(slot => {
+                slot.style.backgroundColor = '';
+            });
+            
+            // Check if we're over a valid drop zone
+            let target = null;
+            
+            // Try to get coordinates from sensor event
+            if (e.sensorEvent && e.sensorEvent.clientX !== undefined && e.sensorEvent.clientY !== undefined) {
+                target = document.elementFromPoint(e.sensorEvent.clientX, e.sensorEvent.clientY);
+            } else if (e.sensorEvent && e.sensorEvent.originalEvent) {
+                // Try to get from original event
+                const originalEvent = e.sensorEvent.originalEvent;
+                const clientX = originalEvent.clientX || originalEvent.touches?.[0]?.clientX;
+                const clientY = originalEvent.clientY || originalEvent.touches?.[0]?.clientY;
+                if (clientX !== undefined && clientY !== undefined) {
+                    target = document.elementFromPoint(clientX, clientY);
+                }
+            }
+            
+            // If we still don't have target, check if mouse is over any slot
+            if (!target) {
+                const mouseOverElements = document.querySelectorAll(':hover');
+                target = Array.from(mouseOverElements).find(el => el.classList.contains('player-slot'));
+            }
+            
+            const dropSlot = target?.closest('.player-slot');
+            
+            if (dropSlot) {
+                const draggedPosition = getPlayerPosition(e.source);
+                const dropZonePosition = dropSlot.dataset.position;
+                
+                if (dropZonePosition === draggedPosition) {
+                    handlePlayerDrop(e.source, dropSlot);
+                }
+            }
+            
+            TeamBuilder.setState({ draggedItem: null });
+        });
+        
+    } catch (error) {
+        console.error('Error initializing Droppable:', error);
+    }
+}
+
+// Handle player drop logic
+function handlePlayerDrop(draggedPlayer, targetSlot) {
+    const existingPlayer = targetSlot.querySelector('.player');
+    const isFromSlot = draggedPlayer.parentElement.classList.contains('player-slot');
+    const draggedPlayerName = draggedPlayer.querySelector('.name').textContent;
+
+    // Check for duplicates when dragging from pool
+    if (!isFromSlot) {
+        const isAlreadyInSlot = Array.from(DOM.allSlots).some(slot => {
+            const player = slot.querySelector('.player');
+            return player && player.querySelector('.name').textContent === draggedPlayerName;
+        });
+        if (isAlreadyInSlot) return;
+    }
+
+    if (existingPlayer && isFromSlot) {
+        // Swap players between slots
+        draggedPlayer.parentElement.appendChild(existingPlayer);
+        targetSlot.appendChild(draggedPlayer);
+    } else if (!isFromSlot) {
+        // Clone from pool to slot
+        const clone = draggedPlayer.cloneNode(true);
+        clone.style.opacity = '1';
+        clone.style.cursor = 'grab';
+        clone.style.transform = ''; // Remove any transforms
+        clone.dataset.teamId = draggedPlayer.dataset.teamId;
+        clone.dataset.playerId = draggedPlayer.dataset.playerId;
+        
+        // Remove any draggable attributes, links, and dragging classes from clone
+        clone.querySelectorAll('*').forEach(el => {
+            el.removeAttribute('draggable');
+            el.removeAttribute('href');
+        });
+        
+        // Remove all dragging-related classes
+        clone.classList.remove('dragging', 'draggable-source--is-dragging', 'draggable--over');
+        clone.querySelectorAll('*').forEach(el => {
+            el.classList.remove('dragging', 'draggable-source--is-dragging', 'draggable--over');
+        });
+        
+        if (existingPlayer) existingPlayer.remove();
+        targetSlot.appendChild(clone);
+    } else {
+        // Move between slots
+        if (existingPlayer) existingPlayer.remove();
+        targetSlot.appendChild(draggedPlayer);
+    }
+
+    // Update states
+    requestAnimationFrame(() => {
+        updatePoolPlayerStates();
+        TeamBuilder.notifyStateChange();
+        
+        // Reinitialize draggable to include new cloned players
+        loadShopifyDraggable()
+            .then(() => {
+                initializeDragAndDrop();
+            })
+            .catch(error => {
+                console.warn('Could not reinitialize drag and drop:', error);
+            });
+    });
+}
 
 // Player action overlay functionality
 function initializePlayerOverlay() {
@@ -543,7 +632,6 @@ async function loadTeamState() {
                 const clone = poolPlayer.cloneNode(true);
                 clone.style.cursor = 'grab';
                 clone.style.opacity = '1';
-                initializePlayerDrag(clone);
                 clone.querySelectorAll('*').forEach(el => {
                     el.removeAttribute('draggable');
                     el.removeAttribute('href');
@@ -554,6 +642,15 @@ async function loadTeamState() {
 
         // After restoring all players, update pool player states
         updatePoolPlayerStates();
+        
+        // Reinitialize drag and drop to include restored players
+        loadShopifyDraggable()
+            .then(() => {
+                initializeDragAndDrop();
+            })
+            .catch(error => {
+                console.warn('Could not reinitialize drag and drop:', error);
+            });
     } catch (error) {
         console.error('Error loading team state:', error);
     }
@@ -690,7 +787,6 @@ async function handleTeamSelection(teamElement, skipStateRestore = false) {
                 const fragment = document.createDocumentFragment();
                 Array.from(newPool.children).forEach(child => {
                     const clonedChild = child.cloneNode(true);
-                    initializePlayerDrag(clonedChild);
                     fragment.appendChild(clonedChild);
                 });
                 
@@ -700,6 +796,15 @@ async function handleTeamSelection(teamElement, skipStateRestore = false) {
         
         // Cache pool players for better performance
         DOM.poolPlayers = document.querySelectorAll('.tb-pool .player');
+        
+        // Reinitialize drag and drop with new players
+        loadShopifyDraggable()
+            .then(() => {
+                initializeDragAndDrop();
+            })
+            .catch(error => {
+                console.warn('Could not reinitialize drag and drop:', error);
+            });
         
         // Batch update Swipers
         requestAnimationFrame(() => {
@@ -733,7 +838,7 @@ export function initTeamBuilder() {
     // Cache all DOM elements upfront for better performance
     Object.assign(DOM, {
         dropArea: document.querySelector('#team-builder-drop-area'),
-        playerPools: document.querySelectorAll('.tb-selection-players .tb-pool'),
+        playerPools: document.querySelector('.tb-selection-players'),
         teamSelect: document.querySelector('#team-selection-custom'),
         selectPlayersBtn: document.querySelector('[popovertarget="team-builder-player-pool"]'),
         teamDropdownLabel: document.querySelector('.custom-select .for-dropdown'),
@@ -746,10 +851,23 @@ export function initTeamBuilder() {
         activePoolButtons: document.querySelectorAll('.tb-selection-header .btn:not([popovertarget])')
     });
 
-    // Early return if essential elements are missing
+    // Early return if essential elements are missing (content may not be loaded yet)
     if (!DOM.dropArea || !DOM.playerPools || !DOM.teamSelect || 
         !DOM.selectPlayersBtn || !DOM.teamDropdownLabel) {
-        console.warn('Team builder: Essential DOM elements not found');
+        // Only show warning if we're actually on a team builder page
+        const isTeamBuilderPage = window.location.pathname.includes('team-builder') || 
+                                  window.location.search.includes('team-builder') ||
+                                  document.querySelector('#team-builder-drop-area');
+        
+        if (isTeamBuilderPage) {
+            console.warn('Team builder: Essential DOM elements not found', {
+                dropArea: !!DOM.dropArea,
+                playerPools: !!DOM.playerPools,
+                teamSelect: !!DOM.teamSelect,
+                selectPlayersBtn: !!DOM.selectPlayersBtn,
+                teamDropdownLabel: !!DOM.teamDropdownLabel
+            });
+        }
         return;
     }
 
@@ -837,7 +955,7 @@ export function initTeamBuilder() {
                     init: function() {
                         // Batch initialize drag for all players
                         const players = poolElement.querySelectorAll('.player');
-                        players.forEach(initializePlayerDrag);
+                        // Players will be made draggable by initializeDragAndDrop
                     }
                 }
             });
@@ -892,13 +1010,17 @@ export function initTeamBuilder() {
         );
     }
 
-    // Batch initialize all slots with drag handlers
-    DOM.allSlots.forEach(slot => {
-        eventManager.addEventListener(slot, 'dragenter', dragHandlers.enter, { passive: false });
-        eventManager.addEventListener(slot, 'dragleave', dragHandlers.leave, { passive: true });
-        eventManager.addEventListener(slot, 'dragover', dragHandlers.over, { passive: false });
-        eventManager.addEventListener(slot, 'drop', dragHandlers.drop, { passive: false });
-    });
+    // Initialize Shopify Draggable for drag and drop functionality
+    // Load the library dynamically if not already available
+    loadShopifyDraggable()
+        .then(() => {
+            console.log('Shopify Draggable loaded successfully');
+            initializeDragAndDrop();
+        })
+        .catch(error => {
+            console.error('Failed to load Shopify Draggable:', error);
+            console.warn('Drag and drop functionality will be disabled');
+        });
 
     // Optimized popover event handling
     if (DOM.playerPoolPopover) {
@@ -1026,106 +1148,4 @@ export function initTeamBuilder() {
     window.addEventListener('unload', cleanup);
 }
 
-// Scroll support during drag operations
-let scrollDuringDragHandler = null;
-let autoScrollInterval = null;
 
-function addScrollSupportDuringDrag() {
-    // Enable mouse wheel scrolling during drag
-    scrollDuringDragHandler = function(e) {
-        // Don't prevent default - allow normal scrolling
-        const scrollAmount = e.deltaY * 2; // Multiply for more responsive scrolling
-        
-        // Scroll the window directly
-        window.scrollBy(0, scrollAmount);
-    };
-    
-    // Add wheel event listener - use capture phase to catch before other handlers
-    document.addEventListener('wheel', scrollDuringDragHandler, { 
-        passive: false, 
-        capture: true 
-    });
-    
-    // Add keyboard scroll support
-    const keyboardScrollHandler = function(e) {
-        if (!TeamBuilder.state.draggedItem) return;
-        
-        const scrollAmount = 50;
-        switch(e.key) {
-            case 'ArrowUp':
-                e.preventDefault();
-                window.scrollBy(0, -scrollAmount);
-                break;
-            case 'ArrowDown':
-                e.preventDefault();
-                window.scrollBy(0, scrollAmount);
-                break;
-            case 'PageUp':
-                e.preventDefault();
-                window.scrollBy(0, -window.innerHeight * 0.8);
-                break;
-            case 'PageDown':
-                e.preventDefault();
-                window.scrollBy(0, window.innerHeight * 0.8);
-                break;
-        }
-    };
-    
-    document.addEventListener('keydown', keyboardScrollHandler, { passive: false });
-    
-    // Store reference for cleanup
-    scrollDuringDragHandler.keyboardHandler = keyboardScrollHandler;
-    
-    // Add auto-scroll near edges with improved detection
-    autoScrollInterval = setInterval(() => {
-        if (!TeamBuilder.state.draggedItem) return;
-        
-        const mouseY = window.lastMouseY || 0;
-        const windowHeight = window.innerHeight;
-        const scrollZone = 80; // pixels from edge to trigger auto-scroll
-        const scrollSpeed = 8;
-        
-        if (mouseY < scrollZone && window.scrollY > 0) {
-            // Scroll up
-            window.scrollBy(0, -scrollSpeed);
-        } else if (mouseY > windowHeight - scrollZone) {
-            // Scroll down
-            const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
-            if (window.scrollY < maxScroll) {
-                window.scrollBy(0, scrollSpeed);
-            }
-        }
-    }, 16); // ~60fps
-    
-    // Track mouse position for auto-scroll - use multiple events
-    document.addEventListener('dragover', trackMousePosition, { passive: true });
-    document.addEventListener('mousemove', trackMousePosition, { passive: true });
-}
-
-function removeScrollSupportDuringDrag() {
-    if (scrollDuringDragHandler) {
-        document.removeEventListener('wheel', scrollDuringDragHandler, { capture: true });
-        
-        // Remove keyboard handler if it exists
-        if (scrollDuringDragHandler.keyboardHandler) {
-            document.removeEventListener('keydown', scrollDuringDragHandler.keyboardHandler);
-        }
-        
-        scrollDuringDragHandler = null;
-    }
-    
-    if (autoScrollInterval) {
-        clearInterval(autoScrollInterval);
-        autoScrollInterval = null;
-    }
-    
-    document.removeEventListener('dragover', trackMousePosition);
-    document.removeEventListener('mousemove', trackMousePosition);
-    
-    // Clear stored mouse position
-    delete window.lastMouseY;
-}
-
-function trackMousePosition(e) {
-    window.lastMouseY = e.clientY;
-}

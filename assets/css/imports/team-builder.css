@@ -20,6 +20,93 @@
         cursor: grabbing;
     }
 
+    /* Shopify Draggable states */
+    .draggable-source--is-dragging {
+        opacity: 0.7 !important;
+    }
+
+    .draggable-mirror {
+        opacity: 1 !important;
+        z-index: 99999 !important;
+        pointer-events: none !important;
+        position: fixed !important;
+        /* Make mirror look like the original pool player card */
+        width: 340px !important;
+        height: 130px !important;
+        background-color: var(--content-box-bg) !important;
+        border-radius: 0.5rem !important;
+        padding: 0.5rem !important;
+        overflow: hidden !important;
+        box-shadow: var(--box-shadow-nice) !important;
+        /* Override any Swiper interference */
+        transition: none !important;
+    }
+
+    .draggable-mirror .jersey {
+        position: absolute !important;
+        right: 1rem !important;
+        top: 0.7rem !important;
+        font-size: 1.2rem !important;
+        color: var(--low-contrast-color) !important;
+    }
+
+    .draggable-mirror .info {
+        display: flex !important;
+        height: 100% !important;
+        align-items: center !important;
+        padding: 0 !important;
+    }
+
+    .draggable-mirror .info .text {
+        width: 100% !important;
+        padding-left: 6.5rem !important;
+        color: var(--heading-color) !important;
+        position: relative !important;
+        z-index: 3 !important;
+        text-transform: uppercase !important;
+    }
+
+    .draggable-mirror .info .text .position {
+        color: var(--trans-70) !important;
+        font-size: 0.7rem !important;
+        letter-spacing: 1px !important;
+    }
+
+    .draggable-mirror .info .text .name {
+        font-family: 'Tomorrow', sans-serif !important;
+        font-weight: 500 !important;
+        font-size: inherit !important;
+    }
+
+    .draggable-mirror .info .headshot,
+    .draggable-mirror .info .team-img {
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+    }
+
+    .draggable-mirror .info .headshot {
+        transform: translateX(-20px) !important;
+    }
+
+    .draggable-mirror .info .headshot .head {
+        transform: scale(0.8) translate(-30px, -35px) !important;
+        mask: linear-gradient(180deg, #000 75%, hsl(0deg 0% 0% / 0%) 95%) !important;
+    }
+
+    .draggable-mirror .info .team-img {
+        transform: scale(1) translate(-20px, -20px) !important;
+        width: 200px !important;
+        height: 200px !important;
+        z-index: 1 !important;
+        opacity: 0.1 !important;
+        filter: none !important;
+    }
+
+    .draggable--is-dragging {
+        cursor: grabbing !important;
+    }
+
     #team-builder-drop-area .player.drag-over {
         border: 2px dashed var(--border-stroke);
     }
