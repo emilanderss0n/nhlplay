@@ -74,7 +74,7 @@ $mergedCSS = $isDevelopment ? false : generateMergedCSS([
     <header>
         <div class="cont">
             <div class="header-title">
-                <a href="index" class="logo">  
+                <a href="index" class="logo" aria-label="NHLPLAY Home Link">  
                     <?php if ($isIOS): ?>
                     <!-- iOS fallback image -->
                     <h3>NHLPLAY</h3>
