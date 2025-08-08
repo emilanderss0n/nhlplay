@@ -2280,6 +2280,7 @@
     top: -1rem;
     font-size: 2em;
     cursor: pointer;
+    border-radius: 2px;
     background: transparent;
     color: var(--medium-contrast-color);
     transition: all 0.2s;
@@ -4175,6 +4176,7 @@
     color: var(--heading-color);
     text-decoration: none;
     flex-grow: 1;
+    border-radius: 2px;
     transition: color 0.2s ease;
   }
 

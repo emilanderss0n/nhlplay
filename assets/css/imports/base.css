@@ -24,6 +24,11 @@
         color: var(--main-darker-bg);
     }
 
+    :focus-visible {
+        outline: 2px solid var(--main-link-color);
+        outline-offset: 2px;
+    }
+
     *:not(dialog) {
         margin: 0;
         padding: 0;
@@ -171,6 +176,7 @@
         color: var(--main-link-color);
         text-decoration: none;
         font-weight: bold;
+        border-radius: 2px;
         transition: all 0.2s linear;
     }
 
@@ -650,6 +656,7 @@
                 & .logo {
                     display: flex;
                     color: var(--heading-color);
+                    border-radius: 2px;
 
                     & h3 {
                         line-height: 1;
