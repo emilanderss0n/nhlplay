@@ -415,8 +415,8 @@ export function initPlayerHandlers(elements) {
     // Track the element that had focus before modal opens
     let lastFocusedElement = null;
 
-    // Use event delegation for handling player links
-    eventManager.addDelegatedEventListener(document, '#player-link:not(.compare-player-item), [id^="player-link"]:not(.compare-player-item)', 'click', function (e) {
+    // Use event delegation for handling player links (both #player-link and .player with data-link)
+    eventManager.addDelegatedEventListener(document, '#player-link:not(.compare-player-item), [id^="player-link"]:not(.compare-player-item), .player[data-link]:not(.compare-player-item)', 'click', function (e) {
         e.preventDefault();
 
         // Store the element that had focus before opening the modal
