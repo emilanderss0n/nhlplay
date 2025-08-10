@@ -344,6 +344,12 @@
         text-transform: uppercase;
         letter-spacing: 2px;
         font-size: 0.9rem;
+        font-style: italic;
+        transition: color 0.2s linear;
+    }
+
+    .team-builder .line:hover .line-label {
+        color: var(--heading-color);
     }
 
     .team-builder .line-slots {
@@ -465,10 +471,15 @@
         height: 100%;
     }
 
-    .select-players-button .btn {
+    .select-players-button .flex-default .btn {
         height: 40px;
         padding: 0 1rem;
         font-size: 0.94rem;
+    }
+
+    .select-players-button .flex-default:first-child .btn {
+        height: auto;
+        padding: 0.3rem 0.5rem;
     }
 
     .select-players-button .btn.disabled {

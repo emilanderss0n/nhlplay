@@ -64,7 +64,10 @@ $teamBuilderActive = true;
     <div class="team-roster team-builder">
 
         <div class="select-players-button component-header">
-            <h3 class="title">Team Builder</h3>
+            <div class="flex-default first">
+                <h3 class="title">Team Builder</h3>
+                <!-- <a class="btn sm" href="#">Draft Mode</a> -->
+            </div>
             <div class="flex-default">
                 <div class="custom-select">
                     <input class="dropdown" type="checkbox" id="dropdownBuilder" name="dropdownBuilder">
@@ -86,7 +89,7 @@ $teamBuilderActive = true;
             <div class="line-group forwards-lines">
                 <h3>Forward Lines</h3>
                 <div class="line">
-                    <div class="line-label">Line 1</div>
+                    <div class="line-label">// Line 1</div>
                     <div class="line-slots">
                         <div class="player-slot" data-position="forward"></div>
                         <div class="player-slot" data-position="forward"></div>
@@ -94,7 +97,7 @@ $teamBuilderActive = true;
                     </div>
                 </div>
                 <div class="line">
-                    <div class="line-label">Line 2</div>
+                    <div class="line-label">// Line 2</div>
                     <div class="line-slots">
                         <div class="player-slot" data-position="forward"></div>
                         <div class="player-slot" data-position="forward"></div>
@@ -102,7 +105,7 @@ $teamBuilderActive = true;
                     </div>
                 </div>
                 <div class="line">
-                    <div class="line-label">Line 3</div>
+                    <div class="line-label">// Line 3</div>
                     <div class="line-slots">
                         <div class="player-slot" data-position="forward"></div>
                         <div class="player-slot" data-position="forward"></div>
@@ -110,7 +113,7 @@ $teamBuilderActive = true;
                     </div>
                 </div>
                 <div class="line">
-                    <div class="line-label">Line 4</div>
+                    <div class="line-label">// Line 4</div>
                     <div class="line-slots">
                         <div class="player-slot" data-position="forward"></div>
                         <div class="player-slot" data-position="forward"></div>
@@ -122,21 +125,21 @@ $teamBuilderActive = true;
             <div class="line-group defense-lines">
                 <h3>Defense Pairing</h3>
                 <div class="line">
-                    <div class="line-label">Pair 1</div>
+                    <div class="line-label">// Pair 1</div>
                     <div class="line-slots">
                         <div class="player-slot" data-position="defenseman"></div>
                         <div class="player-slot" data-position="defenseman"></div>
                     </div>
                 </div>
                 <div class="line">
-                    <div class="line-label">Pair 2</div>
+                    <div class="line-label">// Pair 2</div>
                     <div class="line-slots">
                         <div class="player-slot" data-position="defenseman"></div>
                         <div class="player-slot" data-position="defenseman"></div>
                     </div>
                 </div>
                 <div class="line">
-                    <div class="line-label">Pair 3</div>
+                    <div class="line-label">// Pair 3</div>
                     <div class="line-slots">
                         <div class="player-slot" data-position="defenseman"></div>
                         <div class="player-slot" data-position="defenseman"></div>
