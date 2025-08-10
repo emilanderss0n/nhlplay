@@ -41,11 +41,8 @@
         transition: none !important;
     }
 
-    /* Ensure draggable mirror appears above popover in top layer */
-    ::backdrop .draggable-mirror,
-    :popover-open ~ .draggable-mirror,
-    body:has(:popover-open) .draggable-mirror {
-        z-index: 2147483647 !important;
+    body:has(.draggable-mirror) .player-slot {
+        cursor: grabbing !important;
     }
 
     .draggable-mirror .jersey {
