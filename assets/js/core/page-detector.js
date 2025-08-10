@@ -43,7 +43,8 @@ export class PageDetector {
                 'standings-handlers', 
                 'ui-settings',
                 'stat-leaders-handlers',
-                'player-leaders'
+                'player-leaders',
+                'trade-handlers'
             ],
             'team-builder': [
                 'teambuilder', 

@@ -347,11 +347,6 @@
             height: 400px;
         }
 
-        .trades-frontpage .teams {
-            flex-direction: column;
-            align-items: center;
-        }
-
         .trades-frontpage .team {
             text-align: center;
         }
@@ -364,6 +359,39 @@
             width: 100px;
             height: 100px;
             transform: translateY(1.6rem);
+        }
+
+        .trades-frontpage {
+            display: flex !important;
+            flex-direction: column-reverse !important;
+        }
+
+        .trades-frontpage .trade-expanded-container {
+            min-height: auto;
+        }
+
+        .trades-frontpage .team .list {
+            margin: 2rem 0;
+        }
+
+        .trades-frontpage .trade-buttons {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .trades-frontpage .trade.alt-layout:not(.expanded) {
+            width: auto;
+        }
+
+        .trades-frontpage .trade.alt-layout:not(.expanded)::after {
+            display: none;
+        }
+
+        .trades-frontpage .trade-summary {
+            font-size: 0.9rem;
+        }
+
+        .trades-frontpage .trade.alt-layout:not(.expanded) .date {
+            font-size: 0.7rem;
         }
 
     }
@@ -1405,6 +1433,14 @@
 
         .team-roster-header .stats {
             margin-left: 0;
+        }
+
+        .trades-frontpage {
+            margin-top: 8rem;
+        }
+        
+        .trades-frontpage .trade-buttons {
+            grid-template-columns: repeat(2, 1fr);
         }
 
         .jsDataTable-top,

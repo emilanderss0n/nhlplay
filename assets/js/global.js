@@ -76,6 +76,7 @@ class App {
             'standings-handlers': () => module.initStandingsHandlers(),
             'ui-settings': () => module.initUISettings(),
             'stat-leaders-handlers': () => module.initStatLeadersHandlers(),
+            'trade-handlers': () => module.initTradeHandlers(),
             'reddit-handlers': () => {
                 if (module.initRedditPosts) module.initRedditPosts();
                 if (module.initRedditGameThread) module.initRedditGameThread();

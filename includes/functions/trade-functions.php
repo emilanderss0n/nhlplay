@@ -167,9 +167,11 @@ function renderTeamSection($team, $side = 'left', $alternateLayout = false, $use
  * @param object $trade Trade data from API
  * @param bool $alternateLayout Whether to use alternate layout (logo inside team-info)
  * @param bool $useShortName Whether to use team short name instead of full name
+ * @param int $tradeIndex Index of the trade (0-based), used to determine if first trade when alternateLayout is true
+ * @param bool $buttonMode Whether to render as a button (minimal view only) or full trade
  * @return string Complete HTML for trade block
  */
-function renderTrade($trade, $alternateLayout = false, $useShortName = false) {
+function renderTrade($trade, $alternateLayout = false, $useShortName = false, $tradeIndex = 0, $buttonMode = null) {
     $teams = parseTradeTeams($trade);
     $team1 = $teams['team1'];
     $team2 = $teams['team2'];
@@ -182,33 +184,174 @@ function renderTrade($trade, $alternateLayout = false, $useShortName = false) {
     $backgroundStyle = generateTradeBackgroundStyle($team1, $team2);
     $tradeDate = isset($trade->trade_date) ? htmlspecialchars($trade->trade_date) : 'Date TBD';
     
-    $tradeClass = $alternateLayout ? 'trade alt-layout' : 'trade';
+    // Determine rendering mode
+    if ($alternateLayout && $buttonMode !== null) {
+        // New button/expanded layout
+        if ($buttonMode) {
+            // Render as button (minimal view)
+            $isActive = $tradeIndex === 0 ? ' active' : '';
+            $tradeClass = 'trade alt-layout' . $isActive;
+            
+            $html = '<div class="' . $tradeClass . '" style="background: ' . $backgroundStyle . ';" data-trade-index="' . $tradeIndex . '">';
+            $html .= '<div class="date">' . $tradeDate . '</div>';
+            $html .= '<div class="teams-minimal">';
+            
+            // Get team names for minimal view
+            $team1Name = 'Team TBD';
+            $team2Name = 'Team TBD';
+            
+            if ($team1 && isset($team1->team)) {
+                if ($useShortName && isset($team1->team->team_shortname)) {
+                    $team1Name = $team1->team->team_shortname;
+                } elseif (isset($team1->team->name)) {
+                    $team1Name = $team1->team->name;
+                }
+            }
+            
+            if ($team2 && isset($team2->team)) {
+                if ($useShortName && isset($team2->team->team_shortname)) {
+                    $team2Name = $team2->team->team_shortname;
+                } elseif (isset($team2->team->name)) {
+                    $team2Name = $team2->team->name;
+                }
+            }
+            
+            $html .= '<div class="trade-summary">';
+            $html .= htmlspecialchars($team1Name) . ' ↔ ' . htmlspecialchars($team2Name);
+            $html .= '</div>';
+            $html .= '</div>';
+            $html .= '</div>';
+            
+            return $html;
+        } else {
+            // Render as expanded view
+            $tradeClass = 'trade alt-layout expanded';
+            
+            $html = '<div class="' . $tradeClass . '" style="background: ' . $backgroundStyle . ';">';
+            $html .= '<div class="trade-title">Trade</div>';
+            
+            // Show incomplete trade warning if only one team
+            if (!$team2) {
+                $html .= '<div class="trade-status" style="color: #ffa500; font-size: 0.9em; margin-bottom: 10px;">';
+                $html .= '⚠️ Incomplete Trade Information';
+                $html .= '</div>';
+            }
+            
+            $html .= '<div class="teams">';
+            
+            // Render team sections
+            if ($team1) {
+                $html .= renderTeamSection($team1, 'left', $alternateLayout, $useShortName);
+            } else {
+                $html .= renderTeamSection(null, 'left', $alternateLayout, $useShortName);
+            }
+            
+            if ($team2) {
+                $html .= renderTeamSection($team2, 'right', $alternateLayout, $useShortName);
+            } else {
+                $html .= renderTeamSection(null, 'right', $alternateLayout, $useShortName);
+            }
+            
+            $html .= '</div>';
+            $html .= '</div>';
+            
+            return $html;
+        }
+    }
+    
+    // Original logic for backward compatibility
+    // Determine if this trade should be expanded (only first trade when alternateLayout is true)
+    $isExpanded = !$alternateLayout || $tradeIndex === 0;
+    $expandedClass = $isExpanded ? ' expanded' : '';
+    
+    $tradeClass = $alternateLayout ? 'trade alt-layout' . $expandedClass : 'trade';
     $html = '<div class="' . $tradeClass . '" style="background: ' . $backgroundStyle . ';">';
     $html .= '<div class="date">' . $tradeDate . '</div>';
     
-    // Show incomplete trade warning if only one team
-    if (!$team2) {
-        $html .= '<div class="trade-status" style="color: #ffa500; font-size: 0.9em; margin-bottom: 10px;">';
-        $html .= '⚠️ Incomplete Trade Information';
+    // For alternate layout, show both minimal and full details
+    if ($alternateLayout) {
+        // Get team names for minimal view
+        $team1Name = 'Team TBD';
+        $team2Name = 'Team TBD';
+        
+        if ($team1 && isset($team1->team)) {
+            if ($useShortName && isset($team1->team->team_shortname)) {
+                $team1Name = $team1->team->team_shortname;
+            } elseif (isset($team1->team->name)) {
+                $team1Name = $team1->team->name;
+            }
+        }
+        
+        if ($team2 && isset($team2->team)) {
+            if ($useShortName && isset($team2->team->team_shortname)) {
+                $team2Name = $team2->team->team_shortname;
+            } elseif (isset($team2->team->name)) {
+                $team2Name = $team2->team->name;
+            }
+        }
+        
+        // Minimal view (always present for CSS to show/hide)
+        $html .= '<div class="teams-minimal">';
+        $html .= '<div class="trade-summary">';
+        $html .= htmlspecialchars($team1Name) . ' ↔ ' . htmlspecialchars($team2Name);
+        $html .= '</div>';
+        $html .= '</div>';
+        
+        // Full details view (always present for CSS to show/hide)
+        $html .= '<div class="teams-full">';
+        
+        // Show incomplete trade warning if only one team
+        if (!$team2) {
+            $html .= '<div class="trade-status" style="color: #ffa500; font-size: 0.9em; margin-bottom: 10px;">';
+            $html .= '⚠️ Incomplete Trade Information';
+            $html .= '</div>';
+        }
+        
+        $html .= '<div class="teams">';
+        
+        // Render team sections
+        if ($team1) {
+            $html .= renderTeamSection($team1, 'left', $alternateLayout, $useShortName);
+        } else {
+            $html .= renderTeamSection(null, 'left', $alternateLayout, $useShortName);
+        }
+        
+        if ($team2) {
+            $html .= renderTeamSection($team2, 'right', $alternateLayout, $useShortName);
+        } else {
+            $html .= renderTeamSection(null, 'right', $alternateLayout, $useShortName);
+        }
+        
+        $html .= '</div>';
+        $html .= '</div>';
+    } else {
+        // Standard layout - show full trade details only
+        
+        // Show incomplete trade warning if only one team
+        if (!$team2) {
+            $html .= '<div class="trade-status" style="color: #ffa500; font-size: 0.9em; margin-bottom: 10px;">';
+            $html .= '⚠️ Incomplete Trade Information';
+            $html .= '</div>';
+        }
+        
+        $html .= '<div class="teams">';
+        
+        // Render team sections
+        if ($team1) {
+            $html .= renderTeamSection($team1, 'left', $alternateLayout, $useShortName);
+        } else {
+            $html .= renderTeamSection(null, 'left', $alternateLayout, $useShortName);
+        }
+        
+        if ($team2) {
+            $html .= renderTeamSection($team2, 'right', $alternateLayout, $useShortName);
+        } else {
+            $html .= renderTeamSection(null, 'right', $alternateLayout, $useShortName);
+        }
+        
         $html .= '</div>';
     }
     
-    $html .= '<div class="teams">';
-    
-    // Render team sections
-    if ($team1) {
-        $html .= renderTeamSection($team1, 'left', $alternateLayout, $useShortName);
-    } else {
-        $html .= renderTeamSection(null, 'left', $alternateLayout, $useShortName);
-    }
-    
-    if ($team2) {
-        $html .= renderTeamSection($team2, 'right', $alternateLayout, $useShortName);
-    } else {
-        $html .= renderTeamSection(null, 'right', $alternateLayout, $useShortName);
-    }
-    
-    $html .= '</div>';
     $html .= '</div>';
     
     return $html;
@@ -226,16 +369,46 @@ function renderAllTrades($alternateLayout = false, $limit = 10, $useShortName = 
     $html = '';
     
     if ($tradeTracker && is_array($tradeTracker)) {
-        $count = 0;
-        foreach ($tradeTracker as $trade) {
-            if ($limit > 0 && $count >= $limit) {
-                break;
+        if ($alternateLayout) {
+            // Special layout for frontpage with buttons + expanded view
+            $html .= '<div class="trade-buttons">';
+            
+            $count = 0;
+            foreach ($tradeTracker as $index => $trade) {
+                if ($limit > 0 && $count >= $limit) {
+                    break;
+                }
+                
+                $tradeHtml = renderTrade($trade, $alternateLayout, $useShortName, $count, true); // true for button mode
+                if (!empty($tradeHtml)) {
+                    $html .= $tradeHtml;
+                    $count++;
+                }
             }
             
-            $tradeHtml = renderTrade($trade, $alternateLayout, $useShortName);
-            if (!empty($tradeHtml)) {
-                $html .= $tradeHtml;
-                $count++;
+            $html .= '</div>';
+            
+            // Add expanded container with first trade
+            $html .= '<div class="trade-expanded-container">';
+            if (!empty($tradeTracker)) {
+                $firstTrade = $tradeTracker[0];
+                $expandedHtml = renderTrade($firstTrade, $alternateLayout, $useShortName, 0, false); // false for expanded mode
+                $html .= $expandedHtml;
+            }
+            $html .= '</div>';
+        } else {
+            // Standard layout
+            $count = 0;
+            foreach ($tradeTracker as $index => $trade) {
+                if ($limit > 0 && $count >= $limit) {
+                    break;
+                }
+                
+                $tradeHtml = renderTrade($trade, $alternateLayout, $useShortName, $count);
+                if (!empty($tradeHtml)) {
+                    $html .= $tradeHtml;
+                    $count++;
+                }
             }
         }
     } else {

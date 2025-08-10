@@ -84,6 +84,12 @@
         }
     }
 
+    @keyframes fadeOut {
+        100% {
+            opacity: 0;
+        }
+    }
+
     @keyframes elementIn {
         100% {
             opacity: 1;
