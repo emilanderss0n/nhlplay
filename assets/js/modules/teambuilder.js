@@ -333,12 +333,14 @@ function initializeDragAndDrop() {
     const containers = [DOM.playerPools, DOM.dropArea];
 
     try {
-        // Use basic Draggable with simplified mirror settings
+        // Use Draggable with cursor offset to center the mirror
         draggableInstances.poolToDrop = new window.Draggable.Draggable(containers, {
             draggable: '.player',
             mirror: {
                 appendTo: 'body',
-                constrainDimensions: false
+                constrainDimensions: false,
+                cursorOffsetX: 170,
+                cursorOffsetY: 65
             },
             delay: 100,
             distance: 0,
@@ -348,6 +350,21 @@ function initializeDragAndDrop() {
                 'container:dragging': 'draggable-container--is-dragging',
                 'mirror': 'draggable-mirror'
             }
+        });
+
+        // Handle mirror creation with minimal styling
+        draggableInstances.poolToDrop.on('mirror:create', (e) => {
+            if (e.mirror) {
+                e.mirror.style.zIndex = '999999';
+                e.mirror.style.pointerEvents = 'none';
+                // Remove any conflicting transforms
+                e.mirror.style.transformOrigin = '';
+            }
+        });
+
+        // Clean up mirror reference
+        draggableInstances.poolToDrop.on('mirror:destroy', (e) => {
+            // No cleanup needed for simple approach
         });
 
         // Handle drag start
@@ -360,27 +377,22 @@ function initializeDragAndDrop() {
             TeamBuilder.setState({ draggedItem: e.source });
             e.source.classList.add('dragging');
             document.body.style.cursor = 'grabbing';
-        });
-
-        // Handle drag over - check if over a valid drop zone
-        draggableInstances.poolToDrop.on('drag:over', (e) => {
-            if (e.over && e.over.classList.contains('player-slot')) {
-                const draggedPosition = getPlayerPosition(e.source);
-                const dropZonePosition = e.over.dataset.position;
-                
-                if (dropZonePosition && dropZonePosition !== draggedPosition) {
-                    e.over.style.backgroundColor = '#ff000020';
-                } else {
-                    e.over.style.backgroundColor = '#00ff0020';
+            
+            // Hide popover during drag to avoid z-index issues
+            const popover = document.querySelector('#team-builder-player-pool');
+            if (popover && popover.matches(':popover-open')) {
+                popover.style.display = 'none';
+                window._popoverHiddenForDrag = true;
+            }
+            
+            // Highlight compatible slots
+            const draggedPosition = getPlayerPosition(e.source);
+            document.querySelectorAll('.team-builder .player-slot').forEach(slot => {
+                if (slot.dataset.position === draggedPosition) {
+                    slot.style.border = '2px dashed var(--main-link-color)';
+                    slot.classList.add('compatible-slot');
                 }
-            }
-        });
-
-        // Handle drag out - remove visual feedback
-        draggableInstances.poolToDrop.on('drag:out', (e) => {
-            if (e.over && e.over.classList.contains('player-slot')) {
-                e.over.style.backgroundColor = '';
-            }
+            });
         });
 
         // Handle successful drop
@@ -388,9 +400,20 @@ function initializeDragAndDrop() {
             e.source.classList.remove('dragging');
             document.body.style.cursor = '';
             
-            // Remove any visual feedback
+            // Restore popover visibility if it was hidden during drag
+            if (window._popoverHiddenForDrag) {
+                const popover = document.querySelector('#team-builder-player-pool');
+                if (popover) {
+                    popover.style.display = '';
+                    window._popoverHiddenForDrag = false;
+                }
+            }
+            
+            // Remove all visual feedback including compatible slot highlighting
             document.querySelectorAll('.player-slot').forEach(slot => {
                 slot.style.backgroundColor = '';
+                slot.style.border = '';
+                slot.classList.remove('compatible-slot');
             });
             
             // Check if we're over a valid drop zone
@@ -835,42 +858,54 @@ async function handleTeamSelection(teamElement, skipStateRestore = false) {
 }
 
 export function initTeamBuilder() {
-    // Cache all DOM elements upfront for better performance
-    Object.assign(DOM, {
-        dropArea: document.querySelector('#team-builder-drop-area'),
-        playerPools: document.querySelector('.tb-selection-players'),
-        teamSelect: document.querySelector('#team-selection-custom'),
-        selectPlayersBtn: document.querySelector('[popovertarget="team-builder-player-pool"]'),
-        teamDropdownLabel: document.querySelector('.custom-select .for-dropdown'),
-        clearBtn: document.getElementById('btn-clear-tb'),
-        dropdownCheckbox: document.getElementById('dropdownBuilder'),
-        playerPoolPopover: document.getElementById('team-builder-player-pool'),
-        // Cache frequently accessed elements for better performance
-        allSlots: document.querySelectorAll('.player-slot'),
-        poolPlayers: document.querySelectorAll('.tb-pool .player'),
-        activePoolButtons: document.querySelectorAll('.tb-selection-header .btn:not([popovertarget])')
-    });
+    // Wait for DOM to be fully ready, especially for direct page loads
+    const initWhenReady = () => {
+        // Cache all DOM elements upfront for better performance
+        Object.assign(DOM, {
+            dropArea: document.querySelector('#team-builder-drop-area'),
+            playerPools: document.querySelector('.tb-selection-players'),
+            teamSelect: document.querySelector('#team-selection-custom'),
+            selectPlayersBtn: document.querySelector('[popovertarget="team-builder-player-pool"]'),
+            teamDropdownLabel: document.querySelector('.custom-select .for-dropdown'),
+            clearBtn: document.getElementById('btn-clear-tb'),
+            dropdownCheckbox: document.getElementById('dropdownBuilder'),
+            playerPoolPopover: document.getElementById('team-builder-player-pool'),
+            // Cache frequently accessed elements for better performance
+            allSlots: document.querySelectorAll('.player-slot'),
+            poolPlayers: document.querySelectorAll('.tb-pool .player'),
+            activePoolButtons: document.querySelectorAll('.tb-selection-header .btn:not([popovertarget])')
+        });
 
-    // Early return if essential elements are missing (content may not be loaded yet)
-    if (!DOM.dropArea || !DOM.playerPools || !DOM.teamSelect || 
-        !DOM.selectPlayersBtn || !DOM.teamDropdownLabel) {
-        // Only show warning if we're actually on a team builder page
-        const isTeamBuilderPage = window.location.pathname.includes('team-builder') || 
-                                  window.location.search.includes('team-builder') ||
-                                  document.querySelector('#team-builder-drop-area');
-        
-        if (isTeamBuilderPage) {
-            console.warn('Team builder: Essential DOM elements not found', {
-                dropArea: !!DOM.dropArea,
-                playerPools: !!DOM.playerPools,
-                teamSelect: !!DOM.teamSelect,
-                selectPlayersBtn: !!DOM.selectPlayersBtn,
-                teamDropdownLabel: !!DOM.teamDropdownLabel
-            });
+        // Early return if essential elements are missing (content may not be loaded yet)
+        if (!DOM.dropArea || !DOM.playerPools || !DOM.teamSelect || 
+            !DOM.selectPlayersBtn || !DOM.teamDropdownLabel) {
+            // Only retry if we're actually on a team builder page
+            const isTeamBuilderPage = window.location.pathname.includes('team-builder') || 
+                                      window.location.search.includes('team-builder') ||
+                                      document.querySelector('#team-builder-drop-area');
+            
+            if (isTeamBuilderPage) {
+                // Retry after a short delay for direct page loads
+                setTimeout(initWhenReady, 100);
+            }
+            return;
         }
-        return;
-    }
 
+        // Initialize the team builder
+        initializeTeamBuilder();
+    };
+
+    // For direct page loads, add a small delay to ensure DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initWhenReady);
+    } else {
+        // DOM is already ready, but add a small timeout for direct page loads
+        // where content might still be loading
+        setTimeout(initWhenReady, 10);
+    }
+}
+
+function initializeTeamBuilder() {
     // Initialize event delegation with better performance
     initializeEventDelegation();
 
@@ -1014,7 +1049,6 @@ export function initTeamBuilder() {
     // Load the library dynamically if not already available
     loadShopifyDraggable()
         .then(() => {
-            console.log('Shopify Draggable loaded successfully');
             initializeDragAndDrop();
         })
         .catch(error => {

@@ -27,7 +27,7 @@
 
     .draggable-mirror {
         opacity: 1 !important;
-        z-index: 99999 !important;
+        z-index: 999999 !important;
         pointer-events: none !important;
         position: fixed !important;
         /* Make mirror look like the original pool player card */
@@ -38,8 +38,14 @@
         padding: 0.5rem !important;
         overflow: hidden !important;
         box-shadow: var(--box-shadow-nice) !important;
-        /* Override any Swiper interference */
         transition: none !important;
+    }
+
+    /* Ensure draggable mirror appears above popover in top layer */
+    ::backdrop .draggable-mirror,
+    :popover-open ~ .draggable-mirror,
+    body:has(:popover-open) .draggable-mirror {
+        z-index: 2147483647 !important;
     }
 
     .draggable-mirror .jersey {
@@ -119,7 +125,7 @@
         padding: 2rem;
         backdrop-filter: blur(40px);
         background-color: var(--header-background);
-        z-index: 10;
+        z-index: 1000;
         user-select: none;
 
         animation: slide-out-down-dismiss 0.5s ease-out;

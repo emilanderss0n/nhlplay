@@ -21,7 +21,15 @@ export class PageDetector {
         if (document.querySelector('.draft-container')) return 'draft';
         if (document.querySelector('.compare-players-container')) return 'compare-players';
         
+        // Check for team builder specific elements
+        if (document.querySelector('#team-builder-drop-area') || 
+            document.querySelector('#team-builder-player-pool') ||
+            document.querySelector('.team-roster.team-builder')) {
+            return 'team-builder';
+        }
+        
         // Check URL patterns
+        if (path.includes('/team-builder') || path.includes('team-builder.php')) return 'team-builder';
         if (path.includes('/team/')) return 'team-view';
         if (path.includes('/player/')) return 'player-view';
         if (path.includes('/game/')) return 'game-view';
