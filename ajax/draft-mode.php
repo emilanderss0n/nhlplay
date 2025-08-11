@@ -309,13 +309,55 @@ function renderDraftPlayer($player, $filters = []) {
                                     $losses = $careerStats->losses ?? 0;
                                     $savePct = isset($careerStats->savePctg) ? number_format($careerStats->savePctg, 3) : '0.000';
                                     $gaa = isset($careerStats->goalsAgainstAvg) ? number_format($careerStats->goalsAgainstAvg, 2) : '0.00';
-                                    echo "{$wins}-{$losses} | {$savePct} SV% | {$gaa} GAA";
+                                    ?>
+                                    <div class="stats-grid">
+                                        <div class="stat-column">
+                                            <div class="stat-header">GP</div>
+                                            <div class="stat-value"><?= $careerStats->gamesPlayed ?? 0 ?></div>
+                                        </div>
+                                        <div class="stat-column">
+                                            <div class="stat-header">W</div>
+                                            <div class="stat-value"><?= $wins ?></div>
+                                        </div>
+                                        <div class="stat-column">
+                                            <div class="stat-header">L</div>
+                                            <div class="stat-value"><?= $losses ?></div>
+                                        </div>
+                                        <div class="stat-column">
+                                            <div class="stat-header">SV%</div>
+                                            <div class="stat-value"><?= $savePct ?></div>
+                                        </div>
+                                        <div class="stat-column">
+                                            <div class="stat-header">GAA</div>
+                                            <div class="stat-value"><?= $gaa ?></div>
+                                        </div>
+                                    </div>
+                                    <?php
                                 else: // Skater stats
                                     $goals = $careerStats->goals ?? 0;
                                     $assists = $careerStats->assists ?? 0;
                                     $points = $careerStats->points ?? 0;
                                     $games = $careerStats->gamesPlayed ?? 0;
-                                    echo "{$goals}G {$assists}A {$points}P in {$games} GP";
+                                    ?>
+                                    <div class="stats-grid">
+                                        <div class="stat-column">
+                                            <div class="stat-header">GP</div>
+                                            <div class="stat-value"><?= $games ?></div>
+                                        </div>
+                                        <div class="stat-column">
+                                            <div class="stat-header">G</div>
+                                            <div class="stat-value"><?= $goals ?></div>
+                                        </div>
+                                        <div class="stat-column">
+                                            <div class="stat-header">A</div>
+                                            <div class="stat-value"><?= $assists ?></div>
+                                        </div>
+                                        <div class="stat-column">
+                                            <div class="stat-header">P</div>
+                                            <div class="stat-value"><?= $points ?></div>
+                                        </div>
+                                    </div>
+                                    <?php
                                 endif;
                             else:
                                 echo "Career stats unavailable";

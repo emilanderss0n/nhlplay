@@ -1,4 +1,5 @@
 @layer util {
+
     .draft-mode-interface {
         margin-bottom: 2rem;
     }
@@ -24,49 +25,27 @@
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 1rem;
         margin-bottom: 2rem;
+        padding: 2rem;
+        border: 2px solid var(--border-stroke-weak);
+        border-radius: 10px;
     }
 
-    .filter-item {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.75rem;
-        background-color: var(--dark-bg-color);
-        border-radius: 8px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        border: 2px solid transparent;
-    }
-
-    .filter-item:hover {
-        border-color: var(--main-link-color);
-    }
-
-    .filter-item input[type="checkbox"] {
-        width: 16px;
-        height: 16px;
-        accent-color: var(--main-link-color);
-    }
-
-    .filter-item span {
-        color: var(--paragraph-color);
-        font-weight: 500;
-        user-select: none;
-    }
-
-    .filter-item:has(input:checked) {
-        background-color: var(--main-link-color);
-        border-color: var(--main-link-color);
-    }
-
-    .filter-item:has(input:checked) span {
-        color: var(--black-white);
+    .checkbox-container:has(#filter-first-last-name)::after,
+    .checkbox-container:has(#filter-first-name)::after,
+    .checkbox-container:has(#filter-last-name)::after {
+        content: '*';
+        font-size: 1.3rem;
+        color: var(--medium-contrast-color);
+        position: absolute;
+        right: 0.5rem;
+        top: 0.5rem;
     }
 
     .start-draft-btn {
         padding: 1rem 2rem;
         font-size: 1.1rem;
         text-transform: uppercase;
+        place-self: center;
     }
 
     .draft-active {
@@ -245,23 +224,38 @@
         color: var(--heading-color);
     }
 
-    .draft-player .info .text .career-hint {
-        font-style: italic;
-        opacity: 0.7;
-    }
-
     .draft-player .info .text .career-stats {
-        font-weight: 600;
-        color: var(--heading-color);
-        background: var(--semi-frost-bg-2);
-        padding: 0.45rem 0.6rem;
-        border-radius: 4px;
         margin-top: auto;
         margin-bottom: 2rem;
         width: fit-content;
         place-self: center;
+    }
+
+    .draft-player .info .text .career-stats .stats-grid {
+        font-weight: 600;
+        color: var(--heading-color);
+        background: var(--semi-frost-bg-2);
+        padding: 0.45rem 0.8rem;
+        border-radius: 7px;
+        width: fit-content;
+        place-self: center;
         display: flex;
         gap: 1rem;
+    }
+
+    .draft-player .info .text .career-stats .stat-column {
+        display: flex;
+        flex-direction: column;
+        gap: 0.2rem;
+        align-items: center;
+    }
+
+    .draft-player .info .text .career-stats .stat-column .stat-header {
+        color: var(--medium-contrast-color);
+    }
+
+    .draft-player .info .text .career-stats .stat-column .stat-value {
+        font-size: 1.2rem;
     }
 
     .draft-select-btn {

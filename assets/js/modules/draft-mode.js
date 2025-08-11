@@ -134,48 +134,81 @@ function createDraftInterface() {
                 <h3>Challenge Filters</h3>
                 <p>Enable filters to make the draft more challenging by hiding player information:</p>
                 <div class="filters-grid">
-                    <label class="filter-item" for="filter-headshot">
+                    <label class="checkbox-container">
                         <input type="checkbox" id="filter-headshot" name="filter-headshot" class="draft-filter-toggle" value="headshot">
+                        <svg viewBox="0 0 64 64" height="2em" width="2em">
+                            <path d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16" pathLength="575.0541381835938" class="path"></path>
+                        </svg>
                         <span>Hide Headshot</span>
                     </label>
-                    <label class="filter-item" for="filter-first-last-name">
+                    <label class="checkbox-container">
                         <input type="checkbox" id="filter-first-last-name" name="filter-first-last-name" class="draft-filter-toggle" value="first_last_name">
+                        <svg viewBox="0 0 64 64" height="2em" width="2em">
+                            <path d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16" pathLength="575.0541381835938" class="path"></path>
+                        </svg>
                         <span>Hide Full Name</span>
                     </label>
-                    <label class="filter-item" for="filter-first-name">
+                    <label class="checkbox-container">
                         <input type="checkbox" id="filter-first-name" name="filter-first-name" class="draft-filter-toggle" value="first_name">
+                        <svg viewBox="0 0 64 64" height="2em" width="2em">
+                            <path d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16" pathLength="575.0541381835938" class="path"></path>
+                        </svg>
                         <span>Hide First Name</span>
                     </label>
-                    <label class="filter-item" for="filter-last-name">
+                    <label class="checkbox-container">
                         <input type="checkbox" id="filter-last-name" name="filter-last-name" class="draft-filter-toggle" value="last_name">
+                        <svg viewBox="0 0 64 64" height="2em" width="2em">
+                            <path d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16" pathLength="575.0541381835938" class="path"></path>
+                        </svg>
                         <span>Hide Last Name</span>
                     </label>
-                    <label class="filter-item" for="filter-birth-country">
+                    <label class="checkbox-container">
                         <input type="checkbox" id="filter-birth-country" name="filter-birth-country" class="draft-filter-toggle" value="birth_country">
+                        <svg viewBox="0 0 64 64" height="2em" width="2em">
+                            <path d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16" pathLength="575.0541381835938" class="path"></path>
+                        </svg>
                         <span>Hide Birth Country</span>
                     </label>
-                    <label class="filter-item" for="filter-team-info">
+                    <label class="checkbox-container">
                         <input type="checkbox" id="filter-team-info" name="filter-team-info" class="draft-filter-toggle" value="team_info">
+                        <svg viewBox="0 0 64 64" height="2em" width="2em">
+                            <path d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16" pathLength="575.0541381835938" class="path"></path>
+                        </svg>
                         <span>Hide Team Info</span>
                     </label>
-                    <label class="filter-item" for="filter-career-stats">
+                    <label class="checkbox-container">
                         <input type="checkbox" id="filter-career-stats" name="filter-career-stats" class="draft-filter-toggle" value="career_stats">
+                        <svg viewBox="0 0 64 64" height="2em" width="2em">
+                            <path d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16" pathLength="575.0541381835938" class="path"></path>
+                        </svg>
                         <span>Hide Career Stats</span>
                     </label>
-                    <label class="filter-item" for="filter-handedness">
+                    <label class="checkbox-container">
                         <input type="checkbox" id="filter-handedness" name="filter-handedness" class="draft-filter-toggle" value="handedness">
+                        <svg viewBox="0 0 64 64" height="2em" width="2em">
+                            <path d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16" pathLength="575.0541381835938" class="path"></path>
+                        </svg>
                         <span>Hide Handedness</span>
                     </label>
-                    <label class="filter-item" for="filter-position">
+                    <label class="checkbox-container">
                         <input type="checkbox" id="filter-position" name="filter-position" class="draft-filter-toggle" value="position">
+                        <svg viewBox="0 0 64 64" height="2em" width="2em">
+                            <path d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16" pathLength="575.0541381835938" class="path"></path>
+                        </svg>
                         <span>Hide Position</span>
                     </label>
-                    <label class="filter-item" for="filter-age">
+                    <label class="checkbox-container">
                         <input type="checkbox" id="filter-age" name="filter-age" class="draft-filter-toggle" value="age">
+                        <svg viewBox="0 0 64 64" height="2em" width="2em">
+                            <path d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16" pathLength="575.0541381835938" class="path"></path>
+                        </svg>
                         <span>Hide Age</span>
                     </label>
-                    <label class="filter-item" for="filter-jersey-number">
+                    <label class="checkbox-container">
                         <input type="checkbox" id="filter-jersey-number" name="filter-jersey-number" class="draft-filter-toggle" value="jersey_number">
+                        <svg viewBox="0 0 64 64" height="2em" width="2em">
+                            <path d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16" pathLength="575.0541381835938" class="path"></path>
+                        </svg>
                         <span>Hide Jersey Number</span>
                     </label>
                 </div>
@@ -334,6 +367,9 @@ function enterDraftMode() {
     
     // Reset all filter checkboxes
     resetFilterCheckboxes();
+    
+    // Clear previously selected players from UI
+    clearSelectedPlayersUI();
 }
 
 function exitDraftMode() {
@@ -399,6 +435,32 @@ function resetFilterCheckboxes() {
     const filterCheckboxes = document.querySelectorAll('.draft-filter-toggle');
     filterCheckboxes.forEach(checkbox => {
         checkbox.checked = false;
+    });
+}
+
+function clearSelectedPlayersUI() {
+    // Clear the selected players list UI
+    const selectedPlayersList = document.querySelector('.selected-players-list');
+    if (selectedPlayersList) {
+        selectedPlayersList.innerHTML = '';
+    }
+    
+    // Clear the draft players grid (previous round's player cards)
+    const draftPlayersGrid = document.querySelector('.draft-players-grid');
+    if (draftPlayersGrid) {
+        draftPlayersGrid.innerHTML = '';
+    }
+    
+    // Reset progress bar
+    const progressBar = document.querySelector('.progress-fill');
+    if (progressBar) {
+        progressBar.style.width = '0%';
+    }
+    
+    // Reset depth chart counts to 0
+    const positionCounts = document.querySelectorAll('.position-count .count');
+    positionCounts.forEach(countElement => {
+        countElement.textContent = '0';
     });
 }
 
@@ -661,23 +723,54 @@ function showLoadingIndicator(message) {
         return window.showLoadingIndicator(message);
     }
     
-    // Fallback implementation
-    const indicator = document.createElement('div');
-    indicator.className = 'loading-indicator';
-    indicator.style.cssText = `
+    // Create parent fixed div for overlay
+    const overlay = document.createElement('div');
+    overlay.style.cssText = `
         position: fixed;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        background: rgba(0,0,0,0.8);
-        color: white;
-        padding: 1rem 2rem;
-        border-radius: 8px;
-        z-index: 10000;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        background: var(--semi-frost-bg-2);
+        color: var(--heading-color);
+        backdrop-filter: blur(10px);
+        padding: 2rem;
+        border-radius: 10px;
+        z-index: 99999;
     `;
-    indicator.textContent = message;
-    document.body.appendChild(indicator);
-    return indicator;
+    
+    // Create #activity element with no custom styling
+    const indicator = document.createElement('div');
+    indicator.id = 'activity';
+    indicator.style.cssText = `
+        display: block;
+        width: 56px;
+        height: 56px;
+    `;
+    
+    // Create loader div with base.css loader class only
+    const loader = document.createElement('div');
+    loader.className = 'loader';
+    loader.style.cssText = `
+        border: 6px solid var(--heading-color);
+        border-bottom-color: var(--secondary-link-color);
+    `;
+    
+    // Create message element
+    const messageElement = document.createElement('div');
+    messageElement.textContent = message;
+    messageElement.style.fontSize = '0.9rem';
+    
+    indicator.appendChild(loader);
+    overlay.appendChild(indicator);
+    overlay.appendChild(messageElement);
+    document.body.appendChild(overlay);
+    
+    return overlay;
 }
 
 function hideLoadingIndicator(indicator) {
@@ -686,7 +779,7 @@ function hideLoadingIndicator(indicator) {
         return window.hideLoadingIndicator(indicator);
     }
     
-    // Fallback implementation
+    // Remove the indicator element
     if (indicator && indicator.parentNode) {
         indicator.parentNode.removeChild(indicator);
     }

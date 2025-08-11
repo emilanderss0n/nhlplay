@@ -397,6 +397,11 @@
         justify-content: space-between;
         align-items: center;
         margin: 0 0 3rem;
+        overflow: clip;
+    }
+
+    .team-builder .component-header .title {
+        background-color: var(--content-box-bg);
     }
 
     .team-builder .select-players-button .flex-default {
@@ -475,11 +480,6 @@
         height: 40px;
         padding: 0 1rem;
         font-size: 0.94rem;
-    }
-
-    .select-players-button .flex-default:first-child .btn {
-        height: auto;
-        padding: 0.3rem 0.5rem;
     }
 
     .select-players-button .btn.disabled {

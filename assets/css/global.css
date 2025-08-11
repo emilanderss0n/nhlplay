@@ -97,6 +97,52 @@
 @layer third_party, base, widgets, util, darkmode, responsive, animations;
 
 @layer util {
+  .checkbox-container {
+    cursor: pointer;
+    position: relative;
+    background-color: var(--dark-bg-color);
+    border-radius: 7px;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border: 2px solid transparent;
+    transition: all .2s linear;
+
+      &:hover {
+        border: 2px solid var(--main-link-color);
+      }
+
+      &:active {
+        transform: scale(0.9);
+      }
+
+      & input {
+        display: none;
+      }
+
+      & svg {
+        overflow: visible;
+        zoom: 0.6;
+      }
+
+      & .path {
+        fill: none;
+        stroke: var(--main-link-color);
+        stroke-width: 8;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        transition: stroke-dasharray 0.5s ease, stroke-dashoffset 0.5s ease;
+        stroke-dasharray: 241 9999999;
+        stroke-dashoffset: 0;
+      }
+
+      & input:checked ~ svg .path {
+        stroke-dasharray: 70.5096664428711 9999999;
+        stroke-dashoffset: -262.2723388671875;
+      }
+  }
+
   #gameLogModal {
     z-index: 99;
     top: 55px;
