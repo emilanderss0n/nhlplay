@@ -307,8 +307,8 @@ function renderDraftPlayer($player, $filters = []) {
                                 if ($player->positionCode === 'G'): // Goalie stats
                                     $wins = $careerStats->wins ?? 0;
                                     $losses = $careerStats->losses ?? 0;
-                                    $savePct = isset($careerStats->savePct) ? number_format($careerStats->savePct, 3) : '0.000';
-                                    $gaa = isset($careerStats->goalsAgainstAverage) ? number_format($careerStats->goalsAgainstAverage, 2) : '0.00';
+                                    $savePct = isset($careerStats->savePctg) ? number_format($careerStats->savePctg, 3) : '0.000';
+                                    $gaa = isset($careerStats->goalsAgainstAvg) ? number_format($careerStats->goalsAgainstAvg, 2) : '0.00';
                                     echo "{$wins}-{$losses} | {$savePct} SV% | {$gaa} GAA";
                                 else: // Skater stats
                                     $goals = $careerStats->goals ?? 0;
