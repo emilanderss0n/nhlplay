@@ -134,48 +134,48 @@ function createDraftInterface() {
                 <h3>Challenge Filters</h3>
                 <p>Enable filters to make the draft more challenging by hiding player information:</p>
                 <div class="filters-grid">
-                    <label class="filter-item">
-                        <input type="checkbox" class="draft-filter-toggle" value="headshot">
+                    <label class="filter-item" for="filter-headshot">
+                        <input type="checkbox" id="filter-headshot" name="filter-headshot" class="draft-filter-toggle" value="headshot">
                         <span>Hide Headshot</span>
                     </label>
-                    <label class="filter-item">
-                        <input type="checkbox" class="draft-filter-toggle" value="first_last_name">
+                    <label class="filter-item" for="filter-first-last-name">
+                        <input type="checkbox" id="filter-first-last-name" name="filter-first-last-name" class="draft-filter-toggle" value="first_last_name">
                         <span>Hide Full Name</span>
                     </label>
-                    <label class="filter-item">
-                        <input type="checkbox" class="draft-filter-toggle" value="first_name">
+                    <label class="filter-item" for="filter-first-name">
+                        <input type="checkbox" id="filter-first-name" name="filter-first-name" class="draft-filter-toggle" value="first_name">
                         <span>Hide First Name</span>
                     </label>
-                    <label class="filter-item">
-                        <input type="checkbox" class="draft-filter-toggle" value="last_name">
+                    <label class="filter-item" for="filter-last-name">
+                        <input type="checkbox" id="filter-last-name" name="filter-last-name" class="draft-filter-toggle" value="last_name">
                         <span>Hide Last Name</span>
                     </label>
-                    <label class="filter-item">
-                        <input type="checkbox" class="draft-filter-toggle" value="birth_country">
+                    <label class="filter-item" for="filter-birth-country">
+                        <input type="checkbox" id="filter-birth-country" name="filter-birth-country" class="draft-filter-toggle" value="birth_country">
                         <span>Hide Birth Country</span>
                     </label>
-                    <label class="filter-item">
-                        <input type="checkbox" class="draft-filter-toggle" value="team_info">
+                    <label class="filter-item" for="filter-team-info">
+                        <input type="checkbox" id="filter-team-info" name="filter-team-info" class="draft-filter-toggle" value="team_info">
                         <span>Hide Team Info</span>
                     </label>
-                    <label class="filter-item">
-                        <input type="checkbox" class="draft-filter-toggle" value="career_stats">
+                    <label class="filter-item" for="filter-career-stats">
+                        <input type="checkbox" id="filter-career-stats" name="filter-career-stats" class="draft-filter-toggle" value="career_stats">
                         <span>Hide Career Stats</span>
                     </label>
-                    <label class="filter-item">
-                        <input type="checkbox" class="draft-filter-toggle" value="handedness">
+                    <label class="filter-item" for="filter-handedness">
+                        <input type="checkbox" id="filter-handedness" name="filter-handedness" class="draft-filter-toggle" value="handedness">
                         <span>Hide Handedness</span>
                     </label>
-                    <label class="filter-item">
-                        <input type="checkbox" class="draft-filter-toggle" value="position">
+                    <label class="filter-item" for="filter-position">
+                        <input type="checkbox" id="filter-position" name="filter-position" class="draft-filter-toggle" value="position">
                         <span>Hide Position</span>
                     </label>
-                    <label class="filter-item">
-                        <input type="checkbox" class="draft-filter-toggle" value="age">
+                    <label class="filter-item" for="filter-age">
+                        <input type="checkbox" id="filter-age" name="filter-age" class="draft-filter-toggle" value="age">
                         <span>Hide Age</span>
                     </label>
-                    <label class="filter-item">
-                        <input type="checkbox" class="draft-filter-toggle" value="jersey_number">
+                    <label class="filter-item" for="filter-jersey-number">
+                        <input type="checkbox" id="filter-jersey-number" name="filter-jersey-number" class="draft-filter-toggle" value="jersey_number">
                         <span>Hide Jersey Number</span>
                     </label>
                 </div>
@@ -331,6 +331,9 @@ function enterDraftMode() {
         selectedPlayers: [],
         filters: []
     });
+    
+    // Reset all filter checkboxes
+    resetFilterCheckboxes();
 }
 
 function exitDraftMode() {
@@ -389,6 +392,14 @@ function handleFilterToggle(e) {
         // Remove the filter
         DraftMode.state.filters = DraftMode.state.filters.filter(f => f !== filterValue);
     }
+}
+
+function resetFilterCheckboxes() {
+    // Uncheck all filter checkboxes when starting a new draft
+    const filterCheckboxes = document.querySelectorAll('.draft-filter-toggle');
+    filterCheckboxes.forEach(checkbox => {
+        checkbox.checked = false;
+    });
 }
 
 async function startDraft() {

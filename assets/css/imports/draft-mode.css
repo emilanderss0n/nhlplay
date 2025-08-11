@@ -39,13 +39,12 @@
     }
 
     .filter-item:hover {
-        background-color: var(--border-stroke-weak);
         border-color: var(--main-link-color);
     }
 
     .filter-item input[type="checkbox"] {
-        width: 18px;
-        height: 18px;
+        width: 16px;
+        height: 16px;
         accent-color: var(--main-link-color);
     }
 
@@ -61,7 +60,7 @@
     }
 
     .filter-item:has(input:checked) span {
-        color: white;
+        color: var(--black-white);
     }
 
     .start-draft-btn {
