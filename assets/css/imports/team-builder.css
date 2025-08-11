@@ -397,11 +397,11 @@
         justify-content: space-between;
         align-items: center;
         margin: 0 0 3rem;
-        overflow: clip;
     }
 
     .team-builder .component-header .title {
-        background-color: var(--content-box-bg);
+        border-right: 2px solid var(--content-box-bg);
+        padding: 0.8rem 1.4rem;
     }
 
     .team-builder .select-players-button .flex-default {
