@@ -258,7 +258,6 @@ function createDraftInterface() {
                     </div>
                     
                     <div class="selected-players-section">
-                        <h4>Selected Players:</h4>
                         <div class="selected-players-list">
                             <!-- Selected players will appear here -->
                         </div>
@@ -524,13 +523,47 @@ async function loadRoundPlayers() {
 function displayRoundPlayers(playersHtml) {
     const container = document.querySelector('.draft-players-grid');
     if (container) {
+        // Clear container and add new content
         container.innerHTML = playersHtml.join('');
+        
+        // Get all the new player cards and initially hide them
+        const playerCards = container.querySelectorAll('.draft-player');
+        playerCards.forEach(card => {
+            // Start hidden with opacity 0 and slightly scaled down
+            card.style.opacity = '0';
+            card.style.transform = 'scale(0.9) translateY(20px)';
+            card.style.transition = 'all 0.4s ease-out';
+        });
+        
+        // Wait for all images in the cards to load before animating
+        const allImages = container.querySelectorAll('img');
+        const imagePromises = Array.from(allImages).map(img => {
+            return new Promise((resolve) => {
+                if (img.complete) {
+                    resolve();
+                } else {
+                    img.onload = () => resolve();
+                    img.onerror = () => resolve(); // Resolve even on error to prevent hanging
+                }
+            });
+        });
+        
+        // Once all images are loaded, animate the cards in
+        Promise.all(imagePromises).then(() => {
+            playerCards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'scale(1) translateY(0)';
+                }, 100 + (index * 150)); // 100ms base delay + 150ms stagger per card
+            });
+        });
     }
     
-    // Update progress bar
+    // Update progress bar with animation
     const progressPercent = (DraftMode.state.currentRound / DraftMode.state.totalRounds) * 100;
     const progressBar = document.querySelector('.progress-fill');
     if (progressBar) {
+        progressBar.style.transition = 'width 0.5s ease-out';
         progressBar.style.width = progressPercent + '%';
     }
 }
@@ -551,6 +584,9 @@ async function handlePlayerSelection(e) {
         return;
     }
     
+    // Animate the selected card
+    await animateCardSelection(playerCard);
+    
     // Add to selected players
     DraftMode.state.selectedPlayers.push({
         round: DraftMode.state.currentRound,
@@ -569,6 +605,31 @@ async function handlePlayerSelection(e) {
         // Draft complete
         completeDraft();
     }
+}
+
+function animateCardSelection(playerCard) {
+    return new Promise((resolve) => {
+        // Disable pointer events to prevent multiple clicks
+        playerCard.style.pointerEvents = 'none';
+        
+        // Add selection animation - pulse and highlight effect
+        playerCard.style.transition = 'all 0.3s ease-out';
+        playerCard.style.transform = 'scale(1.05)';
+        playerCard.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.5)';
+        playerCard.style.zIndex = '10';
+        
+        // After a short delay, animate out
+        setTimeout(() => {
+            playerCard.style.transition = 'all 0.4s ease-in';
+            playerCard.style.transform = 'scale(0.9)';
+            playerCard.style.opacity = '0.3';
+            
+            // Complete the animation
+            setTimeout(() => {
+                resolve();
+            }, 400);
+        }, 300);
+    });
 }
 
 function displaySelectedPlayer(player) {
