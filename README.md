@@ -37,6 +37,19 @@ NHL PLAY is a comprehensive web application for tracking NHL hockey statistics, 
 - **Trade Tracker**: Monitoring of recent trade activity across the league with visual indicators for new trades
 - **Three Stars of the Week**: Weekly recognition of top NHL performers
 
+### Team Building & Management Tools
+- **Interactive Team Builder**: Drag-and-drop team building interface with real-time lineup management and position validation
+- **Draft Mode Simulation**: Advanced draft simulation with customizable challenge filters and round-by-round player selection
+- **Depth Chart Visualization**: Real-time lineup organization with line combinations and defensive pairings
+- **State Persistence**: Automatic saving and restoration of team builds across sessions using localStorage
+- **Bulk Team Operations**: Clear all players, export lineups, and team management utilities
+
+### Community & Social Features
+- **Reddit Game Threads**: Automatic discovery and display of live game discussion threads from r/hockey
+- **Team-specific Reddit Feeds**: Curated community posts and discussions for individual NHL teams
+- **Real-time Community Updates**: Live refreshing of community discussions with intersection observer optimization
+- **Social Media Integration**: Links to official team social media and community platforms
+
 ### User Experience Features
 - **Responsive Design Architecture**: Fully optimized for desktop, tablet, and mobile devices with device-specific layouts
 - **Dark/Light Mode**: Automatic theme switching based on system preferences with smooth visual transitions
@@ -45,14 +58,20 @@ NHL PLAY is a comprehensive web application for tracking NHL hockey statistics, 
 - **Animation Effects**: Smooth transitions and loading animations throughout the interface
 - **Performance Optimization**: Smart content caching to reduce API calls and improve load times
 - **Accessibility Features**: Tooltips, semantic HTML, and keyboard navigation support
+- **Progressive Enhancement**: Features gracefully degrade for older browsers while maintaining core functionality
+- **Lazy Loading**: Intersection observer-based loading of features and content as they enter the viewport
 
 ## Technical Implementation
 
 ### Frontend Architecture
-- **Modular JavaScript**: ES6+ modules for clean separation of concerns (player-handlers.js, game-handlers.js, etc.)
-- **Advanced DOM Manipulation**: Custom event delegation system for efficient event handling
+- **Modular ES6+ JavaScript**: Advanced module system with dynamic loading and dependency management through core/module-loader.js
+- **App Class Architecture**: Centralized application management with state handling and lifecycle control via global.js
+- **Page Detection System**: Intelligent page type detection and automatic module loading based on content requirements
+- **Feature Observer Pattern**: Intersection observer-based lazy loading for performance optimization
+- **Advanced DOM Manipulation**: Efficient event delegation system with cached DOM elements and batch operations
 - **Custom AJAX System**: Sophisticated AJAX handler with URL normalization and content processing
 - **Data Visualization**: Integration with Chart.js for advanced player statistics radar charts and performance graphs
+- **State Management**: Global application state with localStorage persistence and cross-tab synchronization
 
 ### Backend Systems
 - **PHP Backend**: Well-structured PHP codebase with organized function libraries
@@ -61,30 +80,78 @@ NHL PLAY is a comprehensive web application for tracking NHL hockey statistics, 
 - **Data Processing**: Advanced data transformation and calculation for statistical analysis
 
 ### Performance Optimizations
-- **Resource Bundling**: CSS and JavaScript minification and bundling
-- **Lazy Loading**: Deferred loading of non-critical components
-- **API Request Management**: Rate limiting and intelligent caching of API requests
-- **Mobile Optimization**: Device-specific optimizations using MobileDetect library
+- **Dynamic Module Loading**: ES6 modules loaded only when needed based on page context and user interaction
+- **Intersection Observer API**: Advanced lazy loading of features and content with viewport-based triggering
+- **Debounced Operations**: Performance optimization for frequent operations (search, scroll, resize events)
+- **API Request Management**: Intelligent rate limiting, caching, and batch processing of API requests
+- **Mobile Optimization**: Device-specific optimizations using MobileDetect library with responsive breakpoints
+- **Memory Management**: Proper cleanup of event listeners and DOM references to prevent memory leaks
 
 ### Libraries & Dependencies
-- **Chart.js**: Advanced data visualization for player statistics
-- **Swiper.js**: Touch-enabled slider implementation for schedules and content
-- **JSDataTables**: Enhanced table functionality with sorting and filtering
-- **Bootstrap Icons**: Comprehensive icon library for improved UI
+- **Chart.js**: Advanced data visualization for player statistics and performance metrics
+- **Swiper.js**: Touch-enabled slider implementation for schedules, team rosters, and content carousels
+- **JSDataTables**: Enhanced table functionality with sorting, filtering, and pagination
+- **Shopify Draggable**: Advanced drag-and-drop functionality for team builder interface
+- **Bootstrap Icons**: Comprehensive icon library for improved UI consistency
+- **Intersection Observer API**: Native browser API for performance-optimized lazy loading
 
 ## Project Organization
 
-The project follows a well-structured organization:
+The project follows a sophisticated modular architecture designed for scalability and maintainability:
 
-- **/ajax**: AJAX endpoints for dynamic content loading
-- **/assets**: Frontend resources (CSS, JavaScript, images)
-- **/assets/js/modules**: Modular JavaScript components
-- **/includes**: PHP include files and functions
-- **/includes/functions**: Specialized PHP function libraries
-- **/includes/data**: Data structure definitions and constants
-- **/pages**: Static page templates
-- **/templates**: Reusable UI components
-- **/cache**: API response cache storage
+### Core Application Structure
+- **/assets/js/global.js**: Main application entry point with App class for centralized initialization and lifecycle management
+- **/assets/js/core/**: Core application architecture
+  - **module-loader.js**: Dynamic ES6 module loading system with dependency management
+  - **page-detector.js**: Intelligent page type detection and required module determination  
+  - **feature-observer.js**: Intersection Observer implementation for performance-optimized lazy loading
+  - **app-state.js**: Global application state management with persistence support
+
+### Feature Modules
+- **/assets/js/modules/**: Feature-specific modular components
+  - **utils.js**: Shared utility functions and event management systems
+  - **dom-elements.js**: Centralized DOM element caching and management
+  - **teambuilder.js**: Drag-and-drop team building interface with state persistence
+  - **draft-mode.js**: Advanced draft simulation with challenge filters and round management
+  - **live-games.js**: Real-time game tracking with automatic updates
+  - **reddit-handlers.js**: Community integration with Reddit API for game threads and feeds
+  - **player-handlers.js**: Player statistics, comparisons, and profile management
+  - **game-handlers.js**: Game-specific functionality and live data processing
+
+### Styling Architecture
+- **/assets/css/global.css**: Main stylesheet with CSS custom properties and layer imports
+- **/assets/css/imports/**: Modular CSS architecture using @layer directives
+  - **base.css**: Foundation styles and CSS custom properties
+  - **animations.css**: Transition and animation definitions
+  - **responsive.css**: Mobile-first responsive breakpoints and device adaptations
+  - **darkmode-specific.css**: Dark theme implementations and automatic theme switching
+  - **team-builder.css**: Team builder and draft mode specific styling
+  - **draft-mode.css**: Draft simulation interface styling
+
+### Backend Structure
+- **/ajax/**: AJAX endpoints for dynamic content loading and API responses
+  - **team-builder.php**: Team roster loading and management endpoints
+  - **draft-mode.php**: Draft simulation player fetching and filtering
+  - **reddit-feed.php**: Community content aggregation and processing
+  - **live-game.php**: Real-time game data processing and updates
+- **/includes/**: PHP include files and shared functionality
+  - **functions.php**: Core utility functions and shared logic
+  - **functions/**: Specialized function libraries organized by feature
+  - **data/**: Data structure definitions, constants, and team mappings
+  - **tables/**: Reusable table generation functions with caching
+- **/pages/**: Static page templates and content structures
+- **/templates/**: Reusable UI components and partial views
+- **/cache/**: JSON-based caching system for API responses and computed data
+
+### Asset Organization
+- **/assets/fonts/**: Custom web fonts and typography resources
+- **/assets/img/**: Image assets, team logos, and visual resources organized by category
+
+This architecture enables:
+- **Lazy Loading**: Modules are loaded only when needed based on page context
+- **Code Splitting**: Features are separated into independent modules for better maintainability
+- **Performance Optimization**: Intersection observers and caching reduce unnecessary operations
+- **Scalability**: New features can be added as independent modules without affecting existing code
 
 ## Project Status
 
