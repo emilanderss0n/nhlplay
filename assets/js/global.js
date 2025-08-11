@@ -70,6 +70,7 @@ class App {
         const initFunctions = {
             'live-games': () => module.initLiveGames(),
             'teambuilder': () => module.initTeamBuilder(),
+            'draft-mode': () => module.initDraftMode(),
             'game-handlers': () => module.initGameHandlers(this.elements),
             'team-handlers': () => module.initTeamHandlers(this.elements),
             'player-handlers': () => module.initPlayerHandlers(this.elements),

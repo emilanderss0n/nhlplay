@@ -36,6 +36,10 @@ export function initRouteHandler(elements) {
                         import('./teambuilder.js').then(module => {
                             module.initTeamBuilder();
                         });
+                        // Also initialize draft mode for team builder pages
+                        import('./draft-mode.js').then(module => {
+                            module.initDraftMode();
+                        });
                     }
                 }
             }            // IMPORTANT: Dispatch custom event after content loads (used on draft page)

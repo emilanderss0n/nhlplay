@@ -56,6 +56,7 @@ export class PageDetector {
             ],
             'team-builder': [
                 'teambuilder', 
+                'draft-mode',
                 'ui-settings',
                 'menu-handlers'
             ],

@@ -61,12 +61,13 @@ $teamBuilderActive = true;
         <div class="alert-icon"><i class="bi bi-exclamation-triangle"></i></div>
         <div class="alert-text">This feature is not made to be used with mobile devices.</div>
     </div>
-    <div class="team-roster team-builder">
+    <div id="team-builder-interface">
+        <div class="team-roster team-builder">
 
         <div class="select-players-button component-header">
             <div class="flex-default first">
                 <h3 class="title">Team Builder</h3>
-                <!-- <a class="btn sm" href="#">Draft Mode</a> -->
+                <button class="btn sm" id="draft-mode-toggle">Draft Mode</button>
             </div>
             <div class="flex-default">
                 <div class="custom-select">
@@ -154,6 +155,7 @@ $teamBuilderActive = true;
                         <div class="player-slot" data-position="goalie"></div>
                     </div>
                 </div>
+            </div>
             </div>
             </div>
         </div>

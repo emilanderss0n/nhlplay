@@ -18,6 +18,7 @@ $mergedCSS = $isDevelopment ? false : generateMergedCSS([
     'assets/css/imports/darkmode-specific.css',
     'assets/css/imports/responsive.css',
     'assets/css/imports/team-builder.css',
+    'assets/css/imports/draft-mode.css',
     'assets/css/swiper.css',
     'assets/css/bootstrap-icons.min.css',
 ], 'merged.min.css');
@@ -48,6 +49,7 @@ $mergedCSS = $isDevelopment ? false : generateMergedCSS([
         <link rel="stylesheet" type="text/css" media="screen" href="assets/css/imports/darkmode-specific.css">
         <link rel="stylesheet" type="text/css" media="screen" href="assets/css/imports/responsive.css">
         <link rel="stylesheet" type="text/css" media="screen" href="assets/css/imports/team-builder.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="assets/css/imports/draft-mode.css">
         <link rel="stylesheet" type="text/css" media="screen" href="assets/css/swiper.css">
         <link rel="stylesheet" type="text/css" media="screen" href="assets/css/bootstrap-icons.min.css">
     <?php endif; ?>
