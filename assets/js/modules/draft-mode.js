@@ -212,7 +212,7 @@ function createDraftInterface() {
                         <span>Hide Jersey Number</span>
                     </label>
                 </div>
-                <button class="btn start-draft-btn">Start Draft</button>
+                <button class="fancy-button start-draft-btn"><span><i class="bi bi-stars"></i> Start Draft</span></button>
             </div>
             
             <div class="draft-active" style="display: none;">
@@ -384,7 +384,7 @@ function exitDraftMode() {
     }
     
     if (DOM.draftToggleBtn) {
-        DOM.draftToggleBtn.textContent = 'Draft Mode';
+        DOM.draftToggleBtn.innerHTML = '<i class="bi bi-stars"></i> Draft Mode';
     }
     
     DraftMode.setState({ isActive: false });

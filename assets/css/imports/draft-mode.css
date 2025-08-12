@@ -6,6 +6,7 @@
 
     .draft-filters {
         margin-bottom: 2rem;
+        text-align: center;
     }
 
     .draft-filters h3 {
@@ -42,8 +43,7 @@
     }
 
     .start-draft-btn {
-        padding: 1rem 2rem;
-        font-size: 1.1rem;
+        font-size: 1.2rem;
         text-transform: uppercase;
         place-self: center;
     }

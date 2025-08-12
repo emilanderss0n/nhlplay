@@ -1475,4 +1475,76 @@
         font-size: 0.9rem;
         transition: all 0.3s linear;
     }
+
+    .fancy-button {
+        --width: 210px;
+        height: 70px;
+        width: var(--width);
+        display: inline-block;
+        font-size: 1rem;
+        padding: 0.8rem 1.5rem;
+        margin: 2rem 0;
+        -webkit-appearance: none;
+        appearance: none;
+        background: linear-gradient(to bottom, var(--content-box-bg) 0, var(--dark-bg-color) 100%);
+        color: #fff;
+        border-radius: 10px;
+        border: none;
+        cursor: pointer;
+        position: relative;
+        transition: all linear 0.2s;
+        box-shadow: var(--shadow-button);
+    }
+
+    .fancy-button::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom, var(--content-box-bg) 0, var(--content-box-bg) 100%);
+        border-radius: inherit;
+        z-index: 1;
+        opacity: 0;
+        transition: all linear 0.2s;
+    }
+
+    .fancy-button:hover::after {
+        opacity: 1;
+    }
+
+    .fancy-button:active::after {
+        opacity: 0;
+    }
+
+    .fancy-button:hover {
+        box-shadow: var(--box-shadow-nice);
+        transform: translateY(-5px);
+    }
+
+    .fancy-button:active {
+        box-shadow: 0 0 0 rgba(0,0,0,0);
+        transform: scale(0.9);
+    }
+
+    .fancy-button span {
+        width: calc(var(--width) + 60px);
+        position: absolute;
+        transform: translate(-50%,-55%);
+        background: linear-gradient(to right, var(--medium-contrast-color) 0,#fff 10%, var(--medium-contrast-color) 20%);
+        background-position: 0;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: fancyButtonShine 3s infinite linear;
+        animation-fill-mode: forwards;
+        -webkit-text-size-adjust: none;
+        z-index: 2;
+    }
+
+    .fancy-button:hover span {
+        background: linear-gradient(to right, var(--heading-color) 0,var(--heading-color) 10%, var(--heading-color) 20%);
+        -webkit-background-clip: text;
+        animation: none;
+    }
 }

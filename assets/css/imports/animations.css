@@ -206,6 +206,20 @@
         100% { transform: rotate(360deg); }
     }
 
+    @keyframes fancyButtonShine {
+        0% {
+            background-position: 0;
+        }
+
+        60% {
+            background-position: 210px;
+        }
+
+        100% {
+            background-position: 210px;
+        }
+    }
+
     .post-game-cont .post-game-box,
     .post-game-cont::before,
     .pre-game-box,
@@ -217,6 +231,8 @@
     .schedule-games,
     .team-roster-header,
     .team-roster,
+    .draft-mode-interface,
+    .draft-active,
     .team-game-log,
     .team-advanced-stats .schedule .game,
     .schedule .game .time,

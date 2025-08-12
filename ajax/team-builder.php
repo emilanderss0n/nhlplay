@@ -67,7 +67,7 @@ $teamBuilderActive = true;
         <div class="select-players-button component-header">
             <div class="flex-default first">
                 <h3 class="title">Team Builder</h3>
-                <button class="btn sm" id="draft-mode-toggle">Draft Mode</button>
+                <button class="btn sm" id="draft-mode-toggle"><i class="bi bi-stars"></i> Draft Mode</button>
             </div>
             <div class="flex-default">
                 <div class="custom-select">
