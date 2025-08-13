@@ -1,29 +1,48 @@
 User-agent: *
 Allow: /
-Disallow: /cache/
-Disallow: /ajax/
-Disallow: /includes/
 
-# Prevent pages with sensitive parameters
+# Block access to sensitive directories
+Disallow: /cache/
+Disallow: /includes/
+Disallow: /templates/
+
+# Block direct access to AJAX endpoints (they should be accessed via clean URLs)
+Disallow: /ajax/
+
+# Block dynamic pages with sensitive parameters
 Disallow: /*?gameId=
 Disallow: /*?playerId=
+Disallow: /*?team_abbr=
+Disallow: /*?active_team=
 
-# Allow CSS, JS, and image assets
+# Block internal development files
+Disallow: /*.php$
+Disallow: /path.php
+Disallow: /404.php
+
+# Allow important assets
 Allow: /assets/css/
 Allow: /assets/js/
 Allow: /assets/img/
+Allow: /assets/fonts/
 
-# Set crawl delay for all bots (10 second delay between requests)
-Crawl-delay: 10
+# Allow static pages
+Allow: /pages/
 
-# Special rules for Google
-User-agent: Googlebot
+# Allow team pages (3-letter abbreviations)
+Allow: /[A-Z][A-Z][A-Z]
+
+# Set crawl delay (5 seconds for all bots, respecting server resources)
 Crawl-delay: 5
+
+# Special rules for Google - slightly more aggressive crawling
+User-agent: Googlebot
+Crawl-delay: 3
 Allow: /assets/
 
 # Special rules for Bing
 User-agent: Bingbot
-Crawl-delay: 5
+Crawl-delay: 3
 Allow: /assets/
 
 # XML Sitemap
