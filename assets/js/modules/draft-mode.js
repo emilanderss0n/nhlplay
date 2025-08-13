@@ -15,6 +15,9 @@ const DraftMode = {
             goalies: 2       // rounds 19-20
         }
     },
+    preloadedData: null,     // Cache for preloaded data
+    preloadComplete: false,  // Flag to track if preloading is done
+    preloadedFilters: [],    // Filters used for preloading
     
     setState(newState) {
         Object.assign(this.state, newState);
@@ -369,6 +372,60 @@ function enterDraftMode() {
     
     // Clear previously selected players from UI
     clearSelectedPlayersUI();
+    
+    // Silently preload draft data in the background
+    preloadDraftDataSilently();
+}
+
+// Silently preload draft data in the background while user is setting up filters
+async function preloadDraftDataSilently() {
+    try {
+        // Get current filters to preload with
+        const currentFilters = DraftMode.state.filters;
+        
+        // Preload data for all three positions with current filters
+        const positions = ['forwards', 'defensemen', 'goalies'];
+        const preloadPromises = positions.map(position => preloadPositionData(position, currentFilters));
+        
+        await Promise.all(preloadPromises);
+        
+        // Store which filters were used for preloading
+        DraftMode.preloadedFilters = [...currentFilters];
+        
+        DraftMode.preloadComplete = true;
+        
+    } catch (error) {
+        console.warn('Failed to preload draft data:', error);
+        // Don't show error to user, just continue without preloading
+    }
+}
+
+// Preload data for a specific position
+async function preloadPositionData(position, filters = []) {
+    const formData = new FormData();
+    formData.append('action', 'get_draft_players');
+    formData.append('position', position);
+    formData.append('round', '1');
+    formData.append('filters', JSON.stringify(filters)); // Use current filters
+    formData.append('excludePlayerIds', JSON.stringify([])); // No exclusions for preload
+    formData.append('preload', 'true'); // Flag to indicate this is preloading
+    
+    const response = await fetch('ajax/draft-mode.php', {
+        method: 'POST',
+        body: formData,
+        headers: { 'X-Requested-With': 'XMLHttpRequest' }
+    });
+    
+    if (response.ok) {
+        const data = await response.json();
+        if (!data.error) {
+            // Store preloaded data
+            if (!DraftMode.preloadedData) {
+                DraftMode.preloadedData = {};
+            }
+            DraftMode.preloadedData[position] = data.players || [];
+        }
+    }
 }
 
 function exitDraftMode() {
@@ -427,6 +484,22 @@ function handleFilterToggle(e) {
         // Remove the filter
         DraftMode.state.filters = DraftMode.state.filters.filter(f => f !== filterValue);
     }
+    
+    // Re-preload data with new filters (debounced to avoid too many requests)
+    debouncePreload();
+}
+
+// Debounced preload to avoid too many requests when filters change rapidly
+let preloadTimeout;
+function debouncePreload() {
+    clearTimeout(preloadTimeout);
+    preloadTimeout = setTimeout(() => {
+        // Only re-preload if we're in draft mode but haven't started yet
+        if (DraftMode.state.isActive && !document.querySelector('.draft-active').style.display === 'block') {
+            DraftMode.preloadComplete = false;
+            preloadDraftDataSilently();
+        }
+    }, 500); // Wait 500ms after last filter change
 }
 
 function resetFilterCheckboxes() {
@@ -461,6 +534,11 @@ function clearSelectedPlayersUI() {
     positionCounts.forEach(countElement => {
         countElement.textContent = '0';
     });
+    
+    // Clear preloaded data to force fresh loading for new draft
+    DraftMode.preloadedData = null;
+    DraftMode.preloadComplete = false;
+    DraftMode.preloadedFilters = [];
 }
 
 async function startDraft() {
@@ -470,8 +548,47 @@ async function startDraft() {
     
     DraftMode.setState({ currentRound: 1 });
     
-    // Load first round players
-    await loadRoundPlayers();
+    // Check if current filters match preloaded data
+    const currentFilters = JSON.stringify(DraftMode.state.filters);
+    const preloadedFilters = JSON.stringify(DraftMode.preloadedFilters || []);
+    
+    // If data is preloaded AND filters match, use it for instant loading
+    if (DraftMode.preloadComplete && DraftMode.preloadedData && currentFilters === preloadedFilters) {
+        await loadRoundPlayersFromCache();
+    } else {
+        // If filters changed or no preload, do regular loading with current filters
+        await loadRoundPlayers();
+    }
+}
+
+// Load round players from preloaded cache for instant loading
+async function loadRoundPlayersFromCache() {
+    const position = DraftMode.getCurrentPosition();
+    
+    if (!DraftMode.preloadedData || !DraftMode.preloadedData[position]) {
+        // Fallback to regular loading if cache is missing
+        await loadRoundPlayers();
+        return;
+    }
+    
+    try {
+        const selectedPlayerIds = DraftMode.state.selectedPlayers.map(selected => selected.player.id);
+        const availablePlayers = DraftMode.preloadedData[position].filter(playerHtml => {
+            // Extract player ID from HTML (simple approach)
+            const idMatch = playerHtml.match(/data-player-data='[^']*"id"[^']*?([0-9]+)/);
+            return idMatch ? !selectedPlayerIds.includes(idMatch[1]) : true;
+        });
+        
+        // Randomly select 3 players
+        const shuffled = availablePlayers.sort(() => 0.5 - Math.random());
+        const roundPlayers = shuffled.slice(0, 3);
+        
+        displayRoundPlayers(roundPlayers);
+        
+    } catch (error) {
+        console.warn('Error using cached data, falling back to server request:', error);
+        await loadRoundPlayers();
+    }
 }
 
 async function loadRoundPlayers() {
