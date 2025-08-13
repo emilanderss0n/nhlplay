@@ -3760,7 +3760,7 @@
   }
 
   .trades-frontpage .team-logo img {
-    margin: 0 !important;
+    margin: 0;
     opacity: 0.2;
     height: 200px !important;
     width: 200px !important;
@@ -3777,8 +3777,8 @@
   }
 
   .trades-frontpage .team {
-    padding: 0 !important;
-    height: 100% !important;
+    padding: 0;
+    height: 100%;
   }
 
   .trades-frontpage .team .list {

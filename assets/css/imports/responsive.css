@@ -347,20 +347,6 @@
             height: 400px;
         }
 
-        .trades-frontpage .team {
-            text-align: center;
-        }
-
-        .trades-frontpage .team .team-info:has(.team-logo) {
-            justify-content: center;
-        }
-
-        .trades-frontpage .team-logo img {
-            width: 100px;
-            height: 100px;
-            transform: translateY(1.6rem);
-        }
-
         .trades-frontpage {
             display: flex !important;
             flex-direction: column-reverse !important;
@@ -370,8 +356,8 @@
             min-height: auto;
         }
 
-        .trades-frontpage .team .list {
-            margin: 2rem 0;
+        .trades-frontpage .trade.alt-layout.expanded {
+            height: 200px;
         }
 
         .trades-frontpage .trade-buttons {
@@ -1438,9 +1424,60 @@
         .trades-frontpage {
             margin-top: 8rem;
         }
+
+        .trades-frontpage .trade.alt-layout.expanded {
+            min-height: fit-content;
+            height: fit-content;
+            background: none !important;
+            border: 1px solid var(--border-stroke-weak);
+        }
+
+        .trades-frontpage .teams {
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .trades-frontpage .team {
+            display: flex;
+            gap: 1rem;
+            width: 100%;
+            height: fit-content;
+            padding: 1rem;
+            align-items: center;
+            background-color: var(--dark-bg-color);
+        }
+
+        .trades-frontpage .team-1 {
+            border-bottom: 1px solid var(--border-stroke-weak);
+        }
+
+        .trades-frontpage .team-info:has(.team-logo) {
+            position: relative;
+            width: fit-content;
+            height: fit-content;
+        }
+
+        .trades-frontpage .team-logo {
+            height: 60px;
+        }
         
         .trades-frontpage .trade-buttons {
             grid-template-columns: repeat(2, 1fr);
+        }
+
+        .trades-frontpage .team .list ul li {
+            margin: 0 0 0.5rem;
+        }
+
+        .trades-frontpage .trade.alt-layout.expanded .trade-title {
+            display: none;
+        }
+
+        .trades-frontpage .team-logo img {
+            max-width: 60px;
+            opacity: 1;
+            max-height: 60px;
+            flex: 0;
         }
 
         .jsDataTable-top,
@@ -1483,15 +1520,6 @@
 
         .trades:not(.trades-frontpage) .team-logo img {
             mask: var(--logo-mask-half);
-        }
-
-        .trades-frontpage .team-info .name,
-        .trades-frontpage .team-info .text {
-            display: none;
-        }
-
-        .trades-frontpage .team-info:has(.team-logo) {
-            justify-content: center;
         }
     }
 
