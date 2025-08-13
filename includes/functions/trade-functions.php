@@ -76,7 +76,7 @@ function renderTeamLogo($team, $position, $alternateLayout = false) {
     $html = '<div class="team-logo ' . $position . '">';
     
     if ($team && isset($team->team->term_id)) {
-        $html .= '<img src="assets/img/teams/' . teamSNtoID($team->team->term_id) . '.svg" alt="" />';
+        $html .= '<img src="assets/img/teams/' . teamSNtoID($team->team->term_id) . '.svg" alt="'. $team->team->name .'" />';
     } else {
         $html .= '<div style="width: 40px; height: 40px; background: #333; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff;">?</div>';
     }
