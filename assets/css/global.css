@@ -3869,12 +3869,24 @@
     box-shadow: var(--box-shadow-nice);
   }
 
+  .trades-frontpage .trade.alt-layout:not(.expanded):focus-visible {
+    outline: 2px solid var(--main-link-color);
+    outline-offset: 2px;
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-nice);
+  }
+
   .trades-frontpage .trade.alt-layout.expanded {
     width: 100%;
     cursor: default;
     height: 100%;
     outline: 2px solid transparent;
     transition: outline 0.4s ease;
+  }
+
+  .trades-frontpage .trade.alt-layout.expanded:focus-visible {
+    outline: 2px solid var(--main-link-color);
+    outline-offset: 2px;
   }
 
   .trades-frontpage .trade.alt-layout.expanded .trade-title {
@@ -4612,44 +4624,46 @@
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
-  }
 
-  @media (prefers-color-scheme: dark) {
-    .season-break-message {
-      background-color: #491414;
-      background-blend-mode: overlay;
+    @media (prefers-color-scheme: dark) {
+        background-color: #491414;
+        background-blend-mode: overlay;
     }
-  }
 
-  .season-break-message .inner {
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 2rem;
-    font-size: 1.1rem;
-    font-weight: 500;
-    text-shadow: 0 0 10px rgba(0, 0, 0, 15);
-    color: #fff;
-  }
+    a:focus-visible & {
+      outline: 2px solid var(--main-link-color);
+      outline-offset: 2px;
+    }
 
-  .season-break-message .inner img {
-    width: 140px;
-    height: 140px;
-    margin-bottom: 1rem;
-  }
+    & .inner {
+      display: flex;
+      width: 100%;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 2rem;
+      font-size: 1.1rem;
+      font-weight: 500;
+      text-shadow: 0 0 10px rgba(0, 0, 0, 15);
+      color: #fff;
 
-  .season-break-message .inner h3 {
-    font-size: 1.3rem;
-    color: #fff;
-    max-width: 520px;
-  }
+      & img {
+        width: 140px;
+        height: 140px;
+        margin-bottom: 1rem;
+      }
 
-  .season-break-message .inner p {
-    color: #fff;
-    margin-top: 1rem;
-    ;
+      & h3 {
+        font-size: 1.3rem;
+        color: #fff;
+        max-width: 520px;
+      }
+
+      & p {
+        color: #fff;
+        margin-top: 1rem;
+      }
+    }
   }
 }

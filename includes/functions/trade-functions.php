@@ -192,7 +192,7 @@ function renderTrade($trade, $alternateLayout = false, $useShortName = false, $t
             $isActive = $tradeIndex === 0 ? ' active' : '';
             $tradeClass = 'trade alt-layout' . $isActive;
             
-            $html = '<div class="' . $tradeClass . '" style="background: ' . $backgroundStyle . ';" data-trade-index="' . $tradeIndex . '">';
+            $html = '<div class="' . $tradeClass . '" style="background: ' . $backgroundStyle . ';" data-trade-index="' . $tradeIndex . '" tabindex="0" role="button">';
             $html .= '<div class="date">' . $tradeDate . '</div>';
             $html .= '<div class="teams-minimal">';
             

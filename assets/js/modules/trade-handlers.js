@@ -22,6 +22,7 @@ function initButtonBasedLayout() {
     
     tradeButtons.forEach(button => {
         button.addEventListener('click', (e) => handleButtonClick(e, expandedContainer));
+        button.addEventListener('keydown', (e) => handleButtonKeydown(e, expandedContainer));
     });
 }
 
@@ -74,6 +75,14 @@ async function handleButtonClick(event, expandedContainer) {
     }, 2000);
 }
 
+function handleButtonKeydown(event, expandedContainer) {
+    // Handle Enter and Space key presses for accessibility
+    if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        handleButtonClick(event, expandedContainer);
+    }
+}
+
 async function createExpandedFromButton(button, expandedContainer, tradeIndex) {
     // Simple fallback - just show a loading message for now
     // In a real implementation, you might want to fetch trade data separately
@@ -112,6 +121,7 @@ function initExpandableLayout() {
     
     tradeCards.forEach(card => {
         card.addEventListener('click', handleTradeClick);
+        card.addEventListener('keydown', handleTradeKeydown);
     });
 }
 
@@ -123,6 +133,15 @@ function handleTradeClick(event) {
     
     // Remove click listener since it's now expanded
     tradeCard.removeEventListener('click', handleTradeClick);
+    tradeCard.removeEventListener('keydown', handleTradeKeydown);
+}
+
+function handleTradeKeydown(event) {
+    // Handle Enter and Space key presses for accessibility
+    if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        handleTradeClick(event);
+    }
 }
 
 // Auto-initialize if trades-frontpage exists
