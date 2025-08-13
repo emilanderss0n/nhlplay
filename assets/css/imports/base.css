@@ -1483,7 +1483,6 @@
         display: inline-block;
         font-size: 1rem;
         padding: 0.8rem 1.5rem;
-        margin: 2rem 0;
         -webkit-appearance: none;
         appearance: none;
         background: linear-gradient(to bottom, var(--content-box-bg) 0, var(--dark-bg-color) 100%);

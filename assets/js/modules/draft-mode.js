@@ -119,6 +119,9 @@ function initializeEventListeners() {
     // Start draft button
     eventManager.addDelegatedEventListener(document, '.start-draft-btn', 'click', startDraft);
     
+    // NHLPLAY Recommended Preset button
+    eventManager.addDelegatedEventListener(document, '.nhlplay-preset-btn', 'click', applyNHLPLAYPreset);
+    
     // Exit draft mode
     eventManager.addDelegatedEventListener(document, '.exit-draft-btn', 'click', exitDraftMode);
 }
@@ -214,8 +217,12 @@ function createDraftInterface() {
                         </svg>
                         <span>Hide Jersey Number</span>
                     </label>
+                    <button class="btn sm nhlplay-preset-btn"><i class="bi bi-star-fill"></i> NHLPLAY Preset</button>
                 </div>
-                <button class="fancy-button start-draft-btn"><span><i class="bi bi-stars"></i> Start Draft</span></button>
+                <div class="draft-buttons">
+                    
+                    <button class="fancy-button start-draft-btn"><span><i class="bi bi-stars"></i> Start Draft</span></button>
+                </div>
             </div>
             
             <div class="draft-active" style="display: none;">
@@ -508,6 +515,36 @@ function resetFilterCheckboxes() {
     filterCheckboxes.forEach(checkbox => {
         checkbox.checked = false;
     });
+}
+
+function applyNHLPLAYPreset() {
+    // Define the NHLPLAY recommended filters
+    const recommendedFilters = [
+        'headshot',       // Hide Headshot
+        'last_name',      // Hide Last Name  
+        'career_stats',   // Hide Career Stats
+        'jersey_number'   // Hide Jersey Number
+    ];
+    
+    // Clear all current filters
+    DraftMode.setState({ filters: [] });
+    resetFilterCheckboxes();
+    
+    // Apply the recommended filters
+    recommendedFilters.forEach(filterValue => {
+        const checkbox = document.querySelector(`.draft-filter-toggle[value="${filterValue}"]`);
+        if (checkbox) {
+            checkbox.checked = true;
+            
+            // Add to filters state
+            if (!DraftMode.state.filters.includes(filterValue)) {
+                DraftMode.state.filters.push(filterValue);
+            }
+        }
+    });
+    
+    // Trigger re-preload with new filters
+    debouncePreload();
 }
 
 function clearSelectedPlayersUI() {
