@@ -4301,12 +4301,14 @@
     flex-direction: column;
     height: 100%;
     border: 1px solid var(--border-stroke-weak);
+    will-change: transform, box-shadow, opacity;
     position: relative;
     overflow: hidden;
   }
 
   .reddit-feed .reddit-post:hover {
-    transform: scale(1.05);
+    box-shadow: var(--box-shadow-nice);
+    translate: 0 -3px;
   }
 
   .reddit-feed .post-header {
@@ -4338,16 +4340,7 @@
   }
 
   .reddit-feed .post-link {
-    display: block;
-    color: var(--heading-color);
-    text-decoration: none;
     flex-grow: 1;
-    border-radius: 2px;
-    transition: color 0.2s ease;
-  }
-
-  .reddit-feed .post-link:hover .post-title {
-    color: var(--main-link-color);
   }
 
   .reddit-feed .post-title {

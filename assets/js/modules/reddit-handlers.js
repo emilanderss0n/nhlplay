@@ -133,14 +133,14 @@ function initRedditFeed(feedContainer) {
                     }
                       // Create post HTML
                     postsHTML += `
-                        <div class="reddit-post">
+                        <a class="reddit-post" href="https://www.reddit.com${post.permalink}" target="_blank" rel="noopener noreferrer">
                             <div class="post-header">
                                 <div class="post-subreddit">r/${subreddit}</div>
                                 <div class="post-time">${postedTime}</div>
                             </div>
-                            <a href="https://www.reddit.com${post.permalink}" target="_blank" rel="noopener noreferrer" class="post-link">
+                            <div class="post-link">
                                 <h4 class="post-title">${post.title}</h4>
-                            </a>
+                            </div>
                             <div class="post-footer">
                                 <div class="post-author">u/${post.author}</div>
                                 <div class="post-stats">
@@ -148,7 +148,7 @@ function initRedditFeed(feedContainer) {
                                     <span class="post-comments"><i class="bi bi-chat-left-text"></i> ${comments}</span>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     `;
                 });
                 
