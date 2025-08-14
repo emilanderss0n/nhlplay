@@ -379,13 +379,32 @@ class NHLApi {
      * @param int $limit Number of results
      * @return string API URL
      */
-    public static function statLeaders($type, $category, $season, $gameType = '2', $limit = 1) {
+    public static function statLeaders($type, $category, $season, $gameType = '2', $limit = null) {
+        // Build the base cayenne expression
+        $cayenneExp = "season={$season} and gameType={$gameType}";
+        
+        // Determine the API endpoint type - defense and rookies use 'skaters' endpoint
+        $apiType = ($type === 'defense' || $type === 'rookies') ? 'skaters' : $type;
+        
+        // Add type-specific filters
+        if ($type === 'defense') {
+            $cayenneExp .= " and player.positionCode='D'";
+        } elseif ($type === 'rookies') {
+            $cayenneExp .= " and isRookie='Y'";
+        } elseif ($type === 'goalies') {
+            $cayenneExp .= " and gamesPlayed>=5";
+        }
+        
         $params = [
-            'limit' => $limit,
-            'cayenneExp' => urlencode("gameTypeId={$gameType} and seasonId={$season}")
+            'cayenneExp' => $cayenneExp
         ];
         
-        $url = self::API_STATS_BASE . "/leaders/{$type}/{$category}";
+        // Only add limit if specified and not null
+        if ($limit !== null) {
+            $params['limit'] = $limit;
+        }
+        
+        $url = self::API_STATS_BASE . "/leaders/{$apiType}/{$category}";
         return self::buildUrl($url, $params);
     }
     

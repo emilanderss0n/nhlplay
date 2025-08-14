@@ -34,9 +34,9 @@ function renderStatHolder($type, $category, $season, $playoffs, $loadOnDemand = 
         }
     }
 
-    // Handle error
-    if (!$statPoints) {
-        return '<div class="error">Failed to load data</div>';
+    // Handle error or missing data
+    if (!$statPoints || !isset($statPoints->data) || empty($statPoints->data)) {
+        return '<div class="error">Failed to load data or no data available</div>';
     }
 
     // Use findMaxStatValue to determine the leader in the category
@@ -138,8 +138,8 @@ function getPlayerStatValue($statPoint, $category) {
  * @return string Complete API URL
  */
 function buildStatLeaderApiUrl($type, $category, $season, $gameType) {
-    // Use the new NHL API utility
-    return NHLApi::statLeaders($type, $category, $season, $gameType, 1);
+    // Use the new NHL API utility without limit to match old behavior
+    return NHLApi::statLeaders($type, $category, $season, $gameType);
     
     // Start with basic URL structure
     if ($type === 'goalies') {
@@ -167,6 +167,21 @@ function buildStatLeaderApiUrl($type, $category, $season, $gameType) {
  * @return mixed Maximum value found
  */
 function findMaxStatValue($data, $category) {
+    // Check if data is valid - it could be an array of objects or empty
+    if (empty($data)) {
+        return 0;
+    }
+    
+    // Convert to array if it's not already (handles both arrays and objects)
+    if (!is_array($data)) {
+        $data = (array) $data;
+    }
+    
+    // If still empty after conversion, return 0
+    if (empty($data)) {
+        return 0;
+    }
+    
     // Special case for categories where lower is better
     if ($category === 'gaa') {
         return min(array_column($data, $category));
