@@ -133,7 +133,7 @@ function initRedditFeed(feedContainer) {
                     }
                       // Create post HTML
                     postsHTML += `
-                        <a class="reddit-post" href="https://www.reddit.com${post.permalink}" target="_blank" rel="noopener noreferrer">
+                        <a class="reddit-post card" href="https://www.reddit.com${post.permalink}" target="_blank" rel="noopener noreferrer">
                             <div class="post-header">
                                 <div class="post-subreddit">r/${subreddit}</div>
                                 <div class="post-time">${postedTime}</div>

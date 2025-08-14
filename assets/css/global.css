@@ -202,6 +202,16 @@
     background-color: rgb(0 0 0 / 70%);
   }
 
+  .card {
+    background: linear-gradient(199deg, var(--content-box-bg) 0, var(--main-bg-color) 70%);
+    border-radius: 10px;
+    box-shadow: inset 0 0 0 1px var(--border-stroke-weak);
+
+    &:hover {
+      box-shadow: inset 0 0 0 1px var(--border-stroke), var(--box-shadow-nice);
+    }
+  }
+
   .see-score-check p {
     font-size: 0.9rem;
     color: var(--medium-contrast-color);
@@ -4292,22 +4302,17 @@
   }
 
   .reddit-feed .reddit-post {
-    background-color: var(--content-box-bg);
-    border-radius: 12px;
-    box-shadow: var(--shadow-box);
     padding: 1.2rem;
     transition: all 0.3s ease;
     display: flex;
     flex-direction: column;
     height: 100%;
-    border: 1px solid var(--border-stroke-weak);
     will-change: transform, box-shadow, opacity;
     position: relative;
     overflow: hidden;
   }
 
   .reddit-feed .reddit-post:hover {
-    box-shadow: var(--box-shadow-nice);
     translate: 0 -3px;
   }
 
@@ -4409,12 +4414,6 @@
   .reddit-feed .post-author {
     font-weight: 600;
     opacity: 0.8;
-    transition: opacity 0.2s ease;
-  }
-
-  .reddit-feed .post-author:hover {
-    opacity: 1;
-    color: var(--main-link-color);
   }
 
   .reddit-feed .post-stats {
@@ -4426,11 +4425,6 @@
     display: flex;
     align-items: center;
     gap: 0.3rem;
-    transition: color 0.2s ease;
-  }
-
-  .reddit-feed .post-score:hover {
-    color: var(--reddit-color);
   }
 
   .reddit-feed .post-score i {
@@ -4443,10 +4437,6 @@
     align-items: center;
     gap: 0.3rem;
     transition: color 0.2s ease;
-  }
-
-  .reddit-feed .post-comments:hover {
-    color: var(--main-link-color);
   }
 
   .reddit-feed .post-comments i {
