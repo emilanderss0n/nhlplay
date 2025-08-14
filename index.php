@@ -93,7 +93,8 @@ if (!is_dir($cacheDir)) {
                 $startDate = strtotime(date('Y-m-d', strtotime('-1 day')));
                 $endDate = strtotime(date('Y-m-d', strtotime('+1 day')));
 
-                $ApiUrl = 'https://api-web.nhle.com/v1/schedule/now';
+                // Use the new NHL API utility
+                $ApiUrl = NHLApi::scheduleNow();
                 $curl = curlInit($ApiUrl);
                 $schedules = json_decode($curl);
 
@@ -116,8 +117,9 @@ if (!is_dir($cacheDir)) {
             </div>
             <div class="home-leaders grid grid-300 grid-gap-lg grid-gap-row-lg">
                 <?php
-                define('SKATER_API_URL', 'https://api-web.nhle.com/v1/skater-stats-leaders/current/?categories=points,goals');
-                define('GOALIE_API_URL', 'https://api-web.nhle.com/v1/goalie-stats-leaders/current/?categories=goalsAgainstAverage,wins');
+                // Use the new NHL API utility
+                define('SKATER_API_URL', NHLApi::skaterStatsLeaders('current', '2', ['points', 'goals']));
+                define('GOALIE_API_URL', NHLApi::goalieStatsLeaders('current', '2', ['goalsAgainstAverage', 'wins']));
 
                 $apiUrls = [SKATER_API_URL, GOALIE_API_URL];
                 $cacheDir = 'cache/';
@@ -169,7 +171,8 @@ if (!is_dir($cacheDir)) {
                 </div>
                 <div id="standings-home">
                     <?php
-                    $ApiUrl = 'https://api-web.nhle.com/v1/standings/now';
+                    // Use the new NHL API utility
+                    $ApiUrl = NHLApi::standingsNow();
                     $cacheFile = 'cache/standings-league.json';
                     $cacheTime = 30 * 30;
                     if (file_exists($cacheFile) && time() - filemtime($cacheFile) < $cacheTime) {

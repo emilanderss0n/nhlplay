@@ -8,7 +8,8 @@ if (empty($draftYearSelection)) {
     die('Draft year is required');
 }
 
-$ApiUrl = 'https://api-web.nhle.com/v1/draft/picks/'. $draftYearSelection .'/1';
+// Use the new NHL API utility
+$ApiUrl = NHLApi::draftPicks($draftYearSelection, '1');
 $curl = curlInit($ApiUrl);
 $draftPicks = json_decode($curl);
 

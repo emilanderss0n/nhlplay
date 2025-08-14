@@ -233,7 +233,8 @@ function renderPlayoffsBracket($season = '2025', $headerTitle = 'Stanley Cup Pla
     // Convert single year to full season format only for the series objects
     $fullSeason = strlen($season) === 4 ? (intval($season) - 1) . $season : $season;
     
-    $ApiUrl = "https://api-web.nhle.com/v1/playoff-bracket/{$season}";
+    // Use the new NHL API utility
+    $ApiUrl = NHLApi::playoffBracket($season);
     $playoffs = json_decode(curlInit($ApiUrl));
     
     if (!$playoffs || !isset($playoffs->series)) {
@@ -316,7 +317,8 @@ function renderPlayoffsBracket($season = '2025', $headerTitle = 'Stanley Cup Pla
  * @return object|null The series games data or null if not found
  */
 function getPlayoffSeriesGames($season, $seriesLetter) {
-    $ApiUrl = "https://api-web.nhle.com/v1/schedule/playoff-series/{$season}/{$seriesLetter}";
+    // Use the new NHL API utility
+    $ApiUrl = NHLApi::playoffSeries($season, $seriesLetter);
     return json_decode(curlInit($ApiUrl));
 }
 

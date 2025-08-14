@@ -2,7 +2,8 @@
 include_once '../path.php';
 include_once '../includes/functions.php';
 
-$ApiUrl = "https://api-web.nhle.com/v1/season";
+// Use the new NHL API utility
+$ApiUrl = NHLApi::season();
 $curl = curlInit($ApiUrl);
 $seasons = json_decode($curl);
 

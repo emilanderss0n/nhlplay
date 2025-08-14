@@ -1,6 +1,7 @@
 <?php
 
-$ApiUrl = 'https://api-web.nhle.com/v1/gamecenter/'. $gameId .'/boxscore';
+// Use the new NHL API utility
+$ApiUrl = NHLApi::gameCenterBoxscore($gameId);
 $curl = curlInit($ApiUrl);
 $game = json_decode($curl);
 $awayTeam = $game->awayTeam;
@@ -24,14 +25,14 @@ if ($awayTeam->score > $homeTeam->score) {
 $winnerTeam = $winnerId;
 $endPeriod = $game->gameOutcome->lastPeriodType;
 
-// Second API
-$ApiUrl = 'https://api-web.nhle.com/v1/gamecenter/'. $gameId .'/landing';
+// Second API - Use the new NHL API utility
+$ApiUrl = NHLApi::gameCenterLanding($gameId);
 $curl = curlInit($ApiUrl);
 $gameContent = json_decode($curl);
 $boxscore = $gameContent->summary;
 
-// Third API
-$ApiUrl = 'https://api-web.nhle.com/v1/gamecenter/'. $gameId .'/right-rail';
+// Third API - Use the new NHL API utility
+$ApiUrl = NHLApi::gameCenterRightRail($gameId);
 $curl = curlInit($ApiUrl);
 $railContent = json_decode($curl);
 $gameStats = $railContent->teamGameStats;

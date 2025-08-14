@@ -15,18 +15,13 @@ function positionCodeToName3($position){
 }
 
 function getPlayerBioStat($playerID, $season) {
-    $ch = curl_init();
-    $ApiUrl = 'https://api.nhle.com/stats/rest/en/skater/bios?limit=1&playerId='. $playerID .'&cayenneExp=seasonId="'. $season .'"';
-    curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.2; WOW64; rv:17.0) Gecko/20100101 Firefox/17.0');
-    curl_setopt($ch, CURLOPT_REFERER, 'https://www.snoop.com/');
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_URL, $ApiUrl);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    $results = curl_exec($ch);
-    curl_close($ch);
+    // Use the new NHL API utility with proper conditions
+    $conditions = ['playerId' => $playerID, 'seasonId' => "\"{$season}\""];
+    $ApiUrl = NHLApi::playerStats('skater', 'bios', $conditions, ['limit' => 1]);
     
+    $results = curlInit($ApiUrl);
     $playerBios = json_decode($results);
+    
     foreach($playerBios->data as $playerBio) {
         $stat = $playerBio;
         return $stat;
@@ -216,7 +211,8 @@ function renderPhoneStatsDisplay($stats, $formattedSAT = 'N/A', $formattedUSAT =
 }
 
 function getThreeStars($season) {
-    $ApiUrl = 'https://records.nhl.com/site/api/media-three-star?include=threeStarType&mapBy=seasonId&include=player.fullName&include=player.id&include=player.sweaterNumber&include=player.position&include=team.fullName&include=team.triCode&include=team.id&cayenneExp=seasonId="'. $season .'"&sort=id&dir=ASC';
+    // Use the new NHL API utility
+    $ApiUrl = NHLApi::threeStars($season);
     $curl = curlInit($ApiUrl);
     $result = json_decode($curl);
     $output = '';
@@ -224,22 +220,24 @@ function getThreeStars($season) {
 
     if (isset($result->data->{$season}) && is_array($result->data->{$season})) {
         foreach (array_reverse($result->data->{$season}) as $stars) {
-            if ($stars->threeStarType->id == 1 || $stars->threeStarType->id == 2 || $stars->threeStarType->id == 3) {
+            // Add null checks for player and threeStarType data
+            if (isset($stars->threeStarType->id) && isset($stars->player->id) && 
+                ($stars->threeStarType->id == 1 || $stars->threeStarType->id == 2 || $stars->threeStarType->id == 3)) {
                 if($i <= 2) {
-                    $fullName = $stars->player->fullName;
+                    $fullName = $stars->player->fullName ?? 'Unknown Player';
                     $nameParts = explode(" ", $fullName);
                     $initial = strtoupper($nameParts[0][0]);
-                    $lastName = $nameParts[1];
+                    $lastName = isset($nameParts[1]) ? $nameParts[1] : $nameParts[0];
                     $formattedName = $initial . ". " . $lastName;
                     
                     $output .= '<a href="#" id="player-link" class="item player star-' . $stars->threeStarType->id . '" data-link="' . $stars->player->id . '">';
                     $output .= '<div class="place"></div>';
-                    $output .= '<img class="head" height="200" width="200" src="https://assets.nhle.com/mugs/nhl/' . $season . '/' . $stars->team->triCode . '/' . $stars->player->id . '.png" />';
-                    $output .= '<img class="team-img" src="assets/img/teams/'. $stars->team->id .'.svg" width="200" height="200" />';
-                    $output .= '<div class="team-color" style="background: linear-gradient(142deg, '. teamToColor($stars->team->id) .' 0%, rgba(255,255,255,0) 58%); right: 0;"></div>';
+                    $output .= '<img class="head" height="200" width="200" src="https://assets.nhle.com/mugs/nhl/' . $season . '/' . ($stars->team->triCode ?? 'NHL') . '/' . $stars->player->id . '.png" />';
+                    $output .= '<img class="team-img" src="assets/img/teams/'. ($stars->team->id ?? '0') .'.svg" width="200" height="200" />';
+                    $output .= '<div class="team-color" style="background: linear-gradient(142deg, '. teamToColor($stars->team->id ?? 0) .' 0%, rgba(255,255,255,0) 58%); right: 0;"></div>';
                     $output .= '<div class="player-desc">';
                     $output .= '<h3>' . $formattedName . '</h3>';
-                    $output .= '<div class="stats">' . $stars->team->triCode . ' - #' . $stars->player->sweaterNumber . ' - ' . $stars->player->position . '</div>';
+                    $output .= '<div class="stats">' . ($stars->team->triCode ?? 'NHL') . ' - #' . ($stars->player->sweaterNumber ?? '0') . ' - ' . ($stars->player->position ?? 'N/A') . '</div>';
                     $output .= '</div></a>';
                     $i++;
                 }

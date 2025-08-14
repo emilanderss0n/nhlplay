@@ -63,7 +63,9 @@ function fetchAndCacheData($apiUrl, $cacheFile) {
 }
 
 function getLatestSeasons() {
-    $ApiUrl = 'https://api.nhle.com/stats/rest/en/season?sort=%5B%7B%22property%22:%22id%22,%22direction%22:%22DESC%22%7D%5D&limit=3';    $curl = curlInit($ApiUrl);
+    // Use the new NHL API utility
+    $ApiUrl = NHLApi::seasonsStats(3, 'DESC');
+    $curl = curlInit($ApiUrl);
     $activeSeasons = json_decode($curl);
     return $activeSeasons;
 }
@@ -247,7 +249,8 @@ function fetchRedditComments($postId, $subreddit = 'hockey', $limit = 20, $sort 
  * @return object Game data object
  */
 function getNHLGameData($gameId) {
-    $ApiUrl = 'https://api-web.nhle.com/v1/gamecenter/' . $gameId . '/landing';
+    // Use the new NHL API utility
+    $ApiUrl = NHLApi::gameCenterLanding($gameId);
     $curl = curlInit($ApiUrl);
     return json_decode($curl);
 }

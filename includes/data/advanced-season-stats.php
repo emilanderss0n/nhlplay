@@ -138,5 +138,11 @@ function getNHLApiEndpointDescription($playerType, $endpoint) {
 
 // Helper function to build endpoint URL
 function getNHLApiEndpointUrl($playerType, $endpoint, $playerId, $season) {
-    return "https://api.nhle.com/stats/rest/en/{$playerType}/{$endpoint}?limit=1&cayenneExp=gameTypeId=2%20and%20playerId={$playerId}%20and%20seasonId={$season}";
+    // Use the new NHL API utility
+    $conditions = [
+        'gameTypeId' => '2',
+        'playerId' => $playerId,
+        'seasonId' => $season
+    ];
+    return NHLApi::playerStats($playerType, $endpoint, $conditions, ['limit' => 1]);
 }

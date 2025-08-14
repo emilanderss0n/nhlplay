@@ -508,12 +508,22 @@ function preGameAdvantage($homeTeamId, $awayTeamId, $homeTeam, $awayTeam, $homeR
         else if($awayLast10WinPct > $homeLast10WinPct) $awayPoints += 2.5;
     }
 
-    // Get advanced stats from API
-    $ApiUrl1 = 'https://api.nhle.com/stats/rest/en/team/percentages?isAggregate=false&isGame=false&limit=1&cayenneExp=gameTypeId=2%20and%20seasonId%3C='. $season .'%20and%20seasonId%3E='. $season .'%20and%20teamId='.$homeTeamId;
+    // Get advanced stats from API using new NHL API utility
+    $homeConditions = [
+        'gameTypeId' => '2',
+        'seasonId' => ['<=' => $season, '>=' => $season],
+        'teamId' => $homeTeamId
+    ];
+    $ApiUrl1 = NHLApi::teamStatsApi('percentages', $homeConditions, ['limit' => 1]);
     $curl1 = curlInit($ApiUrl1);
     $homeTeamStats = json_decode($curl1);
 
-    $ApiUrl2 = 'https://api.nhle.com/stats/rest/en/team/percentages?isAggregate=false&isGame=false&limit=1&cayenneExp=gameTypeId=2%20and%20seasonId%3C='. $season .'%20and%20seasonId%3E='. $season .'%20and%20teamId='.$awayTeamId;
+    $awayConditions = [
+        'gameTypeId' => '2',
+        'seasonId' => ['<=' => $season, '>=' => $season],
+        'teamId' => $awayTeamId
+    ];
+    $ApiUrl2 = NHLApi::teamStatsApi('percentages', $awayConditions, ['limit' => 1]);
     $curl2 = curlInit($ApiUrl2);
     $awayTeamStats = json_decode($curl2);
 

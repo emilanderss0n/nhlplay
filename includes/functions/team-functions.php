@@ -40,7 +40,8 @@ function teamSNtoID($id){
 }
 
 function getTeamRosterStats($teamAbbrev, $season) {
-    $ApiUrl = 'https://api-web.nhle.com/v1/club-stats/'. $teamAbbrev .'/'. $season .'/2/';
+    // Use the new NHL API utility instead of building URL manually
+    $ApiUrl = NHLApi::teamStats($teamAbbrev, $season, '2');
     $curl = curlInit($ApiUrl);
     return json_decode($curl);
 }
@@ -50,15 +51,19 @@ function getTeamRosterInfo($teamAbbrev, $season) {
     $cacheFile = 'cache/team-roster-' . strtolower($teamAbbrev) . '-' . $season . '.json';
     $cacheLifetime = 3600; // 1 hour cache
     
+    // Use the new NHL API utility
+    $apiUrl = NHLApi::teamRoster($teamAbbrev, $season);
+    
     return fetchData(
-        'https://api-web.nhle.com/v1/roster/' . $teamAbbrev . '/' . $season,
+        $apiUrl,
         $cacheFile,
         $cacheLifetime
     );
 }
 
 function getTeamStats($teamAbbrev) {
-    $ApiUrl = 'https://api-web.nhle.com/v1/standings/now';
+    // Use the new NHL API utility
+    $ApiUrl = NHLApi::standingsNow();
     $curl = curlInit($ApiUrl);
     $teamStats = json_decode($curl);
     if (isset($teamStats->standings) && is_array($teamStats->standings)) {
@@ -72,7 +77,21 @@ function getTeamStats($teamAbbrev) {
 }
 
 function getTeamStatsAdv($activeTeam, $season) {
-    $ApiUrl = 'https://api.nhle.com/stats/rest/en/team/summary?isAggregate=false&isGame=false&sort=%5B%7B%22property%22:%22points%22,%22direction%22:%22DESC%22%7D,%7B%22property%22:%22wins%22,%22direction%22:%22DESC%22%7D,%7B%22property%22:%22teamId%22,%22direction%22:%22ASC%22%7D%5D&start=0&limit=50&factCayenneExp=gamesPlayed%3E=1&cayenneExp=gameTypeId=2%20and%20teamId='. $activeTeam .'%20and%20seasonId%3C='. $season .'%20and%20seasonId%3E=' . $season;
+    // Build the exact URL that was working before, manually
+    $baseUrl = 'https://api.nhle.com/stats/rest/en/team/summary';
+    $sort = urlencode('[{"property":"points","direction":"DESC"},{"property":"wins","direction":"DESC"},{"property":"teamId","direction":"ASC"}]');
+    $cayenneExp = urlencode("gameTypeId=2 and teamId={$activeTeam} and seasonId<={$season} and seasonId>={$season}");
+    $factCayenneExp = urlencode('gamesPlayed>=1');
+    
+    $ApiUrl = $baseUrl . 
+              '?isAggregate=false' .
+              '&isGame=false' .
+              '&sort=' . $sort .
+              '&start=0' .
+              '&limit=50' .
+              '&factCayenneExp=' . $factCayenneExp .
+              '&cayenneExp=' . $cayenneExp;
+    
     $curl = curlInit($ApiUrl);
     return json_decode($curl);
 }
@@ -92,7 +111,8 @@ function getTeamMedianAge($teamRosterInfo) {
 }
 
 function getTeamSchedules($teamAbbrev) {
-    $ApiUrl = 'https://api-web.nhle.com/v1/scoreboard/'. $teamAbbrev .'/now';
+    // Use the new NHL API utility
+    $ApiUrl = NHLApi::teamScoreboard($teamAbbrev);
     $curl = curlInit($ApiUrl);
     return json_decode($curl);
 }

@@ -175,7 +175,8 @@ function getPlayerCareerStats($playerId) {
     if (empty($playerId)) return null;
     
     try {
-        $ApiUrl = 'https://api-web.nhle.com/v1/player/'. $playerId .'/landing';
+        // Use the new NHL API utility
+        $ApiUrl = NHLApi::playerLanding($playerId);
         $curl = curlInit($ApiUrl);
         $careerData = json_decode($curl);
         

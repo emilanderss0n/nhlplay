@@ -26,7 +26,9 @@ include_once '../header-extended.php';
                     </thead>
                     <tbody>
                         <?php 
-                        $ApiUrl = 'https://statsapi.web.nhl.com/api/v1/standings/byLeague/?expand=standings.record';
+                        // Use the new NHL API utility
+                        $expands = ['standings.record'];
+                        $ApiUrl = NHLApi::legacyStandings('byLeague', $expands);
                         $curl = curlInit($ApiUrl);
                         $standing = json_decode($curl);
                         foreach ($standing->records[0]->teamRecords as $teamStand) { ?>

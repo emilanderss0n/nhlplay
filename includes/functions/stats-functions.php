@@ -138,7 +138,8 @@ function getPlayerStatValue($statPoint, $category) {
  * @return string Complete API URL
  */
 function buildStatLeaderApiUrl($type, $category, $season, $gameType) {
-    $baseUrl = "https://api.nhle.com/stats/rest/en/leaders/";
+    // Use the new NHL API utility
+    return NHLApi::statLeaders($type, $category, $season, $gameType, 1);
     
     // Start with basic URL structure
     if ($type === 'goalies') {
@@ -234,8 +235,17 @@ function getPlayerSeasonStats($playerId, $season, $type = 'skater', $seasonCompa
     }
 
     foreach ($endpoints as $key => $endpoint) {
-        $ApiUrl = "https://api.nhle.com/stats/rest/en/{$endpoint}?limit=" . ($seasonCompare === '<=' ? '30' : '1') . 
-                 "&cayenneExp=gameTypeId=2%20and%20playerId={$playerId}%20and%20seasonId{$seasonCompare}{$season}";
+        // Use the new NHL API utility - extract player type from endpoint
+        $playerType = explode('/', $endpoint)[0];
+        $endpointPath = explode('/', $endpoint)[1];
+        
+        $conditions = [
+            'gameTypeId' => '2',
+            'playerId' => $playerId,
+            'seasonId' => [$seasonCompare => $season]
+        ];
+        $params = ['limit' => ($seasonCompare === '<=' ? 30 : 1)];
+        $ApiUrl = NHLApi::playerStats($playerType, $endpointPath, $conditions, $params);
         
         $curl = curlInit($ApiUrl);
         $result = json_decode($curl);
@@ -289,7 +299,16 @@ function getPlayerAdvancedStats($playerId, $season, $gameType = 2) {
     
     $advancedStats = [];
     foreach ($endpoints as $key => $endpoint) {
-        $ApiUrl = "https://api.nhle.com/stats/rest/en/{$endpoint}?limit=1&cayenneExp=gameTypeId={$gameType}%20and%20playerId={$playerId}%20and%20seasonId={$season}";
+        // Use the new NHL API utility
+        $playerType = explode('/', $endpoint)[0];
+        $endpointPath = explode('/', $endpoint)[1];
+        
+        $conditions = [
+            'gameTypeId' => $gameType,
+            'playerId' => $playerId,
+            'seasonId' => $season
+        ];
+        $ApiUrl = NHLApi::playerStats($playerType, $endpointPath, $conditions, ['limit' => 1]);
         $curl = curlInit($ApiUrl);
         $result = json_decode($curl);
         
@@ -326,7 +345,21 @@ function getPlayerAdvancedStats($playerId, $season, $gameType = 2) {
  * @return array|null
  */
 function getSkaterLeadersTable($season = '20242025', $type = 'skater', $gameType = 2, $limit = 100) {
-    $ApiUrl = "https://api.nhle.com/stats/rest/en/{$type}/summary?isAggregate=false&isGame=false&sort=%5B%7B%22property%22:%22points%22,%22direction%22:%22DESC%22%7D,%7B%22property%22:%22goals%22,%22direction%22:%22DESC%22%7D,%7B%22property%22:%22assists%22,%22direction%22:%22DESC%22%7D,%7B%22property%22:%22playerId%22,%22direction%22:%22ASC%22%7D%5D&start=0&limit={$limit}&cayenneExp=gameTypeId={$gameType}%20and%20seasonId={$season}";
+    // Use the new NHL API utility
+    $conditions = [
+        'gameTypeId' => $gameType,
+        'seasonId' => $season
+    ];
+    $params = [
+        'limit' => $limit,
+        'sort' => NHLApi::buildSort([
+            ['property' => 'points', 'direction' => 'DESC'],
+            ['property' => 'goals', 'direction' => 'DESC'],
+            ['property' => 'assists', 'direction' => 'DESC'],
+            ['property' => 'playerId', 'direction' => 'ASC']
+        ])
+    ];
+    $ApiUrl = NHLApi::playerStats($type, 'summary', $conditions, $params);
     $curl = curlInit($ApiUrl);
     $standing = json_decode($curl);
     return $standing;

@@ -11,7 +11,8 @@ include_once '../includes/functions.php';
                 <h1 class="lso-title main-title"><?= substr($lastSeason, 0, 4) . ' / ' . substr($lastSeason, 4) ?> Season Overview</h1>
                 <div class="lso-award-winners">
                     <?php
-                    $awardsApiUrl = 'https://records.nhl.com/site/api/award-details?cayenneExp=seasonId=' . $lastSeason . '&include=seasonId&include=trophy.name&include=trophy.imageUrl&include=player.firstName&include=player.lastName&include=player.position&include=player.id&include=value&include=team.id&include=team.franchiseId&include=team.fullName&include=team.placeName&include=team.commonName&include=team.triCode&include=team.league.abbreviation&include=status&include=imageUrl&include=playerImageUrl&sort=seasonId&dir=DESC';
+                    // Use the new NHL API utility
+                    $awardsApiUrl = NHLApi::awardDetails($lastSeason);
                     $cacheFile = '../cache/award-winners-' . $lastSeason . '.json';
                     $cacheLifetime = 900000;
 
@@ -129,8 +130,9 @@ include_once '../includes/functions.php';
                 </div>
                 <div class="home-leaders grid grid-300 grid-gap-lg grid-gap-row-xl" style="margin-top: 2rem;">
                     <?php
-                        define('SKATER_API_URL', 'https://api-web.nhle.com/v1/skater-stats-leaders/' . $lastSeason . '/2?categories=points,goals');
-                        define('GOALIE_API_URL', 'https://api-web.nhle.com/v1/goalie-stats-leaders/' . $lastSeason . '/2?categories=goalsAgainstAverage,wins');
+                        // Use the new NHL API utility
+                        define('SKATER_API_URL', NHLApi::skaterStatsLeaders($lastSeason, '2', ['points', 'goals']));
+                        define('GOALIE_API_URL', NHLApi::goalieStatsLeaders($lastSeason, '2', ['goalsAgainstAverage', 'wins']));
 
                         $apiUrls = [SKATER_API_URL, GOALIE_API_URL];
                         $cacheDir = dirname(__DIR__) . '/cache/';
@@ -158,8 +160,9 @@ include_once '../includes/functions.php';
                 </div>
                 <div class="home-leaders grid grid-300 grid-gap-lg grid-gap-row-xl" style="margin-top: 2rem;">
                     <?php
-                        define('SKATER_API_URL_P', 'https://api-web.nhle.com/v1/skater-stats-leaders/' . $lastSeason . '/3?categories=points,goals');
-                        define('GOALIE_API_URL_P', 'https://api-web.nhle.com/v1/goalie-stats-leaders/' . $lastSeason . '/3?categories=goalsAgainstAverage,wins');
+                        // Use the new NHL API utility  
+                        define('SKATER_API_URL_P', NHLApi::skaterStatsLeaders($lastSeason, '3', ['points', 'goals']));
+                        define('GOALIE_API_URL_P', NHLApi::goalieStatsLeaders($lastSeason, '3', ['goalsAgainstAverage', 'wins']));
 
                         $apiUrls = [SKATER_API_URL_P, GOALIE_API_URL_P];
                         $cacheDir = dirname(__DIR__) . '/cache/';

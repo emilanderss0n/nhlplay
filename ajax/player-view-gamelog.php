@@ -6,7 +6,8 @@ $seasonSelection = $_POST['season-selection'];
 $seasonType = $_POST['season-type'];
 $playerType = $_POST['player-type'];
 
-$ApiUrl = 'https://api-web.nhle.com/v1/player/'. $playerID .'/game-log/'. $seasonSelection .'/'. $seasonType;
+// Use the new NHL API utility
+$ApiUrl = NHLApi::playerGameLog($playerID, $seasonSelection, $seasonType);
 $curl = curlInit($ApiUrl);
 $playerGameLog = json_decode($curl);
 

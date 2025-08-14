@@ -1,5 +1,6 @@
 <?php
-$ApiUrl = 'https://api-web.nhle.com/v1/gamecenter/'.$gameId.'/landing';
+// Use the new NHL API utility
+$ApiUrl = NHLApi::gameCenterLanding($gameId);
 $curl = curlInit($ApiUrl);
 $game = json_decode($curl);
 $awayTeam = $game->awayTeam;
@@ -13,7 +14,8 @@ $homeTeamLogo = $game->homeTeam->logo;
 $utcTimezone = new DateTimeZone('UTC');
 $gameTime = new DateTime( $game->startTimeUTC, $utcTimezone );
 
-$ApiUrl = 'https://api-web.nhle.com/v1/gamecenter/'.$gameId.'/right-rail';
+// Use the new NHL API utility
+$ApiUrl = NHLApi::gameCenterRightRail($gameId);
 $curl = curlInit($ApiUrl);
 $railGame = json_decode($curl);
 $seasonStats = $railGame->teamSeasonStats;

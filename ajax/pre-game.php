@@ -325,7 +325,8 @@ include_once '../includes/data/init-pre-game.php';
                 } else {
                     $type = 2;
                 }
-                $ApiUrl = 'https://api-web.nhle.com/v1/club-stats/'. $awayTeamAbbrev.'/'. $season .'/'. $type;
+                // Use the new NHL API utility
+                $ApiUrl = NHLApi::teamStats($awayTeamAbbrev, $season, $type);
                 $curl = curlInit($ApiUrl);
                 $players = json_decode($curl)->skaters;
 
@@ -371,7 +372,8 @@ include_once '../includes/data/init-pre-game.php';
                 } else {
                     $type = 2;
                 }
-                $ApiUrl = 'https://api-web.nhle.com/v1/club-stats/'. $homeTeamAbbrev.'/'. $season .'/'. $type;
+                // Use the new NHL API utility
+                $ApiUrl = NHLApi::teamStats($homeTeamAbbrev, $season, $type);
                 $curl = curlInit($ApiUrl);
                 $players = json_decode($curl)->skaters;
 

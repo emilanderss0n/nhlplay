@@ -9,7 +9,8 @@ if (empty($gameId)) {
     exit;
 }
 
-$apiUrl = "https://api-web.nhle.com/v1/gamecenter/{$gameId}/boxscore";
+// Use the new NHL API utility
+$apiUrl = NHLApi::gameCenterBoxscore($gameId);
 $opts = [
     'http' => [
         'method' => 'GET',

@@ -5,7 +5,8 @@ require_once "../includes/MobileDetect.php";
 $detect = new \Detection\MobileDetect;
 $deviceType = ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'computer');
 
-$ApiUrl = 'https://api-web.nhle.com/v1/standings/now';
+// Use the new NHL API utility
+$ApiUrl = NHLApi::standingsNow();
 $cacheFile = '../cache/standings-conference.json';
 $cacheTime = 30 * 30;
 if (file_exists($cacheFile) && time() - filemtime($cacheFile) < $cacheTime) {

@@ -6,7 +6,12 @@ include_once '../includes/functions.php';
 <?php 
 $now = date("Y-m-d", strtotime("-3 DAY"));
 $then = date("Y-m-d", strtotime("-2 DAY"));
-$ApiUrl = 'https://statsapi.web.nhl.com/api/v1/schedule?startDate='. $now .'&endDate='. $then;
+// Use the new NHL API utility
+$params = [
+    'startDate' => $now,
+    'endDate' => $then
+];
+$ApiUrl = NHLApi::legacySchedule($params);
 $curl = curlInit($ApiUrl);
 $schedules = json_decode($curl);
 
@@ -25,8 +30,8 @@ $homeName = $result->teams->home->team->name;
 $gameState = $result->status->abstractGameState;
 $gameID = $result->gamePk;
 
-// Second API
-$ApiUrl = 'https://statsapi.web.nhl.com/api/v1/game/'. $gameID .'/content';
+// Second API - Use the new NHL API utility
+$ApiUrl = NHLApi::legacyGameContent($gameID);
 $curl = curlInit($ApiUrl);
 $gameContent = json_decode($curl);
 if(isset($gameContent->media->epg[3]->items[0]->playbacks[3]->url)) { 

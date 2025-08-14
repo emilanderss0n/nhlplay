@@ -8,7 +8,8 @@ if(isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH
         <div class="game-scores schedule grid grid-300 grid-gap-lg grid-gap-row-sm" grid-max-col-count="4">
             <?php 
             $dateDaysAgo = date('Y-m-d', strtotime('-4 days'));
-            $ApiUrl = 'https://api-web.nhle.com/v1/schedule/'. $dateDaysAgo;
+            // Use the new NHL API utility
+            $ApiUrl = NHLApi::scheduleByDate($dateDaysAgo);
             $curl = curlInit($ApiUrl);
             $scores = json_decode($curl);
 

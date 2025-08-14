@@ -6,7 +6,9 @@ include_once '../header-extended.php';
 $activeTeam = $_GET['active_team'];
 
 $utcTimezone = new DateTimeZone('UTC');
-$ApiUrl = 'https://statsapi.web.nhl.com/api/v1/teams/'. $activeTeam .'?expand=team.stats&expand=team.roster&expand=roster.person';
+// Use the new NHL API utility
+$expands = ['team.stats', 'team.roster', 'roster.person'];
+$ApiUrl = NHLApi::legacyTeam($activeTeam, $expands);
 $curl = curlInit($ApiUrl);
 $team = json_decode($curl);
 $teamInfo = $team->teams[0];
@@ -130,7 +132,14 @@ $medianAge = ($count % 2 == 0) ? ($playerAges[$count/2-1] + $playerAges[$count/2
             <h3 class="adv-title">Point Leaders</h3>
             <div class="scoring">
             <?php
-            $ApiUrl = 'https://statsapi.web.nhl.com/api/v1/teams/'. $activeTeam .'/leaders?leaderCategories=points&limit=5&season='. $season .'&expand=leaders.person';
+            // Use the new NHL API utility
+            $params = [
+                'leaderCategories' => 'points',
+                'limit' => 5,
+                'season' => $season,
+                'expand' => 'leaders.person'
+            ];
+            $ApiUrl = NHLApi::legacyTeamLeaders($activeTeam, $params);
             $curl = curlInit($ApiUrl);
             $player = json_decode($curl); ?>
                 <div class="player-cont">
@@ -168,7 +177,14 @@ $medianAge = ($count % 2 == 0) ? ($playerAges[$count/2-1] + $playerAges[$count/2
                 <?php 
                 $now = date("Y-m-d");
                 $then = date("Y-m-d", strtotime("-3 week"));
-                $ApiUrl = 'https://statsapi.web.nhl.com/api/v1/schedule?teamId='. $activeTeam .'&startDate='. $then .'&endDate='. $now .'&expand=schedule.scoringplays';
+                // Use the new NHL API utility
+                $params = [
+                    'teamId' => $activeTeam,
+                    'startDate' => $then,
+                    'endDate' => $now,
+                    'expand' => 'schedule.scoringplays'
+                ];
+                $ApiUrl = NHLApi::legacySchedule($params);
                 $curl = curlInit($ApiUrl);
                 $history = json_decode($curl);
                 krsort($history->dates);

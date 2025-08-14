@@ -4,7 +4,9 @@ include_once '../path.php';
 
 $active_team = $_POST['active_team'];
 $teamAbbr = idToTeamAbbrev($active_team);
-$ApiUrl = 'https://api-web.nhle.com/v1/club-schedule-season/'. $teamAbbr .'/'. $season;
+
+// Use the new NHL API utility instead of building URL manually
+$ApiUrl = NHLApi::teamSchedule($teamAbbr, $season);
 $curl = curlInit($ApiUrl);
 $scores = json_decode($curl);
 $utcTimezone = new DateTimeZone('UTC');

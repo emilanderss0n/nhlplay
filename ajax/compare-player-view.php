@@ -3,11 +3,12 @@ include_once '../path.php';
 include_once '../includes/functions.php';
 $playerID = $_POST['player'];
 
-$ApiUrl = 'https://api-web.nhle.com/v1/player/'. $playerID .'/landing';
+// Use the new NHL API utility
+$ApiUrl = NHLApi::playerLanding($playerID);
 $curl = curlInit($ApiUrl);
 $playerResult = json_decode($curl);
 
-$ApiUrl = 'https://api-web.nhle.com/v1/player/'. $playerID .'/game-log/'. $season .'/2';
+$ApiUrl = NHLApi::playerGameLog($playerID, $season, '2');
 $curl = curlInit($ApiUrl);
 $playerGameLog = json_decode($curl);
 
@@ -17,12 +18,17 @@ $statTotals = $player->featuredStats->regularSeason->career;
 
 if ($player->position == 'C' || $player->position == 'L' || $player->position == 'R' || $player->position == 'D') {
 
-    // https://api.nhle.com/stats/rest/en/skater/summary?isAggregate=false&isGame=false&sort=%5B%7B%22property%22:%22points%22,%22direction%22:%22DESC%22%7D,%7B%22property%22:%22goals%22,%22direction%22:%22DESC%22%7D,%7B%22property%22:%22assists%22,%22direction%22:%22DESC%22%7D,%7B%22property%22:%22playerId%22,%22direction%22:%22ASC%22%7D%5D&start=0&limit=50&factCayenneExp=gamesPlayed%3E=1&cayenneExp=gameTypeId=2%20and%20playerId=8480800%20and%20seasonId%3C=20232024%20and%20seasonId%3E=20232024
-    $ApiUrl = 'https://api.nhle.com/stats/rest/en/skater/puckPossessions?limit=50&cayenneExp=gameTypeId=2%20and%20playerId='. $playerID .'%20and%20seasonId%3C='. $season .'%20and%20seasonId%3E='. $season;
+    // Use the new NHL API utility for advanced stats
+    $conditions = [
+        'gameTypeId' => '2',
+        'playerId' => $playerID,
+        'seasonId' => ['<=' => $season, '>=' => $season]
+    ];
+    $ApiUrl = NHLApi::playerStats('skater', 'puckPossessions', $conditions, ['limit' => 50]);
     $curl = curlInit($ApiUrl);
     $playerMoreStats = json_decode($curl);
 
-    $ApiUrl = 'https://api.nhle.com/stats/rest/en/skater/goalsForAgainst?limit=50&cayenneExp=gameTypeId=2%20and%20playerId='. $playerID .'%20and%20seasonId%3C='. $season .'%20and%20seasonId%3E='. $season;
+    $ApiUrl = NHLApi::playerStats('skater', 'goalsForAgainst', $conditions, ['limit' => 50]);
     $curl = curlInit($ApiUrl);
     $playerGF = json_decode($curl);
 

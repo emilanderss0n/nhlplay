@@ -3,7 +3,8 @@ include_once '../path.php';
 include_once '../includes/functions.php';
 $playerID = $_POST['player'];
 
-$ApiUrl = 'https://api-web.nhle.com/v1/player/'. $playerID .'/landing';
+// Use the new NHL API utility
+$ApiUrl = NHLApi::playerLanding($playerID);
 $curl = curlInit($ApiUrl);
 $careerData = json_decode($curl);
 $careerTotals = $careerData->careerTotals->regularSeason;

@@ -9,7 +9,8 @@ if(isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH
             <div class="alert">No recaps available, try older games below</div>
             <?php 
             $startDate = date('Y-m-d', strtotime('-4 day'));
-            $ApiUrl = 'https://api-web.nhle.com/v1/schedule/'. $startDate;
+            // Use the new NHL API utility
+            $ApiUrl = NHLApi::scheduleByDate($startDate);
             $curl = curlInit($ApiUrl);
             $schedules = json_decode($curl);
             gameRecaps($schedules);

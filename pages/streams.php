@@ -44,7 +44,8 @@ if(isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH
 </main>
 <script>
     const streams = document.getElementById('streams');
-    const ApiUrl = 'https://api-web.nhle.com/v1/streams';
+    // Use the new NHL API utility (JavaScript will use the generated URL)
+    const ApiUrl = '<?= NHLApi::streams() ?>';
     const xhr = new XMLHttpRequest();
     xhr.open('GET', ApiUrl, true);
     xhr.onload = function() {

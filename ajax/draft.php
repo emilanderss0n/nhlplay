@@ -7,14 +7,16 @@ if(isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH
 $detect = new \Detection\MobileDetect;
 $deviceType = ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'computer');
 
-$ApiUrl = 'https://api-web.nhle.com/v1/draft/rankings/now';
+// Use the new NHL API utility
+$ApiUrl = NHLApi::draftRankingsNow();
 $curl = curlInit($ApiUrl);
 $draftRankings = json_decode($curl);
 
 $draftYearCurrent = $draftRankings->draftYear;
 $draftYearLast = $draftYearCurrent - 1;
 
-$ApiUrl2 = 'https://api-web.nhle.com/v1/draft/picks/'. $draftYearCurrent .'/1';
+// Use the new NHL API utility
+$ApiUrl2 = NHLApi::draftPicks($draftYearCurrent, '1');
 $curl2 = curlInit($ApiUrl2);
 $draftPicks = json_decode($curl2);
 $draftPicksPicksExists = isset($draftPicks->picks) && !empty($draftPicks->picks);

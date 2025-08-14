@@ -3,7 +3,8 @@ require_once __DIR__ . '/../functions/api-functions.php';
 require_once __DIR__ . '/../functions/utility-functions.php';
 
 $draftYearCurrent = $draftYearParam ?? $_GET['year'] ?? date('Y');
-$ApiUrl = 'https://api-web.nhle.com/v1/draft/rankings/' . $draftYearCurrent . '/2';
+// Use the new NHL API utility
+$ApiUrl = NHLApi::draftRankings($draftYearCurrent, '2');
 $curl = curlInit($ApiUrl);
 $draftRankings = json_decode($curl);
 ?>
