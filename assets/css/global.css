@@ -1741,179 +1741,173 @@
 
   .team-roster {
     margin-top: 2rem;
-  }
 
-  .team-roster .player {
-    position: relative;
-    color: var(--heading-color);
-    background-color: var(--dark-bg-color);
-    border-radius: 10px;
-    overflow: hidden;
-    will-change: transform;
-    transition: all 0.2s linear;
-    border: 1px solid var(--border-stroke-weak);
-  }
+    & .player {
+      position: relative;
+      color: var(--heading-color);
+      background-color: var(--dark-bg-color);
+      border-radius: 10px;
+      overflow: hidden;
+      will-change: transform;
+      transition: all 0.2s linear;
+      border: 1px solid var(--border-stroke-weak);
 
-  .team-roster .player:hover {
-    background-color: var(--content-box-bg);
-    transform: scale(1.03);
-    box-shadow: var(--box-shadow-nice);
-    border: 1px solid var(--border-stroke);
-  }
+      &:hover {
+        background-color: var(--content-box-bg);
+        transform: scale(1.03);
+        box-shadow: var(--box-shadow-nice);
+        border: 1px solid var(--border-stroke);
+      }
 
-  .team-roster .player.rookie > a::before {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
-    border-radius: 10px;
-    background-image: url("../img/rookie-player.png");
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: -18px -4px;
-    opacity: 0.4;
-    filter: grayscale(1);
-  }
+      &.rookie > a::before {
+        content: "";
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        border-radius: 10px;
+        background-image: url("../img/rookie-player.png");
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: -18px -4px;
+        opacity: 0.4;
+        filter: grayscale(1);
+      }
 
-  .team-roster .player.defenseman {
-    display: none;
-  }
+      &.defenseman,
+      &.goalie {
+        display: none;
+      }
 
-  .team-roster .player.goalie {
-    display: none;
-  }
+      & .jersey {
+        position: absolute;
+        right: 0.6em;
+        top: 0.2em;
+        font-weight: bold;
+        font-size: 2em;
+        color: var(--low-contrast-color);
+        transition: all 0.3s linear;
+        font-family: "Tomorrow", sans-serif;
+        font-style: italic;
+        font-weight: 700;
 
-  .team-roster .player .jersey {
-    position: absolute;
-    right: 0.6em;
-    top: 0.2em;
-    font-weight: bold;
-    font-size: 2em;
-    color: var(--low-contrast-color);
-    transition: all 0.3s linear;
-    font-family: "Tomorrow", sans-serif;
-    font-style: italic;
-    font-weight: 700;
-  }
+        & span {
+          font-family: "Inter", sans-serif;
+          font-weight: initial;
+        }
+      }
 
-  .team-roster .player .jersey > span {
-    font-family: "Inter", sans-serif;
-    font-weight: initial;
-  }
+      & .info {
+        width: 100%;
+        padding: 1rem;
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        min-height: 110px;
+        overflow: hidden;
 
-  .team-roster .player .info {
-    width: 100%;
-    padding: 1rem;
-    font-weight: bold;
-    display: flex;
-    align-items: center;
-    min-height: 110px;
-    overflow: hidden;
-  }
+        & .headshot {
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          left: 0;
+          top: 0;
+          transform: none;
 
-  .team-roster .player .info .headshot {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-    transform: none;
-  }
+          & .head {
+            width: 120px;
+            height: 120px;
+            left: 10px;
+            z-index: 3;
+          }
 
-  .team-roster .player .info .headshot .head {
-    width: 120px;
-    height: 120px;
-    left: 10px;
-    z-index: 3;
-  }
+          & .team-img {
+            transform: scale(1.3) translate(-2rem, -1rem);
+            position: absolute;
+            z-index: 2;
+            height: 200px;
+            width: 200px;
+            mix-blend-mode: overlay;
+            opacity: 0.3;
+            filter: grayscale(1) contrast(1.3) brightness(1.2);
+            mask: var(--logo-mask-card);
+          }
 
-  .team-roster .player .info .headshot .team-img {
-    transform: scale(1.3) translate(-2rem, -1rem);
-    position: absolute;
-    z-index: 2;
-    height: 200px;
-    width: 200px;
-    mix-blend-mode: overlay;
-    opacity: 0.3;
-    filter: grayscale(1) contrast(1.3) brightness(1.2);
-    mask: var(--logo-mask-card);
-  }
+          & .team-fill {
+            position: absolute;
+            z-index: 1;
+            height: 100%;
+            width: 100%;
+            opacity: 0.4;
+          }
+        }
 
-  .team-roster .player .info .headshot .team-fill {
-    position: absolute;
-    z-index: 1;
-    height: 100%;
-    width: 100%;
-    opacity: 0.4;
-  }
+        & .text {
+          padding-left: 7rem;
+          position: relative;
+          z-index: 4;
 
-  .team-roster .player .info .text {
-    padding-left: 7rem;
-    position: relative;
-    z-index: 4;
-  }
+          & .position {
+            color: var(--trans-70);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.7em;
+          }
 
-  .team-roster .player .info .position {
-    color: var(--trans-70);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    font-size: 0.7em;
-  }
+          & .name {
+            font-size: 1.2em;
+            font-weight: 400;
+            font-family: "Tomorrow", sans-serif;
+            text-transform: uppercase;
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            flex-direction: row-reverse;
+            flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
 
-  .team-roster .player .info .name {
-    font-size: 1.2em;
-    font-weight: 400;
-    font-family: "Tomorrow", sans-serif;
-    text-transform: uppercase;
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-    flex-direction: row-reverse;
-    flex-wrap: wrap;
-  }
+            & i {
+              background: #dd1e42;
+              padding: 0.2em 0.3em;
+              border-radius: 50%;
+              color: #fff;
+              display: inline-block;
+              font-size: 0.9rem;
+            }
 
-  .team-roster .player.rookie .info .name {
-    position: relative;
-    z-index: 1;
-  }
+            & a {
+              color: var(--heading-color);
+            }
+          }
+        }
+      }
 
-  .team-roster .player .info .name i {
-    background: #dd1e42;
-    padding: 0.2em 0.3em;
-    border-radius: 50%;
-    color: #fff;
-    display: inline-block;
-    font-size: 0.9rem;
-  }
+      &:hover .stats {
+        filter: brightness(1);
+      }
 
-  .team-roster .player .info .name a {
-    color: var(--heading-color);
-  }
+      & .stats {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        display: flex;
+        justify-content: space-around;
+        font-weight: normal;
+        background-color: var(--semi-frost-bg);
+        backdrop-filter: blur(20px);
+        z-index: 4;
+        position: relative;
+        transition: all 0.2s linear;
+        border-top: 1px solid var(--border-stroke-weak);
 
-  .team-roster .player .stats {
-    width: 100%;
-    padding: 0.8rem 1rem;
-    display: flex;
-    justify-content: space-around;
-    font-weight: normal;
-    background-color: var(--semi-frost-bg);
-    backdrop-filter: blur(20px);
-    z-index: 4;
-    position: relative;
-    transition: all 0.2s linear;
-    border-top: 1px solid var(--border-stroke-weak);
-  }
-
-  .team-roster .player:hover .stats {
-    filter: brightness(1);
-  }
-
-  .team-roster .player .stats strong {
-    font-family: "Tomorrow", sans-serif;
-    font-weight: 500;
-    font-size: 1.1em;
+        & strong {
+          font-family: "Tomorrow", sans-serif;
+          font-weight: 500;
+          font-size: 1.1em;
+        }
+      }
+    }
   }
 
   .watch-streams {
