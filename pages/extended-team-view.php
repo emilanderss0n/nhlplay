@@ -32,7 +32,7 @@ $medianAge = ($count % 2 == 0) ? ($playerAges[$count/2-1] + $playerAges[$count/2
     <div class="wrap extended">
     <div class="team-header">
         <div class="selected-team">
-            <img src="<?= BASE_URL ?>/assets/img/teams/<?= $teamInfo->id ?>.svg" alt="logo" />
+            <img src="<?= BASE_URL ?>/assets/img/teams/<?= $teamInfo->id ?>.svg" alt="<?= $teamInfo->name ?> logo" />
             <div>
                 <h2><?= $teamInfo->name ?></h2>
             </div>

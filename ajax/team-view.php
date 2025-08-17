@@ -44,7 +44,7 @@ $injuredPlayerIds = getInjuredPlayerIds($teamAbbrev2);
         <div class="team-view-main">
             <div class="team-header">
                 <div class="selected-team">
-                    <img src="assets/img/teams/<?= $activeTeam ?>.svg" alt="logo" />
+                    <img src="assets/img/teams/<?= $activeTeam ?>.svg" alt="<?= getValue($teamInfo->teamName->default, 'Team') ?> logo" />
                     <div class="team-name">
                         <h2><?= getValue($teamInfo->teamName->default, '') ?></h2>
                         <div class="team-quick-links">
@@ -119,7 +119,7 @@ $injuredPlayerIds = getInjuredPlayerIds($teamAbbrev2);
                             <div class="schedule-game-date"><strong><?= $result->games[0]->gameDate ?></strong> at <?= $result->games[0]->venue->default ?></div>
                             <div class="schedule-game-visual">
                                 <div class="schedule-game-away">
-                                    <img class="game-team-logo" src="assets/img/teams/<?= $result->games[0]->awayTeam->id ?>.svg" alt="" />
+                                    <img class="game-team-logo" src="assets/img/teams/<?= $result->games[0]->awayTeam->id ?>.svg" alt="<?= teamToName($result->games[0]->awayTeam->id) ?> logo" />
                                     <div class="game-team-fill" style="background: linear-gradient(142deg, <?= teamToColor($result->games[0]->awayTeam->id) ?> 0%, rgba(255,255,255,0) 58%);"></div>
                                 </div>
                                 <div class="schedule-game-vs">
@@ -127,7 +127,7 @@ $injuredPlayerIds = getInjuredPlayerIds($teamAbbrev2);
                                     <div class="time theTimeSimple"><?= $result->games[0]->startTimeUTC ?></div>
                                 </div>
                                 <div class="schedule-game-home">
-                                    <img class="game-team-logo" src="assets/img/teams/<?= $result->games[0]->homeTeam->id ?>.svg" alt="" />
+                                    <img class="game-team-logo" src="assets/img/teams/<?= $result->games[0]->homeTeam->id ?>.svg" alt="<?= teamToName($result->games[0]->homeTeam->id) ?> logo" />
                                     <div class="game-team-fill" style="background: linear-gradient(-142deg, <?= teamToColor($result->games[0]->homeTeam->id) ?> 0%, rgba(255,255,255,0) 58%);"></div>
                                 </div>
                             </div>
