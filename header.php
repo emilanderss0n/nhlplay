@@ -140,7 +140,7 @@ $mergedCSS = $isDevelopment ? false : generateMergedCSS([
                         <div class="menu-links">
                             <input class="dropdown" type="checkbox" id="dropdown1" name="dropdown1" tabindex="-1" />
                             <label class="for-dropdown" for="dropdown1" tabindex="0" role="button" aria-expanded="false" aria-haspopup="true">Links <i class="bi bi-arrow-down-short"></i></label>
-                            <div class="section-dropdown" role="menu" aria-labelledby="dropdown1"> 
+                            <div class="section-dropdown" role="menu" aria-labelledby="dropdown1" aria-hidden="true"> 
                                 <a id="link-game-scores" href="<?= BASE_URL ?>/scores" rel="page" role="menuitem">Scores <i class="bi bi-arrow-right-short"></i></a>
                                 <a id="link-stat-leaders" href="<?= BASE_URL ?>/stat-leaders" rel="page" role="menuitem">Stat Leaders <i class="bi bi-arrow-right-short"></i></a>
                                 <a id="link-game-recaps" href="<?= BASE_URL ?>/recaps" rel="page" role="menuitem">Game Recaps <i class="bi bi-arrow-right-short"></i></a>
@@ -168,7 +168,7 @@ $mergedCSS = $isDevelopment ? false : generateMergedCSS([
                         <div class="menu-teams">
                             <input class="dropdown" type="checkbox" id="dropdown2" name="dropdown2" tabindex="-1"/>
                             <label class="for-dropdown" for="dropdown2" tabindex="0" role="button" aria-expanded="false" aria-haspopup="true">Teams <i class="bi bi-arrow-down-short"></i></label>
-                            <div class="section-dropdown" id="team-selection" role="menu" aria-labelledby="dropdown2"> 
+                            <div class="section-dropdown" id="team-selection" role="menu" aria-labelledby="dropdown2" aria-hidden="true"> 
                                 <div class="fader-top"></div>
                                 <div class="container">
                                 <?php include('includes/teamSelection.php'); ?>

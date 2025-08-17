@@ -366,7 +366,7 @@ export function debounce(fn, delay) {
 // Accessibility Features
 export function initDropdownKeyboardNavigation() {
     // Handle keyboard events for dropdown labels
-    const dropdownLabels = document.querySelectorAll('.menu-links .for-dropdown, .menu-teams .for-dropdown');
+    const dropdownLabels = document.querySelectorAll('.menu-links .for-dropdown, .menu-teams .for-dropdown, .custom-select .for-dropdown');
     
     dropdownLabels.forEach(label => {
         label.addEventListener('keydown', (e) => {
@@ -380,8 +380,9 @@ export function initDropdownKeyboardNavigation() {
                     // Update aria-expanded attribute
                     label.setAttribute('aria-expanded', checkbox.checked.toString());
                     
-                    // Update tabindex for dropdown links
+                    // Update tabindex for dropdown links and aria-hidden
                     updateDropdownLinksTabIndex(label.nextElementSibling, checkbox.checked);
+                    updateDropdownAriaHidden(label.nextElementSibling, checkbox.checked);
                     
                     // If dropdown is now open, focus first link
                     if (checkbox.checked) {
@@ -400,8 +401,9 @@ export function initDropdownKeyboardNavigation() {
                 if (checkbox && checkbox.type === 'checkbox' && checkbox.checked) {
                     checkbox.checked = false;
                     label.setAttribute('aria-expanded', 'false');
-                    // Update tabindex for dropdown links
+                    // Update tabindex for dropdown links and aria-hidden
                     updateDropdownLinksTabIndex(label.nextElementSibling, false);
+                    updateDropdownAriaHidden(label.nextElementSibling, false);
                     label.focus();
                 }
             }
@@ -413,15 +415,16 @@ export function initDropdownKeyboardNavigation() {
                 const checkbox = label.previousElementSibling;
                 if (checkbox && checkbox.type === 'checkbox') {
                     label.setAttribute('aria-expanded', checkbox.checked.toString());
-                    // Update tabindex for dropdown links
+                    // Update tabindex for dropdown links and aria-hidden
                     updateDropdownLinksTabIndex(label.nextElementSibling, checkbox.checked);
+                    updateDropdownAriaHidden(label.nextElementSibling, checkbox.checked);
                 }
             }, 0);
         });
     });
 
     // Handle keyboard navigation within dropdowns
-    const dropdownContainers = document.querySelectorAll('.menu-links .section-dropdown, .menu-teams .section-dropdown');
+    const dropdownContainers = document.querySelectorAll('.menu-links .section-dropdown, .menu-teams .section-dropdown, .custom-select .section-dropdown');
     
     dropdownContainers.forEach(container => {
         container.addEventListener('keydown', (e) => {
@@ -444,15 +447,16 @@ export function initDropdownKeyboardNavigation() {
                 case 'Escape':
                     e.preventDefault();
                     // Close dropdown and focus back to label
-                    const menuContainer = container.closest('.menu-links, .menu-teams');
+                    const menuContainer = container.closest('.menu-links, .menu-teams, .custom-select');
                     const checkbox = menuContainer?.querySelector('input[type="checkbox"]');
                     const label = menuContainer?.querySelector('.for-dropdown');
                     
                     if (checkbox && label) {
                         checkbox.checked = false;
                         label.setAttribute('aria-expanded', 'false');
-                        // Update tabindex for dropdown links
+                        // Update tabindex for dropdown links and aria-hidden
                         updateDropdownLinksTabIndex(container, false);
+                        updateDropdownAriaHidden(container, false);
                         label.focus();
                     }
                     break;
@@ -461,14 +465,15 @@ export function initDropdownKeyboardNavigation() {
                     // Allow normal tab behavior, but close dropdown if tabbing out
                     setTimeout(() => {
                         if (!container.contains(document.activeElement)) {
-                            const menuContainer = container.closest('.menu-links, .menu-teams');
+                            const menuContainer = container.closest('.menu-links, .menu-teams, .custom-select');
                             const checkbox = menuContainer?.querySelector('input[type="checkbox"]');
                             const label = menuContainer?.querySelector('.for-dropdown');
                             if (checkbox && label) {
                                 checkbox.checked = false;
                                 label.setAttribute('aria-expanded', 'false');
-                                // Update tabindex for dropdown links
+                                // Update tabindex for dropdown links and aria-hidden
                                 updateDropdownLinksTabIndex(container, false);
+                                updateDropdownAriaHidden(container, false);
                             }
                         }
                     }, 0);
@@ -490,17 +495,25 @@ function updateDropdownLinksTabIndex(dropdownContainer, isOpen) {
     });
 }
 
+function updateDropdownAriaHidden(dropdownContainer, isOpen) {
+    if (!dropdownContainer) return;
+    
+    dropdownContainer.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+}
+
 function initializeDropdownTabIndex() {
     // Set all dropdown links to tabindex="-1" initially since dropdowns start closed
-    const allDropdownContainers = document.querySelectorAll('.menu-links .section-dropdown, .menu-teams .section-dropdown');
+    // Also ensure aria-hidden="true" is set on dropdown containers
+    const allDropdownContainers = document.querySelectorAll('.menu-links .section-dropdown, .menu-teams .section-dropdown, .custom-select .section-dropdown');
     allDropdownContainers.forEach(container => {
         updateDropdownLinksTabIndex(container, false);
+        updateDropdownAriaHidden(container, false);
     });
 }
 
 export function initDropdownClickOutside() {
     document.addEventListener('click', (e) => {
-        const dropdownContainers = document.querySelectorAll('.menu-links, .menu-teams');
+        const dropdownContainers = document.querySelectorAll('.menu-links, .menu-teams, .custom-select');
         
         dropdownContainers.forEach(container => {
             const checkbox = container.querySelector('input[type="checkbox"]');
@@ -513,8 +526,9 @@ export function initDropdownClickOutside() {
                 if (label) {
                     label.setAttribute('aria-expanded', 'false');
                 }
-                // Update tabindex for dropdown links
+                // Update tabindex for dropdown links and aria-hidden
                 updateDropdownLinksTabIndex(dropdownContent, false);
+                updateDropdownAriaHidden(dropdownContent, false);
             }
         });
     });
