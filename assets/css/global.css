@@ -2619,102 +2619,94 @@
     flex-direction: column-reverse;
     gap: 1rem;
     margin: 1.5rem 0 0;
-  }
 
-  .three-stars .item {
-    position: relative;
-    color: var(--heading-color);
-    font-weight: normal;
-    will-change: transform;
-    transition: all 0.2s linear;
-    background-color: var(--dark-bg-color);
-    border-radius: 10px;
-    padding: 1rem;
-    display: flex;
-    gap: 1.4rem;
-    width: 100%;
-    align-items: center;
-    overflow: hidden;
-    min-height: 120px;
-  }
+    & .item {
+      position: relative;
+      color: var(--heading-color);
+      font-weight: normal;
+      will-change: transform;
+      transition: all 0.2s linear;
+      background-color: var(--dark-bg-color);
+      border-radius: 10px;
+      padding: 1rem;
+      display: flex;
+      gap: 1.4rem;
+      width: 100%;
+      align-items: center;
+      overflow: hidden;
+      min-height: 120px;
 
-  .three-stars .item:hover {
-    background-color: var(--content-box-bg);
-    transform: scale(1.03);
-  }
+      &:hover {
+        background-color: var(--content-box-bg);
+        transform: scale(1.03);
+      }
 
-  .three-stars .item .player-img {
-    transition: all 0.2s linear;
-  }
+      & .head {
+        width: 160px;
+        height: 160px;
+        position: absolute;
+        transform: scale(1.14) translateX(20px);
+        z-index: 3;
+      }
 
-  .three-stars .player .head {
-    width: 160px;
-    height: 160px;
-    position: absolute;
-    transform: scale(1.14) translateX(20px);
-    z-index: 3;
-  }
+      & .team-color {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        z-index: 1;
+        opacity: 0.5;
+      }
 
-  .three-stars .player .team-color {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    z-index: 1;
-    opacity: 0.5;
-  }
+      & .team-img {
+        opacity: 0.4;
+        position: absolute;
+        mix-blend-mode: overlay;
+        filter: grayscale(1) contrast(1.3) brightness(1.2);
+        z-index: 2;
+        mask: var(--logo-mask-card);
+      }
 
-  .three-stars .player .team-img {
-    opacity: 0.4;
-    position: absolute;
-    mix-blend-mode: overlay;
-    filter: grayscale(1) contrast(1.3) brightness(1.2);
-    z-index: 2;
-    mask: var(--logo-mask-card);
-  }
+      & .place {
+        font-family: "Tomorrow", sans-serif;
+        font-weight: 900;
+        border: 2px solid;
+        border-top-right-radius: 10px;
+        border-bottom-left-radius: 10px;
+        padding: 0.3rem 0.5rem;
+        width: fit-content;
+        transition: all 0.2s linear;
+        position: absolute;
+        left: 0.7rem;
+        top: 0.7rem;
+        z-index: 2;
+      }
 
-  .three-stars .place {
-    font-family: "Tomorrow", sans-serif;
-    font-weight: 900;
-    border: 2px solid;
-    border-top-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-    padding: 0.3rem 0.5rem;
-    width: fit-content;
-    transition: all 0.2s linear;
-    position: absolute;
-    left: 0.7rem;
-    top: 0.7rem;
-    z-index: 2;
-  }
+      &.star-1 .place::before {
+        content: "1st";
+      }
 
-  .three-stars .player.star-1 .place::before {
-    content: "1st";
-  }
+      &.star-2 .place::before {
+        content: "2nd";
+      }
 
-  .three-stars .player.star-2 .place::before {
-    content: "2nd";
-  }
+      &.star-3 .place::before {
+        content: "3rd";
+      }
 
-  .three-stars .player.star-3 .place::before {
-    content: "3rd";
-  }
+      & .player-desc {
+        padding-left: 180px;
+        line-height: 1.7;
+        position: relative;
+        z-index: 4;
 
-  .three-stars .item:hover::before {
-    transform: translateY(-10px);
-  }
-
-  .three-stars .player .player-desc {
-    padding-left: 180px;
-    line-height: 1.7;
-    position: relative;
-    z-index: 4;
-  }
-
-  .three-stars .player .player-desc h3 {
-    font-size: 1.4rem;
-    font-style: normal;
-    line-height: 1.6rem;
-    font-weight: 600;
+        & h3 {
+          font-size: 1.4rem;
+          font-style: normal;
+          line-height: 1.6rem;
+          font-weight: 600;
+        }
+      }
+    }
   }
 
   .game-recaps {
@@ -4319,171 +4311,131 @@
 @layer widgets {
   .reddit-feed {
     margin-bottom: 3.5rem;
-  }
 
-  .reddit-feed .reddit-posts {
-    margin-top: 1rem;
-    position: relative;
-    min-height: 200px;
-  }
+    & .reddit-posts {
+      margin-top: 1rem;
+      position: relative;
+      min-height: 200px;
 
-  .reddit-feed .reddit-posts .load {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: 5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+      & .load {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        z-index: 5;
+        display: flex;
+        justify-content: center;
+        align-items: center;
 
-  .loading-spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid var(--main-link-color);
-    border-top-color: transparent;
-    border-radius: 50%;
-    animation: loadingAnimation 0.8s linear infinite;
-  }
+        & .loading-spinner {
+          width: 40px;
+          height: 40px;
+          border: 4px solid var(--main-link-color);
+          border-top-color: transparent;
+          border-radius: 50%;
+          animation: loadingAnimation 0.8s linear infinite;
+        }
+      }
 
-  .reddit-feed .reddit-post {
-    padding: 1.2rem;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    position: relative;
-    overflow: hidden;
-  }
+      & .reddit-post {
+        padding: 1.2rem;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        position: relative;
+        overflow: hidden;
 
-  .reddit-feed .reddit-post:hover {
-    translate: 0 -3px;
-  }
+        &:hover {
+          translate: 0 -3px;
+        }
 
-  .reddit-feed .post-header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 0.7rem;
-    font-size: 0.85rem;
-    color: var(--medium-contrast-color);
-    align-items: center;
-  }
+        & .post-header {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 0.7rem;
+          font-size: 0.85rem;
+          color: var(--medium-contrast-color);
+          align-items: center;
 
-  .reddit-feed .post-subreddit {
-    font-weight: 700;
-    color: var(--reddit-color);
-    display: flex;
-    align-items: center;
-  }
+          & .post-subreddit {
+            font-weight: 700;
+            color: var(--reddit-color);
+            display: flex;
+            align-items: center;
 
-  .reddit-feed .post-subreddit:before {
-    content: '';
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    background-image: url('../img/reddit-default.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    margin-right: 5px;
-    opacity: 0.9;
-  }
+            &:before {
+              content: '';
+              display: inline-block;
+              width: 16px;
+              height: 16px;
+              background-image: url('../img/reddit-default.png');
+              background-size: contain;
+              background-repeat: no-repeat;
+              margin-right: 5px;
+              opacity: 0.9;
+            }
+          }
+        }
 
-  .reddit-feed .post-link {
-    flex-grow: 1;
-  }
+        & .post-link {
+          flex-grow: 1;
 
-  .reddit-feed .post-title {
-    font-size: 1.1rem;
-    margin: 0 0 0.8rem;
-    line-height: 1.4;
-    transition: color 0.2s ease;
-    font-weight: 500;
-    font-style: normal;
-    text-transform: none;
-  }
+          & .post-title {
+            font-size: 1.1rem;
+            margin: 0 0 0.8rem;
+            line-height: 1.4;
+            transition: color 0.2s ease;
+            font-weight: 500;
+            font-style: normal;
+            text-transform: none;
+          }
+        }
 
-  .reddit-feed .post-thumbnail {
-    width: 100%;
-    height: 160px;
-    overflow: hidden;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    position: relative;
-    box-shadow: 0 3px 10px -5px rgba(0, 0, 0, 0.2);
-    background-color: #f1f1f3;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-image: url(../img/ajax-loader.gif);
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: 32px;
-  }
+        & .post-footer {
+          margin-top: auto;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 0.85rem;
+          color: var(--medium-contrast-color);
+          border-top: 1px solid var(--border-stroke-weak);
+          padding-top: 0.8rem;
+          margin-top: 1rem;
 
-  .reddit-feed .post-thumbnail:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(0deg, rgba(0, 0, 0, 0.2) 0%, rgba(0, 0, 0, 0) 50%);
-    z-index: 1;
-  }
+          & .post-author {
+            font-weight: 600;
+            opacity: 0.8;
+          }
 
-  .reddit-feed .post-thumbnail img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.6s ease;
-    max-width: 100%;
-  }
+          & .post-stats {
+            display: flex;
+            gap: 1.2rem;
 
-  .reddit-feed .reddit-post:hover .post-thumbnail img {
-    transform: scale(1.05);
-  }
+            & .post-score {
+              display: flex;
+              align-items: center;
+              gap: 0.3rem;
 
-  .reddit-feed .post-footer {
-    margin-top: auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.85rem;
-    color: var(--medium-contrast-color);
-    border-top: 1px solid var(--border-stroke-weak);
-    padding-top: 0.8rem;
-    margin-top: 1rem;
-  }
+              & i {
+                color: var(--reddit-color);
+                font-size: 1rem;
+              }
+            }
 
-  .reddit-feed .post-author {
-    font-weight: 600;
-    opacity: 0.8;
-  }
+            & .post-comments {
+              display: flex;
+              align-items: center;
+              gap: 0.3rem;
+              transition: color 0.2s ease;
 
-  .reddit-feed .post-stats {
-    display: flex;
-    gap: 1.2rem;
-  }
+              & i {
+                font-size: 0.95rem;
+              }
+            }
+          }
+        }
 
-  .reddit-feed .post-score {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-  }
-
-  .reddit-feed .post-score i {
-    color: var(--reddit-color);
-    font-size: 1rem;
-  }
-
-  .reddit-feed .post-comments {
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    transition: color 0.2s ease;
-  }
-
-  .reddit-feed .post-comments i {
-    font-size: 0.95rem;
+      }
+    }
   }
 
   .reddit-game-thread {
