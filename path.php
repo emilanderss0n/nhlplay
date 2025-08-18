@@ -4,8 +4,17 @@
 function getBaseUrl() {
     $protocol = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https://' : 'http://';
     $host = $_SERVER['HTTP_HOST'];
-    $baseDir = trim(dirname($_SERVER['SCRIPT_NAME']), '/');
-    return $protocol . $host . ($baseDir ? '/' . $baseDir : '');
+    
+    // Handle NHL PLAY project structure
+    // On localhost: should be /nhl
+    // On production: should be / (root)
+    if ($host === 'localhost' || strpos($host, 'localhost') !== false) {
+        // Localhost environment - always use /nhl
+        return $protocol . $host . '/nhl';
+    } else {
+        // Production environment - use root
+        return $protocol . $host;
+    }
 }
 
 define('ROOT_PATH', realpath(dirname(__FILE__)));

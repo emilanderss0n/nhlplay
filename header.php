@@ -87,7 +87,6 @@ $mergedCSS = $isDevelopment ? false : generateMergedCSS([
             <div class="header-title">
                 <a href="<?= BASE_URL ?>" class="logo" aria-label="NHLPLAY Home Link">  
                     <?php if ($isIOS): ?>
-                    <!-- iOS fallback image -->
                     <h3>NHLPLAY</h3>
                     <?php else: ?>    
                     <svg width="160" height="42" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="150 60 200 28" preserveAspectRatio="xMidYMid">
