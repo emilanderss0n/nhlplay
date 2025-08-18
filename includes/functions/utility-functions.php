@@ -605,3 +605,22 @@ function rankArrow($mid, $final) {
     if ($final > $mid) return ['↓', 'down'];
     return ['→', ''];
 }
+
+// Convert centimeters to a formatted feet/inches string, e.g. 6'1"
+function convert_to_inches($cm) {
+    // If value is missing, return empty string
+    if ($cm === null || $cm === '') {
+        return '';
+    }
+
+    // Ensure numeric
+    $cm = (float) $cm;
+
+    // Convert centimeters to total inches (1 in = 2.54 cm)
+    $totalInches = (int) round($cm / 2.54);
+    $ft = intdiv($totalInches, 12);
+    $in = $totalInches % 12;
+
+    // Format as feet and inches, e.g. 6'1"
+    return "{$ft}'{$in}\"";
+}

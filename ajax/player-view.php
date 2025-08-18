@@ -10,23 +10,6 @@ $playerResult = json_decode($curl);
 $player = $playerResult;
 
 $cm = $player->heightInCentimeters ?? null;
-function convert_to_inches($cm) {
-    // If value is missing, return empty string
-    if ($cm === null || $cm === '') {
-        return '';
-    }
-
-    // Ensure numeric
-    $cm = (float) $cm;
-
-    // Convert centimeters to total inches (1 in = 2.54 cm)
-    $totalInches = (int) round($cm / 2.54);
-    $ft = intdiv($totalInches, 12);
-    $in = $totalInches % 12;
-
-    // Format as feet and inches, e.g. 6'1"
-    return "{$ft}'{$in}\"";
-}
 
 $playerSeasonStats = $player->featuredStats->regularSeason->subSeason ?? null;
 $playerPlayoffsStats = $player->featuredStats->playoffs->subSeason ?? null;
