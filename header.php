@@ -195,5 +195,3 @@ $mergedCSS = $isDevelopment ? false : generateMergedCSS([
         </div>
         <div id="player-modal" role="dialog"></div>
     </div>
-</body>
-</html>
