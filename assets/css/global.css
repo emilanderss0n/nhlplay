@@ -2090,7 +2090,7 @@
   }
 
   #player-modal .player-header-info .info p.height.imperial::after {
-    content: "in";
+    content: "";
   }
 
   #player-modal .player-header-info .info p.height.metric::after {

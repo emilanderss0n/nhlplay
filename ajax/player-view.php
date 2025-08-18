@@ -9,6 +9,25 @@ $curl = curlInit($ApiUrl);
 $playerResult = json_decode($curl);
 $player = $playerResult;
 
+$cm = $player->heightInCentimeters ?? null;
+function convert_to_inches($cm) {
+    // If value is missing, return empty string
+    if ($cm === null || $cm === '') {
+        return '';
+    }
+
+    // Ensure numeric
+    $cm = (float) $cm;
+
+    // Convert centimeters to total inches (1 in = 2.54 cm)
+    $totalInches = (int) round($cm / 2.54);
+    $ft = intdiv($totalInches, 12);
+    $in = $totalInches % 12;
+
+    // Format as feet and inches, e.g. 6'1"
+    return "{$ft}'{$in}\"";
+}
+
 $playerSeasonStats = $player->featuredStats->regularSeason->subSeason ?? null;
 $playerPlayoffsStats = $player->featuredStats->playoffs->subSeason ?? null;
 $statTotals = $player->featuredStats->regularSeason->career ?? null;
@@ -91,7 +110,7 @@ $playerBirthplaceLong = \Locale::getDisplayRegion('-' . $playerBirthplace, 'en')
                     <div class="info"><div class="label">Nationality</div><img class="flag" title="<?= $playerBirthplaceLong ?>" src="<?= BASE_URL ?>/assets/img/flags/<?= $playerBirthplace ?>.svg" height="78" width="102" /></div>
                     <div class="info"><div class="label">Age</div><p><?= $playerAge ?></p></div>
                     <div class="info"><div class="label">Number</div><p>#<?= $player->sweaterNumber ?></p></div>
-                    <label class="info" for="switchHeight"><i class="bi bi-globe"><input type="checkbox" class="switch-system" id="switchHeight"></i><div class="label">Height</div><p class="height imperial" data-imperial-val="<?= $player->heightInInches ?>" data-metric-val="<?= $player->heightInCentimeters ?>"><?= $player->heightInInches ?></p></label>
+                    <label class="info" for="switchHeight"><i class="bi bi-globe"><input type="checkbox" class="switch-system" id="switchHeight"></i><div class="label">Height</div><p class="height imperial" data-imperial-val="<?= htmlspecialchars(convert_to_inches($player->heightInCentimeters), ENT_QUOTES) ?>" data-metric-val="<?= $player->heightInCentimeters ?>"><?= convert_to_inches($player->heightInCentimeters) ?></p></label>
                     <label class="info" for="switchWeight"><i class="bi bi-globe"><input type="checkbox" class="switch-system" id="switchWeight"></i><div class="label">Weight</div><p class="weight imperial" data-imperial-val="<?= $player->weightInPounds ?>" data-metric-val="<?= $player->weightInKilograms ?>"><?= $player->weightInPounds ?></p></label>
                 </div>
             </div>
