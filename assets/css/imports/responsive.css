@@ -301,14 +301,14 @@
             border-right: none;
         }
 
-        #player-modal .player-header-info .info:nth-child(2) {
+        #player-modal .player-header-info .info {
             border-right: none;
         }
 
-        #player-modal .player-header-info .info:nth-child(4) {
+        #player-modal .player-header-info .info:last-child {
             border-top-right-radius: 10px;
             border-bottom-right-radius: 10px;
-            border-left: none;
+            border-right: 2px solid var(--border-stroke-weak);
         }
     }
 
@@ -776,12 +776,15 @@
         }
 
         #player-modal .player-header-info .info:nth-child(1),
-        #player-modal .player-header-info .info:nth-child(3) {
+        #player-modal .player-header-info .info:nth-child(3),
+        #player-modal .player-header-info .info:nth-child(5) {
             border-right: 1px solid var(--border-stroke-weak);
         }
 
         #player-modal .player-header-info .info:nth-child(1),
-        #player-modal .player-header-info .info:nth-child(2) {
+        #player-modal .player-header-info .info:nth-child(2),
+        #player-modal .player-header-info .info:nth-child(3),
+        #player-modal .player-header-info .info:nth-child(4) {
             border-bottom: 1px solid var(--border-stroke-weak);
         }
 

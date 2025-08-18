@@ -91,6 +91,8 @@ $playerBirthplaceLong = \Locale::getDisplayRegion('-' . $playerBirthplace, 'en')
                     <div class="info"><div class="label">Nationality</div><img class="flag" title="<?= $playerBirthplaceLong ?>" src="<?= BASE_URL ?>/assets/img/flags/<?= $playerBirthplace ?>.svg" height="78" width="102" /></div>
                     <div class="info"><div class="label">Age</div><p><?= $playerAge ?></p></div>
                     <div class="info"><div class="label">Number</div><p>#<?= $player->sweaterNumber ?></p></div>
+                    <label class="info" for="switchHeight"><i class="bi bi-globe"><input type="checkbox" class="switch-system" id="switchHeight"></i><div class="label">Height</div><p class="height imperial" data-imperial-val="<?= $player->heightInInches ?>" data-metric-val="<?= $player->heightInCentimeters ?>"><?= $player->heightInInches ?></p></label>
+                    <label class="info" for="switchWeight"><i class="bi bi-globe"><input type="checkbox" class="switch-system" id="switchWeight"></i><div class="label">Weight</div><p class="weight imperial" data-imperial-val="<?= $player->weightInPounds ?>" data-metric-val="<?= $player->weightInKilograms ?>"><?= $player->weightInPounds ?></p></label>
                 </div>
             </div>
         </div>
@@ -242,4 +244,27 @@ $playerBirthplaceLong = \Locale::getDisplayRegion('-' . $playerBirthplace, 'en')
             }, { once: true });
         }
     }
+
+        // For each system switch
+        document.querySelectorAll(".switch-system").forEach(switchEl => {
+            switchEl.addEventListener("change", () => {
+            // Find the sibling <p> (height or weight)
+            const infoBox = switchEl.closest(".info");
+            const p = infoBox.querySelector("p");
+
+            if (!p) return;
+
+            if (switchEl.checked) {
+                // Metric
+                p.classList.remove("imperial");
+                p.classList.add("metric");
+                p.textContent = p.dataset.metricVal;
+            } else {
+                // Imperial
+                p.classList.remove("metric");
+                p.classList.add("imperial");
+                p.textContent = p.dataset.imperialVal;
+            }
+            });
+        });
 </script>
