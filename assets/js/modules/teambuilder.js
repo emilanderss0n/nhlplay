@@ -339,8 +339,8 @@ function initializeDragAndDrop() {
             mirror: {
                 appendTo: 'body',
                 constrainDimensions: false,
-                cursorOffsetX: 170,
-                cursorOffsetY: 65
+                cursorOffsetX: 130,
+                cursorOffsetY: 53
             },
             delay: 100,
             distance: 0,
