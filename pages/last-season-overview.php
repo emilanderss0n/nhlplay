@@ -91,16 +91,16 @@ include_once '../includes/functions.php';
                                     echo '</svg>';
                                     $teamAward = true;
                                 } elseif ($award->player === null) {
-                                    echo '<div class="award team">';
+                                    echo '<div class="award team" data-desc="' . htmlspecialchars($award->trophy->description ?? ($trophyDescriptionMap[$award->trophy->name] ?? $award->trophy->name), ENT_QUOTES) . '">';
                                     $teamAward = true;
                                 } else {
-                                    echo '<div class="award">';
+                                    echo '<div class="award" data-desc="' . htmlspecialchars($award->trophy->description ?? ($trophyDescriptionMap[$award->trophy->name] ?? $award->trophy->name), ENT_QUOTES) . '">';
                                     $teamAward = false;
                                 }
                     
                                 // Use the helper function for absolute URLs
                                 $imageFileName = isset($trophyImageMap[$award->trophy->name]) ? $trophyImageMap[$award->trophy->name] : strtolower(str_replace(' ', '_', $award->trophy->name));
-                                echo '<img class="award-image" width="300" src="assets/img/trophies/' . $imageFileName . '.png" alt="' . $award->trophy->name . '" data-tooltip="' . htmlspecialchars($award->trophy->description ?? ($trophyDescriptionMap[$award->trophy->name] ?? $award->trophy->name), ENT_QUOTES) . '">';
+                                echo '<img class="award-image" width="300" src="assets/img/trophies/' . $imageFileName . '.png" alt="' . $award->trophy->name . '">';
                                 
                                 if ($teamAward) {
                                     // For Jack Adams Award show the coach name when available, otherwise fall back to team name

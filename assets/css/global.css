@@ -1035,10 +1035,43 @@
     display: flex;
     gap: 1rem;
     align-items: center;
+    position: relative;
+    overflow: hidden;
     border-radius: 20px;
     padding: 2rem 1rem;
     background: linear-gradient(199deg, var(--content-box-bg) 0, var(--main-bg-color) 70%);
     box-shadow: inset 0 0 0 1px var(--border-stroke-weak);
+  }
+
+  .lso-award-winners .award::after {
+    content: attr(data-desc);
+    box-sizing: border-box;
+    position: absolute;
+    bottom: 1px;
+    left: 1px;
+    width: calc(100% - 2px);
+    height: calc(fit-content - 2px);
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.4;
+    background-color: var(--semi-frost-bg);
+    backdrop-filter: blur(20px);
+    font-size: 0.8rem;
+    border-bottom-left-radius: 22px;
+    border-bottom-right-radius: 22px;
+    z-index: 2;
+    transition: all 0.3s ease;
+    will-change: transform, opacity;
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  .lso-award-winners .award:hover::after {
+    transform: translateY(0);
+    opacity: 1;
   }
 
   .lso-award-winners .award.team {
