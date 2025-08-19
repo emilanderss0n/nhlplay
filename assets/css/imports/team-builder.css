@@ -30,15 +30,18 @@
         z-index: 999999 !important;
         pointer-events: none !important;
         position: fixed !important;
-        /* Make mirror look like the original pool player card */
-        width: 340px !important;
-        height: 130px !important;
+        /* Match the player styling used in player-slot */
+        width: 250px !important;
+        height: 110px !important;
         background-color: var(--content-box-bg) !important;
-        border-radius: 0.5rem !important;
-        padding: 0.5rem !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 0 !important;
         overflow: hidden !important;
         box-shadow: var(--box-shadow-nice) !important;
         transition: none !important;
+        display: flex !important;
+        align-items: center !important;
     }
 
     body:has(.draggable-mirror) .player-slot {
@@ -46,11 +49,7 @@
     }
 
     .draggable-mirror .jersey {
-        position: absolute !important;
-        right: 1rem !important;
-        top: 0.7rem !important;
-        font-size: 1.2rem !important;
-        color: var(--low-contrast-color) !important;
+        display: none !important;
     }
 
     .draggable-mirror .info {
@@ -62,7 +61,7 @@
 
     .draggable-mirror .info .text {
         width: 100% !important;
-        padding-left: 6.5rem !important;
+        padding-left: 5rem !important;
         color: var(--heading-color) !important;
         position: relative !important;
         z-index: 3 !important;
@@ -78,7 +77,7 @@
     .draggable-mirror .info .text .name {
         font-family: 'Tomorrow', sans-serif !important;
         font-weight: 500 !important;
-        font-size: inherit !important;
+        font-size: 1rem !important;
     }
 
     .draggable-mirror .info .headshot,
@@ -89,21 +88,25 @@
     }
 
     .draggable-mirror .info .headshot {
-        transform: translateX(-20px) !important;
+        left: 0 !important;
+        top: 0 !important;
     }
 
     .draggable-mirror .info .headshot .head {
-        transform: scale(0.8) translate(-30px, -35px) !important;
+        left: 0 !important;
+        top: 0 !important;
+        transform: scale(0.62) translateY(-50px) translateX(-90px) !important;
         mask: linear-gradient(180deg, #000 75%, hsl(0deg 0% 0% / 0%) 95%) !important;
+        z-index: 2 !important;
     }
 
     .draggable-mirror .info .team-img {
-        transform: scale(1) translate(-20px, -20px) !important;
+        transform: scale(0.9) translate(-3rem, -2rem) !important;
+        mask: var(--logo-mask-card) !important;
         width: 200px !important;
         height: 200px !important;
         z-index: 1 !important;
-        opacity: 0.1 !important;
-        filter: none !important;
+        opacity: 0.2 !important;
     }
 
     .draggable--is-dragging {
@@ -311,9 +314,8 @@
         color: var(--paragraph-color);
         font-size: 1.2rem;
         text-align: center;
-        background-color: var(--component-header-bg);
+        background-color: var(--dark-bg-color);
         border-radius: 7px;
-        box-shadow: var(--shadow-box);
         padding: 0.7rem 1rem;
     }
 
@@ -360,7 +362,7 @@
 
     .team-builder .player-slot {
         flex: 1;
-        min-height: 110px;
+        height: 110px;
         border: 2px dashed var(--low-contrast-color);
         border-radius: 10px;
         display: flex;
@@ -414,8 +416,14 @@
         width: 100% !important;
         height: 100%;
         border: none;
+        border-radius: 8px;
         margin: 0 !important;
         background-color: var(--content-box-bg);
+    }
+
+    #team-builder-drop-area .player-slot .player:hover {
+        transform: none;
+        box-shadow: none;
     }
 
     #team-builder-drop-area .player-slot .player .info {
@@ -493,42 +501,46 @@
         display: none;
     }
 
+    .draft-header-actions {
+        gap: 0.7rem;
+    }
+
     @media screen and (max-width: 1350px) {
         .team-builder .team-lines {
             display: grid;
             grid-template-columns: 1fr;
-            grid-template-areas: 
+            grid-template-areas:
                 "forwards"
                 "defense-goalie";
             gap: 2rem;
         }
-    
+
         .team-builder .team-lines .forwards-lines {
             grid-area: forwards;
             width: 100%;
         }
-    
+
         .team-builder .team-lines .defense-lines {
             grid-area: defense-goalie;
         }
-    
+
         .team-builder .team-lines .defense-lines > div:first-child {
             display: grid;
             grid-template-rows: repeat(3, minmax(110px, auto));
             gap: 1rem;
         }
-    
+
         .team-builder .team-lines .defense-lines .line {
             margin: 0;
             height: 100%;
         }
-    
+
         .team-builder .team-lines .defense-lines .line-slots {
             height: 100%;
             display: flex;
             align-items: stretch;
         }
-    
+
         .team-builder .team-lines .defense-lines .goalie-lines {
             margin: 0;
             align-self: start;
@@ -541,25 +553,25 @@
         .tb-mobile-alert {
             display: flex;
         }
-    
+
         .team-builder .line-label {
             display: none;
         }
-    
+
         .team-builder .team-lines .defense-lines {
             grid-template-columns: 1fr;
         }
-    
+
         .team-builder .team-lines .defense-lines > div:not(.goalie-lines),
         .team-builder .team-lines .defense-lines .goalie-lines {
             grid-column: 1;
         }
-    
+
         .team-builder .team-lines .defense-lines .goalie-lines {
             position: static;
             margin-top: 2rem;
         }
-    
+
         .team-builder .team-lines .defense-lines .goalie-lines .line-slots {
             flex-direction: row;
         }

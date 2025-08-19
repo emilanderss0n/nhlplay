@@ -239,7 +239,7 @@
 
     & img {
       width: 100%;
-      max-width: 500px;
+      max-width: 300px;
       height: auto;
     }
 
@@ -4233,7 +4233,7 @@
     background-size: cover;
     background-position: center right;
     background-repeat: no-repeat;
-    margin-top: 7rem;
+    margin-top: auto;
     position: relative;
     opacity: 0.6;
     filter: grayscale(1);

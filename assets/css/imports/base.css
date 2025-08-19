@@ -1113,7 +1113,7 @@
     .wrap {
         width: 100%;
         max-width: 1380px;
-        margin: 140px auto 0;
+        margin: 140px auto 7rem;
     }
 
     .wrap.extended {

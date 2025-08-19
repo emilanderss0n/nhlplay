@@ -9,6 +9,7 @@ const DraftMode = {
         currentPosition: 'forwards',
         selectedPlayers: [],
         filters: [],
+    autoCompleting: false,
         roundConfig: {
             forwards: 12,    // rounds 1-12
             defensemen: 6,   // rounds 13-18
@@ -124,6 +125,9 @@ function initializeEventListeners() {
     
     // Exit draft mode
     eventManager.addDelegatedEventListener(document, '.exit-draft-btn', 'click', exitDraftMode);
+    
+    // Auto-complete draft
+    eventManager.addDelegatedEventListener(document, '.auto-complete-btn', 'click', autoCompleteDraft);
 }
 
 function createDraftInterface() {
@@ -131,9 +135,12 @@ function createDraftInterface() {
     
     const draftHTML = `
         <div id="draft-mode-interface" class="draft-mode-interface" style="display: none;">
-            <div class="draft-header component-header">
+                <div class="draft-header component-header">
                 <h3 class="title">Draft Mode</h3>
-                <button class="btn exit-draft-btn">Exit Draft Mode</button>
+                <div class="draft-header-actions">
+                    <button class="btn auto-complete-btn" style="display:none;">Auto Draft</button>
+                    <button class="btn exit-draft-btn">Exit Draft Mode</button>
+                </div>
             </div>
             
             <div class="draft-filters">
@@ -459,6 +466,10 @@ function exitDraftMode() {
     
     if (draftActive) draftActive.style.display = 'none';
     if (draftFilters) draftFilters.style.display = 'block';
+
+    // Hide auto-complete button when leaving draft mode
+    const autoBtn = document.querySelector('.auto-complete-btn');
+    if (autoBtn) autoBtn.style.display = 'none';
 }
 
 function handleFilterToggle(e) {
@@ -596,6 +607,14 @@ async function startDraft() {
         // If filters changed or no preload, do regular loading with current filters
         await loadRoundPlayers();
     }
+    // Reveal auto-complete button now that draft is active
+    showAutoCompleteButton();
+}
+
+// Show auto-complete button when draft starts
+function showAutoCompleteButton() {
+    const btn = document.querySelector('.auto-complete-btn');
+    if (btn) btn.style.display = '';
 }
 
 // Load round players from preloaded cache for instant loading
@@ -675,6 +694,18 @@ async function loadRoundPlayers() {
 }
 
 function displayRoundPlayers(playersHtml) {
+    // During auto-complete we don't render per-pick cards to avoid flashing the UI
+    if (DraftMode.state.autoCompleting) {
+        // Still update progress bar so user sees overall progress if UI is visible
+        const progressPercentSilent = (DraftMode.state.currentRound / DraftMode.state.totalRounds) * 100;
+        const progressBarSilent = document.querySelector('.progress-fill');
+        if (progressBarSilent) {
+            progressBarSilent.style.transition = 'width 0.1s linear';
+            progressBarSilent.style.width = progressPercentSilent + '%';
+        }
+        return;
+    }
+
     const container = document.querySelector('.draft-players-grid');
     if (container) {
         // Clear container and add new content
@@ -729,27 +760,38 @@ async function handlePlayerSelection(e) {
     const playerData = JSON.parse(playerCard.dataset.playerData);
     
     // Check if player is already selected
-    const alreadySelected = DraftMode.state.selectedPlayers.some(selected => 
-        selected.player.id === playerData.id
-    );
-    
+    const alreadySelected = DraftMode.state.selectedPlayers.some(selected => selected.player.id === playerData.id);
     if (alreadySelected) {
-        alert('This player has already been selected!');
+        // If auto-completing, silently skip duplicates. Otherwise show alert.
+        if (!DraftMode.state.autoCompleting) {
+            alert('This player has already been selected!');
+        }
         return;
     }
-    
-    // Animate the selected card
-    await animateCardSelection(playerCard);
-    
-    // Add to selected players
-    DraftMode.state.selectedPlayers.push({
-        round: DraftMode.state.currentRound,
-        position: DraftMode.getCurrentPosition(),
-        player: playerData
-    });
-    
-    // Display selected player
-    displaySelectedPlayer(playerData);
+
+    if (DraftMode.state.autoCompleting) {
+        // Lightweight selection: don't animate or update per-pick UI to keep it fast and silent
+        DraftMode.state.selectedPlayers.push({
+            round: DraftMode.state.currentRound,
+            position: DraftMode.getCurrentPosition(),
+            player: playerData
+        });
+        // Update depth chart counts only (no DOM for selected list)
+        updateDepthChart();
+    } else {
+        // Animate the selected card
+        await animateCardSelection(playerCard);
+        
+        // Add to selected players
+        DraftMode.state.selectedPlayers.push({
+            round: DraftMode.state.currentRound,
+            position: DraftMode.getCurrentPosition(),
+            player: playerData
+        });
+        
+        // Display selected player
+        displaySelectedPlayer(playerData);
+    }
     
     // Move to next round
     if (DraftMode.state.currentRound < DraftMode.state.totalRounds) {
@@ -847,6 +889,153 @@ async function completeDraft() {
     exitDraftMode();
 }
 
+// Auto-complete the entire draft by selecting the first available player each round
+async function autoCompleteDraft(e) {
+    const btn = e ? e.target : document.querySelector('.auto-complete-btn');
+    if (btn) btn.disabled = true;
+
+    DraftMode.setState({ autoCompleting: true });
+    const loading = showLoadingIndicator('Auto-completing draft...');
+    const draftActive = document.querySelector('.draft-active');
+    const draftFilters = document.querySelector('.draft-filters');
+    if (draftActive) draftActive.style.display = 'none';
+    if (draftFilters) draftFilters.style.display = 'none';
+
+    try {
+        // Ensure draft is active
+        if (!DraftMode.state.isActive) {
+            await startDraft();
+        }
+
+        // Keep a set of already selected IDs to pass to API
+        const selectedIds = new Set(DraftMode.state.selectedPlayers.map(s => s.player.id));
+
+        while (DraftMode.state.currentRound <= DraftMode.state.totalRounds) {
+            const position = DraftMode.getCurrentPosition();
+
+            // Update loading message with progress
+            if (loading && loading.children && loading.children[1]) {
+                loading.children[1].textContent = `Auto-completing: Round ${DraftMode.state.currentRound} of ${DraftMode.state.totalRounds}`;
+            }
+
+            // Call API for this round, asking for random players
+            const formData = new FormData();
+            formData.append('action', 'get_draft_players');
+            formData.append('position', position);
+            formData.append('round', DraftMode.state.currentRound);
+            formData.append('filters', JSON.stringify(DraftMode.state.filters || []));
+            formData.append('excludePlayerIds', JSON.stringify(Array.from(selectedIds)));
+
+            const resp = await fetch('ajax/draft-mode.php', {
+                method: 'POST',
+                body: formData,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            });
+
+            if (!resp.ok) {
+                throw new Error(`HTTP ${resp.status}`);
+            }
+
+            const data = await resp.json();
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
+            const playersHtml = data.players || [];
+            if (!playersHtml.length) {
+                // No players returned; try next round or break
+                DraftMode.setState({ currentRound: DraftMode.state.currentRound + 1 });
+                continue;
+            }
+
+            // Parse the first returned player HTML and extract data-player-data
+            let picked = null;
+            for (const html of playersHtml) {
+                const tmp = document.createElement('div');
+                tmp.innerHTML = html;
+                const el = tmp.querySelector('[data-player-data]');
+                if (!el) continue;
+                const raw = el.getAttribute('data-player-data');
+                try {
+                    const playerObj = JSON.parse(raw);
+                    if (!selectedIds.has(playerObj.id)) {
+                        picked = playerObj;
+                        break;
+                    }
+                } catch (err) {
+                    // skip malformed
+                    continue;
+                }
+            }
+
+            if (!picked) {
+                // nothing suitable, skip to next round
+                DraftMode.setState({ currentRound: DraftMode.state.currentRound + 1 });
+                continue;
+            }
+
+            // Add to state
+            DraftMode.state.selectedPlayers.push({
+                round: DraftMode.state.currentRound,
+                position: position,
+                player: picked
+            });
+            selectedIds.add(picked.id);
+
+            // Advance round
+            DraftMode.setState({ currentRound: DraftMode.state.currentRound + 1 });
+
+            // Small delay to avoid hammering the server
+            await new Promise(res => setTimeout(res, 120));
+        }
+
+        // Completed selection loop
+        await completeDraft();
+
+    } catch (err) {
+        console.error('Auto-complete error:', err);
+        alert('Auto-complete failed: ' + (err.message || err));
+    } finally {
+        DraftMode.setState({ autoCompleting: false });
+        if (loading) hideLoadingIndicator(loading);
+        if (btn) btn.disabled = false;
+    }
+}
+
+function selectFirstAvailablePlayer() {
+    const container = document.querySelector('.draft-players-grid');
+    if (!container) return null;
+    // Prefer visible, enabled, clickable draft-player elements
+    const cards = Array.from(container.querySelectorAll('.draft-player.clickable'));
+    for (const card of cards) {
+        const style = window.getComputedStyle(card);
+        if (style.display !== 'none' && style.visibility !== 'hidden' && card.style.opacity !== '0') {
+            return card;
+        }
+    }
+    // Fallback to first card
+    return cards[0] || null;
+}
+
+function waitForPlayersToLoad(timeout = 3000) {
+    const start = Date.now();
+    return new Promise((resolve) => {
+        const check = () => {
+            const container = document.querySelector('.draft-players-grid');
+            if (container && container.querySelectorAll('.draft-player').length > 0) {
+                resolve(true);
+                return;
+            }
+            if (Date.now() - start > timeout) {
+                resolve(false);
+                return;
+            }
+            setTimeout(check, 100);
+        };
+        check();
+    });
+}
+
 async function transferPlayersToTeamBuilder() {
     // Clear existing slots
     document.querySelectorAll('.player-slot').forEach(slot => {
@@ -862,6 +1051,42 @@ async function transferPlayersToTeamBuilder() {
     placePlayersInSlots('forward', forwards);
     placePlayersInSlots('defenseman', defensemen);
     placePlayersInSlots('goalie', goalies);
+
+    // Persist state to localStorage in the same shape as TeamBuilder.getSerializableState()
+    try {
+        const buildPositionState = (position) => {
+            const slots = document.querySelectorAll(`.player-slot[data-position="${position}"]`);
+            const state = [];
+            slots.forEach((slot, index) => {
+                const playerEl = slot.querySelector('.player');
+                if (playerEl) {
+                    state[index] = {
+                        name: playerEl.querySelector('.name') ? playerEl.querySelector('.name').textContent : '',
+                        playerId: playerEl.dataset.playerId,
+                        teamId: playerEl.dataset.teamId,
+                        slotIndex: index
+                    };
+                }
+            });
+            return state.filter(Boolean);
+        };
+
+        const serialized = {
+            activeTeam: window.activeTeam || null,
+            forward: buildPositionState('forward'),
+            defenseman: buildPositionState('defenseman'),
+            goalie: buildPositionState('goalie')
+        };
+
+        localStorage.setItem('teamBuilderState', JSON.stringify(serialized));
+
+        // Update pool player states if function exists (refresh UI to mark used players)
+        if (typeof updatePoolPlayerStates === 'function') {
+            updatePoolPlayerStates();
+        }
+    } catch (err) {
+        console.warn('Failed to persist drafted team builder state:', err);
+    }
 }
 
 function placePlayersInSlots(position, selectedPlayers) {
