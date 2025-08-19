@@ -13,7 +13,9 @@ include_once '../includes/functions.php';
                     <?php
                     // Use the new NHL API utility
                     $awardsApiUrl = NHLApi::awardDetails($lastSeason);
-                    $cacheFile = '../cache/award-winners-' . $lastSeason . '.json';
+                    // Use project cache directory (consistent with other usages)
+                    $cacheDir = dirname(__DIR__) . '/cache/';
+                    $cacheFile = $cacheDir . 'award-winners-' . $lastSeason . '.json';
                     $cacheLifetime = 900000;
 
                     $records = fetchData($awardsApiUrl, $cacheFile, $cacheLifetime);

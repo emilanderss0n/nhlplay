@@ -208,11 +208,8 @@ class NHLApi {
         $categoriesStr = implode(',', $categories);
         $params = ['categories' => $categoriesStr];
         
-        if ($gameType !== '2') {
-            $url = self::API_WEB_BASE . "/skater-stats-leaders/{$season}/{$gameType}";
-        } else {
-            $url = self::API_WEB_BASE . "/skater-stats-leaders/{$season}/";
-        }
+    // Always include gameType segment in the path to match records API expectations
+    $url = self::API_WEB_BASE . "/skater-stats-leaders/{$season}/{$gameType}";
         
         return self::buildUrl($url, $params);
     }
@@ -228,11 +225,8 @@ class NHLApi {
         $categoriesStr = implode(',', $categories);
         $params = ['categories' => $categoriesStr];
         
-        if ($gameType !== '2') {
-            $url = self::API_WEB_BASE . "/goalie-stats-leaders/{$season}/{$gameType}";
-        } else {
-            $url = self::API_WEB_BASE . "/goalie-stats-leaders/{$season}/";
-        }
+    // Always include gameType segment in the path to match records API expectations
+    $url = self::API_WEB_BASE . "/goalie-stats-leaders/{$season}/{$gameType}";
         
         return self::buildUrl($url, $params);
     }
@@ -434,12 +428,16 @@ class NHLApi {
             'sort' => 'seasonId',
             'dir' => 'DESC'
         ];
-        
+
+        // Build include parameters as repeated include=... entries (records API expects repeated include params)
+        $includeParams = '';
         foreach ($includes as $include) {
-            $params['include'] = $include;
+            $includeParams .= '&include=' . urlencode($include);
         }
-        
-        return self::buildUrl(self::API_RECORDS_BASE . '/award-details', $params);
+
+        // Build base URL with the main params, then append the include params string
+        $baseUrl = self::buildUrl(self::API_RECORDS_BASE . '/award-details', $params);
+        return $baseUrl . $includeParams;
     }
     
     /**
