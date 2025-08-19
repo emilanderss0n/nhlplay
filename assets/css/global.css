@@ -234,6 +234,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: 12rem;
     width: 100%;
     gap: 3rem;
 
@@ -246,11 +247,13 @@
     & h3 {
       font-size: 3rem;
       font-weight: bold;
+      mask: var(--logo-mask-subtle);
     }
 
     & span {
       margin-top: 1rem;
       display: inline-block;
+      color: var(--paragraph-color);
     }
 
     @media screen and (max-width: 850px) {
