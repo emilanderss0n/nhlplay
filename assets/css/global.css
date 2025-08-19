@@ -3915,7 +3915,7 @@
 
   /* Minimal trade buttons */
   .trades-frontpage .trade.alt-layout:not(.expanded) {
-    width: 200px;
+    width: 212px;
     min-height: 80px;
     cursor: pointer;
     transition: all 0.3s ease;
