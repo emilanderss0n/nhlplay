@@ -44,6 +44,29 @@ include_once '../includes/functions.php';
                         "William M. Jennings Trophy" => "william_jennings",
                         "Stanley Cup" => "stanley_cup",
                     ];
+
+                    // Human-friendly descriptions for awards (used for data-tooltip)
+                    $trophyDescriptionMap = [
+                        "Art Ross Trophy" => "Awarded to the player who leads the NHL in points at the end of the regular season.",
+                        "Bill Masterton Memorial Trophy" => "Given to the player who best exemplifies perseverance, sportsmanship, and dedication to hockey.",
+                        "Calder Memorial Trophy" => "Awarded to the league's most outstanding rookie player.",
+                        "Clarence S. Campbell Bowl" => "Presented to the Western Conference playoff champions.",
+                        "Conn Smythe Trophy" => "Awarded to the most valuable player during the NHL playoffs.",
+                        "Frank J. Selke Trophy" => "Given to the forward who demonstrates exceptional defensive skill.",
+                        "Hart Memorial Trophy" => "Awarded to the most valuable player to his team during the regular season.",
+                        "Jack Adams Award" => "Given to the NHL coach adjudged to have contributed the most to his team's success.",
+                        "James Norris Memorial Trophy" => "Awarded to the defenseman who demonstrates the greatest all-round ability at the position.",
+                        "King Clancy Memorial Trophy" => "Given to the player who best exemplifies leadership qualities and has made notable humanitarian contributions.",
+                        "Lady Byng Memorial Trophy" => "Awarded to the player who exhibits the best sportsmanship and gentlemanly conduct combined with a high standard of playing ability.",
+                        "Mark Messier NHL Leadership Award" => "Recognizes leadership qualities demonstrated by an NHL player on and off the ice.",
+                        "Maurice “Rocket” Richard Trophy" => "Awarded to the NHL's leading goal scorer in the regular season.",
+                        "Presidents’ Trophy" => "Given to the team with the best overall record in the regular season.",
+                        "Prince of Wales Trophy" => "Presented to the Eastern Conference playoff champions.",
+                        "Ted Lindsay Award" => "Awarded to the most outstanding player as voted by the NHL Players' Association.",
+                        "Vezina Trophy" => "Given to the NHL's top goaltender as voted by the general managers of the clubs.",
+                        "William M. Jennings Trophy" => "Awarded to the goaltender(s) of the team with the fewest goals against during the regular season.",
+                        "Stanley Cup" => "Awarded to the NHL playoff champion — the most prestigious trophy in hockey.",
+                    ];
                     
                     foreach ($awards as $award) {
                         if ($award->trophy->name === "Jim Gregory General Manager of the Year Award") {
@@ -77,16 +100,19 @@ include_once '../includes/functions.php';
                     
                                 // Use the helper function for absolute URLs
                                 $imageFileName = isset($trophyImageMap[$award->trophy->name]) ? $trophyImageMap[$award->trophy->name] : strtolower(str_replace(' ', '_', $award->trophy->name));
-                                echo '<img class="award-image" width="300" src="assets/img/trophies/' . $imageFileName . '.png" alt="' . $award->trophy->name . '">';
+                                echo '<img class="award-image" width="300" src="assets/img/trophies/' . $imageFileName . '.png" alt="' . $award->trophy->name . '" data-tooltip="' . htmlspecialchars($award->trophy->description ?? ($trophyDescriptionMap[$award->trophy->name] ?? $award->trophy->name), ENT_QUOTES) . '">';
                                 
                                 if ($teamAward) {
+                                    // For Jack Adams Award show the coach name when available, otherwise fall back to team name
+                                    $displayName = ($award->trophy->name === 'Jack Adams Award' && isset($award->coach) && !empty($award->coach->fullName)) ? $award->coach->fullName : ($award->team->fullName ?? '');
+                                    $teamId = $award->team->id ?? 'unknown';
                                     echo '<div class="team-info">';
                                     echo '<div class="team-img">';
-                                    echo '<img width="70" height="70" src="assets/img/teams/' . $award->team->id . '.svg" alt="' . $award->team->fullName . '">';
+                                    echo '<img width="70" height="70" src="assets/img/teams/' . $teamId . '.svg" alt="' . htmlspecialchars($displayName, ENT_QUOTES) . '">';
                                     echo '</div>';
                                     echo '<div>';
                                     echo '<p class="weak">' . $award->trophy->name . '</p>';
-                                    echo '<p class="strong">' . $award->team->fullName . '</p>';
+                                    echo '<p class="strong">' . htmlspecialchars($displayName, ENT_QUOTES) . '</p>';
                                     echo '</div>';
                                     echo '</div>';
                                 } else {

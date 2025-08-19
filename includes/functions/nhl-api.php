@@ -418,7 +418,7 @@ class NHLApi {
             'player.lastName', 'player.position', 'player.id', 'value', 
             'team.id', 'team.franchiseId', 'team.fullName', 'team.placeName', 
             'team.commonName', 'team.triCode', 'team.league.abbreviation', 
-            'status', 'imageUrl', 'playerImageUrl'
+            'status', 'imageUrl', 'playerImageUrl', 'coach.fullName'
         ];
         
         $includes = empty($includes) ? $defaultIncludes : $includes;

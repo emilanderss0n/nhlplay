@@ -1045,6 +1045,15 @@
     order: -1;
   }
 
+  .lso-award-winners .award .weak {
+    color: var(--paragraph-color);
+    margin-bottom: 0.3rem;
+  }
+
+  .lso-award-winners .award .strong {
+    color: var(--heading-color);
+  }
+
   .lso-award-winners .award.team.stanleycup {
     grid-column-start: span 2;
     position: relative;
