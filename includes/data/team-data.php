@@ -120,6 +120,7 @@ $teamNameToId = array(
     'Arizona Coyotes'=>'53',
     'Vegas Golden Knights'=>'54',
     'Seattle Kraken'=>'55',
+    'Utah Hockey Club'=>'59',
     'Utah Mammoth'=>'59',
     'Canada'=>'60',
     'Finland'=>'62',
