@@ -240,9 +240,9 @@
         opacity: 0;
         transform: translateY(20px);
         animation-name: elementIn;
-        animation-duration: 0.3s;
+        animation-duration: 0.4s;
         animation-delay: 0.5s;
-        animation-timing-function: ease-in;
+        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
         animation-iteration-count: 1;
         animation-fill-mode: forwards;
     }

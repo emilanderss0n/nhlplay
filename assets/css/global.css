@@ -301,8 +301,8 @@
     top: 65px;
     z-index: 1000;
     transition:
-      opacity 0.5s ease,
-      transform 0.5s ease,
+      opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+      transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
       height 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     transform: translateY(-65px);
     height: 0;
@@ -2021,7 +2021,7 @@
     overflow-y: auto;
     visibility: hidden;
     transform: translateX(100vw);
-    transition: all 0.5s ease-in-out;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 
     .open & {
       transform: translateX(0vw);
@@ -2409,7 +2409,7 @@
   #player-modal .wrapper .stats-player > .stats-player-inner {
     opacity: 1;
     transform: translateY(0px);
-    transition: all 0.3s linear;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 
     @starting-style {
       opacity: 0;

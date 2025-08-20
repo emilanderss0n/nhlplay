@@ -774,7 +774,7 @@
         color: var(--heading-color);
         cursor: pointer;
         user-select: none;
-        transition: all 200ms linear;
+        transition: 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .menu-links .dropdown:checked + label:hover,
@@ -863,7 +863,7 @@
         opacity: 0;
         pointer-events: none;
         transform: translateY(20px);
-        transition: all 200ms linear;
+        transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .menu-links .dropdown:checked ~ .section-dropdown,
