@@ -303,6 +303,7 @@ $careerAll = $careerData->seasonTotals;
         }
     }
 
+    $playoffBlocks = [];
     foreach ($seasonTeamMap as $key => $types) {
         // Get season and team from key
         list($season, $teamName) = explode('_', $key, 2);
@@ -310,169 +311,162 @@ $careerAll = $careerData->seasonTotals;
         $season2 = substr($season, 4, 4);
         $teamColorConverted = teamNameToIdConvert($teamName);
         ?>
-        <div class="season-career" style="background-image: linear-gradient(173deg, <?= teamToColor($teamColorConverted) ?> -180%, rgba(255,255,255,0) 80%);">
+        <div class="season-career">
             <div class="header-season-career">
                 <h3 class="header-text">
-                    <?= $teamName ?><span class="season"> <?= '- ' . $season1 . ' / ' . $season2 ?></span>
+                    <?= idToTeamAbbrev($teamColorConverted) ?><span class="season"> <?= '- ' . $season1 . ' / ' . $season2 ?></span>
                 </h3>
+                <img class="team-logo" src="assets/img/teams/<?= $teamColorConverted ?>.svg" alt="<?= $teamName ?>">
             </div>
             <?php
-            // REGULAR SEASON
+            // REGULAR SEASON - render inline
             if (isset($types[2])) {
                 $career = $types[2];
                 ?>
                 <div class="section">
-                    <div class="title stats">
-                        <p class="type">REGULAR</p>
-                        <div class="header-line">
-                            <a href="javascript:void(0);" data-player="<?= $playerID ?>" data-skater-goalie="<?= $careerData->position ?>" data-season-selection="<?= $season ?>" data-season-type="2" class="btn sm outline player-game-log">Full Game Log</a>
-                        </div>
-                    </div>
                     <?php if ($careerData->position == 'G') { ?>
-                    <table>
-                        <thead>
-                            <td>Games</td>
-                            <td>Wins</td>
-                            <td>Shutouts</td>
-                            <td>SV%</td>
-                            <td>GAA</td>
-                        </thead>
-                        <tbody>
-                            <td><?= $career->gamesPlayed ?></td>
-                            <td><?= $career->wins ?></td>
-                            <td><?= $career->shutouts ?></td>
-                            <td><?= number_format((float)$career->savePctg, 3, '.', '') ?></td>
-                            <td><?= number_format((float)$career->goalsAgainstAvg, 2, '.', '') ?></td>
-                        </tbody>
-                    </table>
+                        <div class="career-stats-group">
+                            <div class="stat">
+                                <div class="label">GP</div>
+                                <div class="value"><?= $career->gamesPlayed ?? '' ?></div>
+                            </div>
+                            <div class="stat">
+                                <div class="label">GAA</div>
+                                <div class="value"><?= isset($career->goalsAgainstAvg) ? number_format((float)$career->goalsAgainstAvg, 2, '.', '') : '' ?></div>
+                            </div>
+                            <div class="stat">
+                                <div class="label">SV %</div>
+                                <div class="value"><?= isset($career->savePctg) ? number_format((float)$career->savePctg, 3, '.', '') : '' ?></div>
+                            </div>
+                            <div class="stat">
+                                <div class="label">W</div>
+                                <div class="value"><?= $career->wins ?? '' ?></div>
+                            </div>
+                            <div class="stat">
+                                <div class="label">SO</div>
+                                <div class="value"><?= $career->shutouts ?? '' ?></div>
+                            </div>
+                        </div>
                     <?php } else { ?>
-                    <table class="phone-hide">
-                        <thead>
-                            <td>GP</td>
-                            <td>G</td>
-                            <td>A</td>
-                            <td>PTS</td>
-                            <td>+/-</td>
-                            <td>PIM</td>
-                        </thead>
-                        <tbody>
-                            <td><?= $career->gamesPlayed ?></td>
-                            <td><?= $career->goals ?></td>
-                            <td><?= $career->assists ?></td>
-                            <td><?= $career->points ?></td>
-                            <td><?= $career->plusMinus ?></td>
-                            <td><?= $career->pim ?></td>
-                        </tbody>
-                    </table>
-                    <div class="phone-show">
-                        <div class="stat">
-                            <div class="label">Games</div>
-                            <div class="value"><?= $career->gamesPlayed ?></div>
+                        <div class="career-stats-group">
+                            <div class="stat">
+                                <div class="label">GP</div>
+                                <div class="value"><?= $career->gamesPlayed ?></div>
+                            </div>
+                            <div class="stat">
+                                <div class="label">G</div>
+                                <div class="value"><?= $career->goals ?></div>
+                            </div>
+                            <div class="stat">
+                                <div class="label">A</div>
+                                <div class="value"><?= $career->assists ?></div>
+                            </div>
+                            <div class="stat">
+                                <div class="label">P</div>
+                                <div class="value"><?= $career->points ?></div>
+                            </div>
+                            <div class="stat">
+                                <div class="label">PM</div>
+                                <div class="value"><?= $career->plusMinus ?></div>
+                            </div>
+                            <div class="stat">
+                                <div class="label">PIM</div>
+                                <div class="value"><?= $career->pim ?></div>
+                            </div>
                         </div>
-                        <div class="stat">
-                            <div class="label">Goals</div>
-                            <div class="value"><?= $career->goals ?></div>
-                        </div>
-                        <div class="stat">
-                            <div class="label">Assists</div>
-                            <div class="value"><?= $career->assists ?></div>
-                        </div>
-                        <div class="stat">
-                            <div class="label">Points</div>
-                            <div class="value"><?= $career->points ?></div>
-                        </div>
-                        <div class="stat">
-                            <div class="label">+/-</div>
-                            <div class="value"><?= $career->plusMinus ?></div>
-                        </div>
-                        <div class="stat">
-                            <div class="label">PIM</div>
-                            <div class="value"><?= $career->pim ?></div>
-                        </div>
-                    </div>
                     <?php } ?>
                 </div>
+                <a href="javascript:void(0);" data-player="<?= $playerID ?>" data-skater-goalie="<?= $careerData->position ?>" data-season-selection="<?= $season ?>" data-season-type="2" class="btn sm outline player-game-log">Full Game Log</a>
             <?php } ?>
 
             <?php
-            // PLAYOFFS
+            // PLAYOFFS - capture for later so playoffs are grouped at bottom
             if (isset($types[3])) {
                 $career = $types[3];
+                ob_start();
                 ?>
-                <div class="section">
-                    <div class="title stats">
-                        <p class="type">PLAYOFFS</p>
-                        <div class="header-line">
-                        <a href="javascript:void(0);" data-player="<?= $playerID ?>" data-skater-goalie="<?= $careerData->position ?>" data-season-selection="<?= $season ?>" data-season-type="3" class="btn sm outline player-game-log">Full Game Log</a>
-                        </div>
+                <div class="season-career">
+                    <div class="header-season-career">
+                        <h3 class="header-text">
+                            <?= idToTeamAbbrev($teamColorConverted) ?><span class="season"> <?= '- ' . $season1 . ' / ' . $season2 ?></span>
+                        </h3>
+                        <img class="team-logo" src="assets/img/teams/<?= $teamColorConverted ?>.svg" alt="<?= $teamName ?>">
                     </div>
-                    <?php if ($careerData->position == 'G') { ?>
-                    <table>
-                        <thead>
-                            <td>Games</td>
-                            <td>Wins</td>
-                            <td>Shutouts</td>
-                            <td>SV%</td>
-                            <td>GAA</td>
-                        </thead>
-                        <tbody>
-                            <td><?= $career->gamesPlayed ?></td>
-                            <td><?= $career->wins ?></td>
-                            <td><?= $career->shutouts ?></td>
-                            <td><?= number_format((float)$career->savePctg, 3, '.', '') ?></td>
-                            <td><?= number_format((float)$career->goalsAgainstAvg, 2, '.', '') ?></td>
-                        </tbody>
-                    </table>
-                    <?php } else { ?>
-                    <table class="phone-hide">
-                        <thead>
-                            <td>GP</td>
-                            <td>G</td>
-                            <td>A</td>
-                            <td>PTS</td>
-                            <td>+/-</td>
-                            <td>PIM</td>
-                        </thead>
-                        <tbody>
-                            <td><?= $career->gamesPlayed ?></td>
-                            <td><?= $career->goals ?></td>
-                            <td><?= $career->assists ?></td>
-                            <td><?= $career->points ?></td>
-                            <td><?= $career->plusMinus ?></td>
-                            <td><?= $career->pim ?></td>
-                        </tbody>
-                    </table>
-                    <div class="phone-show">
-                        <div class="stat">
-                            <div class="label">Games</div>
-                            <div class="value"><?= $career->gamesPlayed ?></div>
+                    <div class="section">
+                        <?php if ($careerData->position == 'G') { ?>
+                        <div class="career-stats-group">
+                            <div class="stat">
+                                <div class="label">GP</div>
+                                <div class="value"><?= $career->gamesPlayed ?? '' ?></div>
+                            </div>
+                            <div class="stat">
+                                <div class="label">GAA</div>
+                                <div class="value"><?= isset($career->goalsAgainstAvg) ? number_format((float)$career->goalsAgainstAvg, 2, '.', '') : '' ?></div>
+                            </div>
+                            <div class="stat">
+                                <div class="label">SV %</div>
+                                <div class="value"><?= isset($career->savePctg) ? number_format((float)$career->savePctg, 3, '.', '') : '' ?></div>
+                            </div>
+                            <div class="stat">
+                                <div class="label">W</div>
+                                <div class="value"><?= $career->wins ?? '' ?></div>
+                            </div>
+                            <div class="stat">
+                                <div class="label">SO</div>
+                                <div class="value"><?= $career->shutouts ?? '' ?></div>
+                            </div>
                         </div>
-                        <div class="stat">
-                            <div class="label">Goals</div>
-                            <div class="value"><?= $career->goals ?></div>
+                        <?php } else { ?>
+                        <div class="career-stats-group">
+                            <div class="stat">
+                                <div class="label">GP</div>
+                                <div class="value"><?= $career->gamesPlayed ?></div>
+                            </div>
+                            <div class="stat">
+                                <div class="label">G</div>
+                                <div class="value"><?= $career->goals ?></div>
+                            </div>
+                            <div class="stat">
+                                <div class="label">A</div>
+                                <div class="value"><?= $career->assists ?></div>
+                            </div>
+                            <div class="stat">
+                                <div class="label">P</div>
+                                <div class="value"><?= $career->points ?></div>
+                            </div>
+                            <div class="stat">
+                                <div class="label">PM</div>
+                                <div class="value"><?= $career->plusMinus ?></div>
+                            </div>
+                            <div class="stat">
+                                <div class="label">PIM</div>
+                                <div class="value"><?= $career->pim ?></div>
+                            </div>
                         </div>
-                        <div class="stat">
-                            <div class="label">Assists</div>
-                            <div class="value"><?= $career->assists ?></div>
-                        </div>
-                        <div class="stat">
-                            <div class="label">Points</div>
-                            <div class="value"><?= $career->points ?></div>
-                        </div>
-                        <div class="stat">
-                            <div class="label">+/-</div>
-                            <div class="value"><?= $career->plusMinus ?></div>
-                        </div>
-                        <div class="stat">
-                            <div class="label">PIM</div>
-                            <div class="value"><?= $career->pim ?></div>
-                        </div>
+                        <?php } ?>
                     </div>
-                    <?php } ?>
+                    <a href="javascript:void(0);" data-player="<?= $playerID ?>" data-skater-goalie="<?= $careerData->position ?>" data-season-selection="<?= $season ?>" data-season-type="3" class="btn sm outline player-game-log">Full Game Log</a>
                 </div>
-            <?php } ?>
-            <img class="team-logo" src="assets/img/teams/<?= $teamColorConverted ?>.svg" alt="<?= $teamName ?>">
+                <?php
+                $playoffBlocks[] = ob_get_clean();
+            }
+            ?>
         </div>
     <?php } ?>
+        <div class="title stats">
+            <h3 class="header-text" style="font-size:1.3rem;">Regular Season</h3>
+        </div>
     </div>
+
+    <?php
+    // Render playoffs grouped at the bottom
+    if (!empty($playoffBlocks)) {
+        echo '<div class="career-playoffs career-stats-two">';
+        foreach ($playoffBlocks as $block) {
+            echo $block;
+        }
+        echo '<div class="title stats"><h3 class="header-text" style="font-size:1.3rem;">Playoffs</h3></div>';
+        echo '</div>';
+    }
+    ?>
 </div>

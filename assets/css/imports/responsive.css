@@ -863,19 +863,27 @@
             text-align: center;
         }
 
-        #player-modal .stats-player .career-stats-two .season-career .header-season-career {
+        #player-modal .stats-player .career-stats-two .season-career {
             flex-direction: column;
         }
 
-        #player-modal .stats-player .career-stats-two .season-career .team-logo {
-            left: -20rem;
-            top: 1rem;
-            max-width: 700px;
-            opacity: 0.2;
+        #player-modal .stats-player .career-stats-two .title.stats {
+            margin: 0;
         }
 
-        #player-modal .stats-player .career-stats-two .title.stats {
+        #player-modal .stats-player .career-stats-two .season-career .section {
+            margin: 0;
+        }
+
+        #player-modal .stats-player .career-stats-two .career-stats-group {
+            display: flex;
+            flex-direction: row;
+            padding: 0 1rem;
+            width: 100%;
+            flex-wrap: wrap;
             justify-content: center;
+            column-gap: 1rem;
+            row-gap: 0.5rem;
         }
 
         #player-modal .stats-player .career-stats-two .header-season-career h3 {

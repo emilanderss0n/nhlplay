@@ -60,45 +60,40 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --main-bg-color: #0c0f16;
-    --main-darker-bg: #1c222c;
-    --content-box-bg: #161d27;
-    --main-link-color: #45d0e7;
-    --secondary-link-color: #cb93fd;
-    --green: #00b894;
-    --paragraph-color: #9da1ab;
-    --medium-contrast-color: #656d7c;
-    --low-contrast-color: #353c4b;
-    --heading-color: #fff;
-    --heading-inverse: #161b28;
-    --dark-bg-color: #070b11;
-    --shadow-box: none;
-    --odd-bg: #131821;
-    --gradient-text: linear-gradient(280.8deg,
-        var(--secondary-link-color) 15.21%,
-        var(--main-link-color) 85.53%);
-    --semi-frost-bg: #72798d14;
-    --semi-frost-bg-2: #1a2129b3;
-    --shadow-button: 0 3px 4px -1px rgb(0 0 0 / 33%);
-    --black-white: #000;
-    --second-content-box-bg: #282c37;
-    --player-modal-bg: #0c0f1678;
-    --invert-one: invert(1);
-    --box-shadow-nice: rgb(0 0 0 / 74%) 0px 30px 35px -30px,
-      rgb(0 0 0 / 8%) 0px 5px 3px 0px;
-    --header-background: rgb(0 1 6 / 66%);
-    --button-group-bg: #0c0f16;
-    --toolbar-bg: #3b3d431f;
-    --trans-70: #ffffff70;
-    --logo-mask: linear-gradient(181deg, #000, hsl(0deg 0% 0% / 20%) 80%);
-    --logo-mask-card: linear-gradient(130deg,
-        #000 30%,
-        hsl(0deg 0% 0% / 20%) 70%);
-    --border-stroke-weak: hsl(0deg 0% 100% / 10%);
-    --border-stroke: hsl(0deg 0% 100% / 20%);
-    --component-header-bg: #131720;
-    --table-td: #13181e;
-    --table-td-odd: #0d1116;
+      --main-bg-color: #03070f;
+      --main-darker-bg: #1c222c;
+      --content-box-bg: #121a28;
+      --main-link-color: #45d0e7;
+      --secondary-link-color: #cb93fd;
+      --green: #00b894;
+      --paragraph-color: #9da1ab;
+      --medium-contrast-color: #656d7c;
+      --low-contrast-color: #353c4b;
+      --heading-color: #fff;
+      --heading-inverse: #161b28;
+      --dark-bg-color: #060b15;
+      --shadow-box: none;
+      --odd-bg: #131821;
+      --gradient-text: linear-gradient(280.8deg, var(--secondary-link-color) 15.21%, var(--main-link-color) 85.53%);
+      --semi-frost-bg: #72798d14;
+      --semi-frost-bg-2: #1a2129b3;
+      --shadow-button: 0 3px 4px -1px rgb(0 0 0 / 33%);
+      --black-white: #000;
+      --second-content-box-bg: #282c37;
+      --player-modal-bg: #0c0f1678;
+      --invert-one: invert(1);
+      --box-shadow-nice: rgb(0 0 0 / 74%) 0px 30px 35px -30px, rgb(0 0 0 / 8%) 0px 5px 3px 0px;
+      --header-background: rgb(0 1 6 / 66%);
+      --button-group-bg: #000000;
+      --toolbar-bg: #3b3d431f;
+      --trans-70: #ffffff70;
+      --logo-mask: linear-gradient(181deg, #000, hsl(0deg 0% 0% / 20%) 80%);
+      --logo-mask-card: linear-gradient(130deg, #000 30%, hsl(0deg 0% 0% / 20%) 70%);
+      --border-stroke-weak: hsl(0deg 0% 100% / 10%);
+      --border-stroke: hsl(0deg 0% 100% / 20%);
+      --component-header-bg: #0b111c;
+      --table-td: #13181e;
+      --table-td-odd: #0d1116;
   }
 }
 
@@ -211,7 +206,7 @@
   }
 
   .card {
-    background: linear-gradient(199deg, var(--content-box-bg) 0, var(--main-bg-color) 70%);
+    background: radial-gradient(ellipse at top, var(--dark-bg-color), transparent),  radial-gradient(ellipse at bottom, var(--content-box-bg), transparent);
     border-radius: 10px;
     box-shadow: inset 0 0 0 1px var(--border-stroke-weak);
     transition: all 0.3s ease;
@@ -2261,8 +2256,8 @@
   #player-modal .stats-player .career-stats-two {
     display: flex;
     flex-direction: column-reverse;
-    gap: 2rem;
-    margin-top: 5rem;
+    gap: 1rem;
+    margin-top: 2rem;
   }
 
   #player-modal .career-graph {
@@ -2273,34 +2268,48 @@
 
   #player-modal .stats-player .career-stats-two .season-career {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
     gap: 1rem;
-    background-color: var(--black-white);
-    border-radius: 10px;
+    background-color: var(--semi-frost-bg);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-stroke-weak);
+    border-radius: 5px;
     position: relative;
     overflow: clip;
-    background-blend-mode: luminosity;
+    padding: 1rem;
   }
 
   #player-modal .stats-player .career-stats-two .season-career .team-logo {
-    width: 800px;
-    left: -200px;
-    top: -100px;
-    mix-blend-mode: overlay;
-    mask: var(--logo-mask-card);
-    opacity: 0.7;
-    position: absolute;
+    width: 30px;
+    height: auto;
+    mask: var(--logo-mask);
   }
 
   #player-modal .stats-player .career-stats-two .season-career .header-season-career {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
     gap: 1rem;
-    padding: 1rem;
-    background-color: var(--semi-frost-bg);
-    backdrop-filter: blur(10px);
-    z-index: 2;
+    flex-direction: row-reverse;
+    align-items: center;
+  }
+
+  #player-modal .stats-player .career-stats-two .career-stats-group {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  #player-modal .stats-player .career-stats-two .career-stats-group .stat {
+    display: flex;
+    flex-direction: row;
+    gap: 0.4rem;
+    font-weight: 600;
+  }
+
+  #player-modal .stats-player .career-stats-two .career-stats-group .stat .label {
+    color: var(--paragraph-color);
   }
 
   #player-modal .stats-player .career-stats-two .header-season-career h3 {
@@ -2310,18 +2319,12 @@
   }
 
   #player-modal .stats-player .career-stats-two .season-career .section {
-    padding: 1rem;
+    padding: 0;
+    margin-left: auto;
   }
 
   #player-modal .stats-player .career-stats-two .season-career .section .title.stats {
-    margin: 0 0 1.5rem;
-    padding: 0.6rem;
-    background-color: var(--semi-frost-bg);
-    border-radius: 5px;
-    backdrop-filter: blur(10px);
-    z-index: 2;
-    position: relative;
-    border: 1px solid var(--border-stroke-weak);
+    margin: 0;
   }
 
   #player-modal table {
@@ -2355,16 +2358,9 @@
     border-bottom: none;
   }
 
-  #player-modal .stats-player .career-stats-two .type,
   #player-modal .stats-player .career-stats-two .phone-show {
     position: relative;
     z-index: 2;
-  }
-
-  #player-modal .stats-player .career-stats-two .type {
-    font-weight: bold;
-    color: var(--paragraph-color);
-    font-style: normal;
   }
 
   #player-modal .stats-player .career-stats-two table {

@@ -63,14 +63,14 @@ $gamesArray = array_reverse($gamesArray);
         <div class="log-game-visual">
             <picture>
                 <source srcset="<?= $result->awayTeam->darkLogo ?>" media="(prefers-color-scheme: dark)" />
-                <img class="game-team-logo <?php if($result->awayTeam->score < $result->homeTeam->score) echo 'losing-team'; ?>" src="<?= $result->awayTeam->logo ?>" alt="<?= $result->awayTeam->name->default ?> logo" />
+                <img class="game-team-logo <?php if($result->awayTeam->score < $result->homeTeam->score) echo 'losing-team'; ?>" src="<?= $result->awayTeam->logo ?>" alt="<?= $result->awayTeam->abbrev ?> logo" />
             </picture>
             <div class="log-game-score">
                 <?= $result->awayTeam->score ?> <span>-</span> <?= $result->homeTeam->score ?>
             </div>
             <picture>
                 <source srcset="<?= $result->homeTeam->darkLogo ?>" media="(prefers-color-scheme: dark)" />
-                <img class="game-team-logo <?php if($result->homeTeam->score < $result->awayTeam->score) echo 'losing-team'; ?>" src="<?= $result->homeTeam->logo ?>" alt="<?= $result->homeTeam->name->default ?> logo" />
+                <img class="game-team-logo <?php if($result->homeTeam->score < $result->awayTeam->score) echo 'losing-team'; ?>" src="<?= $result->homeTeam->logo ?>" alt="<?= $result->homeTeam->abbrev ?> logo" />
             </picture>
         </div>
     </div>
