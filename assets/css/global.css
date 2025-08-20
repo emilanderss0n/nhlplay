@@ -1488,190 +1488,186 @@
 
   .home-leaders {
     margin-top: 4rem;
-  }
 
-  .home-leaders .load {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: 32px;
-    background-image: url(../img/ajax-loader.gif);
-    border-radius: 10px;
-    background-color: #fff;
-    filter: var(--invert-one);
-    opacity: 0.5;
-  }
+    & .load {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-size: 32px;
+      background-image: url(../img/ajax-loader.gif);
+      border-radius: 10px;
+      background-color: #fff;
+      filter: var(--invert-one);
+      opacity: 0.5;
+    }
 
-  .home-leaders .leaders-box {
-    height: 236px;
-  }
+    & .leaders-box {
+      height: 236px;
 
-  .home-leaders .player-cont {
-    display: flex;
-    gap: 1em;
-    justify-content: space-between;
-    margin-bottom: 1rem;
-    align-items: flex-start;
-    opacity: 0;
-    align-items: center;
-  }
+      & .player-cont {
+        display: flex;
+        gap: 1em;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+        align-items: flex-start;
+        opacity: 0;
+        align-items: center;
 
-  .home-leaders .player {
-    display: none;
-  }
+        & .player {
+          display: none;
 
-  .home-leaders .player.active {
-    display: inline-block;
-  }
+          &.active {
+            display: inline-block;
+          }
 
-  .home-leaders .player .info .headshot {
-    width: 65px;
-    height: 65px;
-    display: inline-block;
-    transform: none;
-    border-radius: 50%;
-    overflow: visible;
-    background-color: var(--low-contrast-color);
-  }
+          & .headshot {
+            width: 65px;
+            height: 65px;
+            display: inline-block;
+            transform: none;
+            border-radius: 50%;
+            overflow: visible;
+            background-color: var(--low-contrast-color);
 
-  .home-leaders .player .info .headshot .image {
-    display: inline-block;
-    width: 65px;
-    height: 85px;
-    margin-top: -1.3rem;
-    background: none no-repeat center bottom / 85px;
-    border-radius: 0 0 50% 50%;
-  }
+            & .image {
+              display: inline-block;
+              width: 65px;
+              height: 85px;
+              margin-top: -1.3rem;
+              background: none no-repeat center bottom / 85px;
+              border-radius: 0 0 50% 50%;
+            }
+          }
+        }
 
-  .home-leaders .player-text {
-    display: none;
-    font-size: 0.84rem;
-    flex: 1;
-    line-height: 1.4;
-    transform: translateY(-0.1rem);
-  }
+        & .player-text {
+          display: none;
+          font-size: 0.84rem;
+          flex: 1;
+          line-height: 1.4;
+          transform: translateY(-0.1rem);
 
-  .home-leaders .player-text.active {
-    display: inline-block;
-  }
+          &.active {
+            display: inline-block;
+          }
 
-  .home-leaders .player-text .adv-title {
-    font-weight: bold;
+          & .category {
+            font-weight: bold;
+            color: var(--medium-contrast-color);
+          }
+
+          & .adv-title {
+            font-weight: bold;
+          }
+
+          & .more {
+            white-space: nowrap;
+
+            & .tag {
+              padding: 0.15rem 0.4rem 0;
+              font-size: 0.7rem;
+            }
+          }
+        }
+
+        & .value-top {
+          display: none;
+          font-size: 2rem;
+          font-weight: 700;
+          font-family: "Tomorrow", sans-serif;
+          line-height: 1.7rem;
+          letter-spacing: -0.07rem;
+          transform: translateY(0.2rem);
+
+          &.active {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+          }
+
+          & > div {
+            font-size: 0.9rem;
+            letter-spacing: 0;
+            font-weight: normal;
+          }
+        }
+      }
+    }
+
+    & .points-cont {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      opacity: 0;
+
+      & .points {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        position: relative;
+        height: 28px;
+        border-radius: 5px;
+        border: 1px solid var(--border-stroke-weak);
+        overflow: hidden;
+        background-color: var(--low-contrast-color);
+        opacity: 1;
+
+        &.active {
+          background-color: oklch(from var(--main-link-color) calc(1 - 0.6) c h);
+        }
+
+        & .points-line {
+          height: inherit;
+          width: 100%;
+          border-radius: 5px;
+          background-color: var(--content-box-bg);
+          background-image: linear-gradient(0deg, #00000026 0%, transparent 20%);
+          overflow: hidden;
+        }
+
+        &.active .points-line {
+          background-color: var(--main-link-color);
+        }
+
+        & .points-name {
+          position: absolute;
+          left: 0.8rem;
+          font-size: 0.86rem;
+          font-weight: bold;
+          color: var(--paragraph-color);
+
+          & > a {
+            color: var(--paragraph-color);
+          }
+        }
+
+        &.active .points-name {
+          color: var(--heading-inverse) !important;
+
+          & > a {
+            color: var(--dark-bg-color);
+          }
+        }
+
+        & .points-value {
+          font-weight: bold;
+          position: absolute;
+          right: 0.7rem;
+          color: var(--heading-color);
+        }
+
+        &.active .points-value {
+          color: #fff !important;
+        }
+      }
+    }
   }
 
   .home-leaders.pre-game .player-text .adv-title {
     font-size: 1rem;
-  }
-
-  .home-leaders .player-text .category {
-    font-weight: bold;
-    color: var(--medium-contrast-color);
-  }
-
-  .home-leaders .player-text .more {
-    white-space: nowrap;
-  }
-
-  .home-leaders .player-text .more .tag {
-    padding: 0.15rem 0.4rem 0;
-    font-size: 0.7rem;
-  }
-
-  .home-leaders .value-top {
-    display: none;
-    font-size: 2rem;
-    font-weight: 700;
-    font-family: "Tomorrow", sans-serif;
-    line-height: 1.7rem;
-    letter-spacing: -0.07rem;
-    transform: translateY(0.2rem);
-  }
-
-  .home-leaders .value-top.active {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-  }
-
-  .home-leaders .value-top > div {
-    font-size: 0.9rem;
-    letter-spacing: 0;
-    font-weight: normal;
-  }
-
-  .home-leaders .points-cont {
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-    opacity: 0;
-  }
-
-  .home-leaders .points {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    position: relative;
-    height: 28px;
-    border-radius: 5px;
-    border: 1px solid var(--border-stroke-weak);
-    overflow: hidden;
-    background-color: var(--low-contrast-color);
-    opacity: 1;
-  }
-
-  .home-leaders .points.active {
-    background-color: oklch(from var(--main-link-color) calc(1 - 0.6) c h);
-  }
-
-  .home-leaders .points .points-line {
-    height: inherit;
-    width: 100%;
-    border-radius: 5px;
-    background-color: var(--content-box-bg);
-    background-image: linear-gradient(0deg, #00000026 0%, transparent 20%);
-    overflow: hidden;
-  }
-
-  .home-leaders .points.active .points-line {
-    background-color: var(--main-link-color);
-  }
-
-  .home-leaders .points .points-name > a {
-    color: var(--paragraph-color);
-  }
-
-  .home-leaders .points.active .points-name > a {
-    color: var(--dark-bg-color);
-  }
-
-  .home-leaders .points .points-value {
-    font-weight: bold;
-    position: absolute;
-    right: 0.7rem;
-    color: var(--heading-color);
-  }
-
-  .home-leaders .points.active .points-name {
-    color: var(--heading-inverse) !important;
-  }
-
-  .home-leaders .points.active .points-value {
-    color: #fff !important;
-  }
-
-  .home-leaders .points .points-name {
-    position: absolute;
-    left: 0.8rem;
-    font-size: 0.86rem;
-    font-weight: bold;
-    color: var(--paragraph-color);
-  }
-
-  .home-leaders .points.active .points-value {
-    color: var(--heading-color);
   }
 
   .game-scores .break {
