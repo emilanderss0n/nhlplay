@@ -77,7 +77,7 @@ include_once '../includes/functions.php';
                             if (($award->player !== null && !empty($award->player->firstName) && !empty($award->player->lastName)) || ($award->team !== null && !empty($award->team->fullName))) {
                     
                                 if ($award->trophy->name === 'Stanley Cup') {
-                                    echo '<div class="award team stanleycup">';
+                                    echo '<div class="award card team stanleycup">';
                                     echo '<div class="winner-image" style="background-image: url('. $award->imageUrl .')"></div>';
                                     echo '<svg class="team-fill" width="100%" height="100%">';
                                     echo '<rect width="100%" height="100%" fill="'. teamToColor($award->team->id) .'"></rect>';
@@ -91,10 +91,10 @@ include_once '../includes/functions.php';
                                     echo '</svg>';
                                     $teamAward = true;
                                 } elseif ($award->player === null) {
-                                    echo '<div class="award team" data-desc="' . htmlspecialchars($award->trophy->description ?? ($trophyDescriptionMap[$award->trophy->name] ?? $award->trophy->name), ENT_QUOTES) . '">';
+                                    echo '<div class="award card team" data-desc="' . htmlspecialchars($award->trophy->description ?? ($trophyDescriptionMap[$award->trophy->name] ?? $award->trophy->name), ENT_QUOTES) . '">';
                                     $teamAward = true;
                                 } else {
-                                    echo '<div class="award" data-desc="' . htmlspecialchars($award->trophy->description ?? ($trophyDescriptionMap[$award->trophy->name] ?? $award->trophy->name), ENT_QUOTES) . '">';
+                                    echo '<div class="award card" data-desc="' . htmlspecialchars($award->trophy->description ?? ($trophyDescriptionMap[$award->trophy->name] ?? $award->trophy->name), ENT_QUOTES) . '">';
                                     $teamAward = false;
                                 }
                     
