@@ -66,9 +66,9 @@
       --main-link-color: #45d0e7;
       --secondary-link-color: #cb93fd;
       --green: #00b894;
-      --paragraph-color: #9da1ab;
-      --medium-contrast-color: #656d7c;
-      --low-contrast-color: #353c4b;
+      --paragraph-color: #a8bbcf;
+      --medium-contrast-color: #8b9db0;
+      --low-contrast-color: #434b5b;
       --heading-color: #fff;
       --heading-inverse: #161b28;
       --dark-bg-color: #060b15;
@@ -489,20 +489,26 @@
       gap: 1rem;
       position: relative;
 
-      img {
+      & .team-name:has(.btn) {
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+
+        & h2 {
+          font-size: 2.2rem;
+        }
+
+        & .team-quick-links {
+          display: flex;
+          gap: 1rem;
+          transform: translateX(3px);
+        }
+      }
+
+      & img {
         width: 120px;
         height: 80px;
         mask: var(--logo-mask-subtle);
-      }
-
-      h2 {
-        font-size: 2.2rem;
-      }
-
-      & .team-quick-links {
-        display: flex;
-        gap: 1rem;
-        transform: translateX(3px);
       }
     }
 
@@ -537,13 +543,6 @@
           transform: skewX(-10deg);
           text-transform: uppercase;
           letter-spacing: 0.02em;
-        }
-
-        & .stat > p {
-          font-size: 2.3rem;
-          font-weight: 600;
-          color: var(--heading-color);
-          font-family: "Tomorrow", sans-serif;
         }
       }
 
@@ -609,10 +608,7 @@
         }
 
         & p {
-          font-size: 2.4em;
-          font-weight: 600;
-          color: var(--heading-color);
-          font-family: "Tomorrow", sans-serif;
+          font-size: 2.6rem;
         }
       }
     }

@@ -63,7 +63,7 @@ $injuredPlayerIds = getInjuredPlayerIds($teamAbbrev2);
                         foreach ($stats as $key => $label) {
                             echo '<div class="stat ' . htmlspecialchars($key) . '">
                                     <div>' . htmlspecialchars($label) . '</div>
-                                    <p>' . getValue($teamInfo->$key) . '</p>
+                                    <p class="stat-display">' . getValue($teamInfo->$key) . '</p>
                                 </div>
                                 <div class="divider-vertical"></div>';
                         }
@@ -91,17 +91,17 @@ $injuredPlayerIds = getInjuredPlayerIds($teamAbbrev2);
                     foreach ($teamStats as $key => $label) {
                         echo '<div class="stat">
                                 <label>' . htmlspecialchars($label) . '</label>
-                                <p>' . ($key === 'streakCode' ? getStreak($teamInfo->$key, $teamInfo->streakCount) : getValue($teamInfo->$key)) . '</p>
+                                <p class="stat-display">' . ($key === 'streakCode' ? getStreak($teamInfo->$key, $teamInfo->streakCount) : getValue($teamInfo->$key)) . '</p>
                             </div>';
                     }
                     ?>
                     <div class="stat">
                         <label>PP%</label>
-                        <p><?= getPercentage($teamStatsAdv->data[0]->powerPlayPct) ?></p>
+                        <p class="stat-display"><?= getPercentage($teamStatsAdv->data[0]->powerPlayPct) ?></p>
                     </div>
                     <div class="stat">
                         <label>PK%</label>
-                        <p><?= getPercentage($teamStatsAdv->data[0]->penaltyKillPct) ?></p>
+                        <p class="stat-display"><?= getPercentage($teamStatsAdv->data[0]->penaltyKillPct) ?></p>
                     </div>
                 </div>
             </div>
