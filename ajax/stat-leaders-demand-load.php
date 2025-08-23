@@ -54,6 +54,11 @@ function processSingleRequest() {
         return;
     }
     
+    // Normalize goalie save percent shorthand 'svp' -> 'savePctg'
+    if ($category === 'svp') {
+        $category = 'savePctg';
+    }
+
     $output = renderStatHolder($type, $category, $season, $playoffs, $loadOnDemand);
     echo $output;
 }

@@ -444,6 +444,72 @@
         right: 0.5rem;
     }
 
+    select {
+        font-family: 'Inter', sans-serif;
+        font-weight: 600;
+        font-size: 0.9rem;
+        cursor: pointer;
+        background-color: var(--semi-frost-bg);
+        color: var(--heading-color);
+        border: 1px solid var(--border-stroke-weak);
+        padding: 0.5rem 0.7rem;
+        border-radius: 5px;
+
+        transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        appearance: base-select;
+
+        &::picker-icon {
+            content: "\F282";
+            font-family: 'bootstrap-icons';
+            color: var(--medium-contrast-color);
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        &:open::picker-icon {
+            rotate: 180deg;
+        }
+
+        &::picker(select) {
+            appearance: base-select;
+            background-color: transparent;
+            border: none;
+            outline: none;
+            overflow: clip;
+        }
+
+        & .select-options {
+            margin-top: 1rem;
+            opacity: 0;
+            background-color: var(--black-white);
+            border-radius: 5px;
+            overflow: clip;
+            border: 1px solid var(--border-stroke-weak);
+
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+            & option {
+                display: flex;
+                align-items: center;
+                color: var(--heading-color);
+                padding-block: 0.5rem;
+                padding-inline: 1rem;
+
+                &:is(:checked) {
+                    background-color: var(--main-link-color);
+                    color: var(--black-white);
+                }
+            }
+        }
+
+        &:open .select-options {
+            opacity: 1;
+        }
+    }
+
     .stat-display {
         font-size: 2.3rem;
         font-weight: 600;
@@ -628,6 +694,33 @@
         &:has(:nth-child(2)) > *:last-child {
             margin-right: 0.8rem;
             display: flex;
+        }
+
+        & .multi {
+            gap: 0.5rem;
+            display: flex;
+            align-items: center;
+
+            & > .btn, & > select, & > .btn-group, & > input {
+                height: 40px !important;
+                display: flex;
+                align-items: center;
+                box-shadow: none;
+                background-color: var(--semi-frost-bg);
+                color: var(--heading-color);
+                border: 1px solid var(--border-stroke-weak);
+            }
+
+            & > .btn-group {
+                & .btn.active {
+                    background-color: var(--table-hover-bg);
+                    color: #fff;
+                    text-shadow: 1px 1px 2px #00000082;
+                }
+                & .icon {
+                    border-right: 1px solid var(--border-stroke-weak);
+                }
+            }
         }
     }
 
@@ -1349,9 +1442,11 @@
 
     table > tbody > tr > td {
         background-color: var(--table-td);
-        padding: 0.5rem 0.8rem !important;
-        vertical-align: middle !important;
+        padding: 0.5rem 0.8rem;
+        vertical-align: middle;
         transition: all 0.3s;
+        color: var(--paragraph-color);
+        font-size: 1rem;
     }
 
     table.jsDataTable-table.hover > tbody > tr:hover > td {
@@ -1550,5 +1645,41 @@
         background: linear-gradient(to right, var(--heading-color) 0,var(--heading-color) 10%, var(--heading-color) 20%);
         -webkit-background-clip: text;
         animation: none;
+    }
+
+    .jsDataTable-bottom {
+        margin-top: 1rem;
+
+        & .jsDataTable-pagination-list {
+            gap: 0.5rem;
+
+            & li {
+
+                & a {
+                    background-color: var(--button-group-bg);
+                    color: var(--medium-contrast-color);
+                    border-radius: 3px;
+                    padding: 0.4rem 0.7rem;
+                    min-width: 20px;
+                    font-size: 0.9rem;
+
+                    &:hover {
+                        background-color: var(--main-darker-bg);
+                        color: var(--heading-color);
+                    }
+                }
+
+                &.active a {
+                    background-color: var(--main-link-color);
+                    color: var(--black-white);
+                    cursor: default;
+
+                    &:hover {
+                        background-color: var(--main-link-color);
+                        color: var(--black-white);
+                    }
+                }
+            }
+        }
     }
 }

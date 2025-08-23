@@ -13,19 +13,34 @@ if(isset($_GET['playoffs'])) {
     $selectedPlayoffs = $_GET['playoffs'] === 'true';
 }
 
+// Check if user is selecting a different season
+$selectedSeason = $season; // Default to global setting
+if(isset($_GET['season'])) {
+    $selectedSeason = $_GET['season'];
+}
+
+// Keep legacy global $season in sync so includes (seasonSelection.php) render correctly
+$season = $selectedSeason;
+
 ?>
 <main>
     <div class="wrap">
-        <?php if ($playoffs) { ?>
-        <div class="component-header">
+        <div class="component-header stat-leaders">
             <h3 class="title">Stat Leaders</h3>
-            <div class="season-select btn-group">
-                <i class="icon bi bi-filter"></i>
-                <a href="javascript:void(0);" class="btn sm <?= !$selectedPlayoffs ? 'active' : '' ?>" data-season="<?= $season ?>" data-playoffs="false">Regular Season</a>
-                <a href="javascript:void(0);" class="btn sm <?= $selectedPlayoffs ? 'active' : '' ?>" data-season="<?= $season ?>" data-playoffs="true">Playoffs</a>
+            <div class="multi">
+                <select id="seasonStatLeadersSelect" class="form-select">
+                    <div class="select-options">
+                        <?php include_once '../includes/seasonSelection.php'; ?>
+                    </div>
+                </select>
+                <div class="season-select btn-group">
+                    <i class="icon bi bi-filter"></i>
+                    <a href="javascript:void(0);" class="btn sm <?= !$selectedPlayoffs ? 'active' : '' ?>" data-season="<?= $selectedSeason ?>" data-playoffs="false">Regular Season</a>
+                    <a href="javascript:void(0);" class="btn sm <?= $selectedPlayoffs ? 'active' : '' ?>" data-season="<?= $selectedSeason ?>" data-playoffs="true">Playoffs</a>
+                </div>
+                <a href="javascript:void(0);" id="stat-leaders-toggle-table" class="btn sm" data-season="<?= $selectedSeason ?>" data-playoffs="<?= $selectedPlayoffs ? 'true' : 'false' ?>">Table</a>
             </div>
         </div>
-        <?php } ?>
         <div class="section-stats">
             <div class="stats-leaders skaters">
                 <h3>Forwards</h3>
@@ -36,7 +51,7 @@ if(isset($_GET['playoffs'])) {
                 </div>
                 <div class="activity-content skaters"><span class="loader"></span></div>
                 <div class="stat-points stat-holder skaters">
-                    <?= renderStatHolder('skaters', 'points', $season, $selectedPlayoffs); ?>
+                    <?= renderStatHolder('skaters', 'points', $selectedSeason, $selectedPlayoffs); ?>
                 </div>
                 <div class="stat-goals stat-holder skaters">
                 </div>
@@ -52,7 +67,7 @@ if(isset($_GET['playoffs'])) {
                 </div>
                 <div class="activity-content defense"><span class="loader"></span></div>
                 <div class="stat-points stat-holder defense">
-                    <?= renderStatHolder('defense', 'points', $season, $selectedPlayoffs); ?>
+                    <?= renderStatHolder('defense', 'points', $selectedSeason, $selectedPlayoffs); ?>
                 </div>
                 <div class="stat-goals stat-holder defense">
                 </div>
@@ -67,7 +82,7 @@ if(isset($_GET['playoffs'])) {
                 </div>
                 <div class="activity-content goalies"><span class="loader"></span></div>
                 <div class="stat-svp stat-holder goalies">
-                    <?= renderStatHolder('goalies', 'savePctg', $season, $selectedPlayoffs); ?>
+                    <?= renderStatHolder('goalies', 'savePctg', $selectedSeason, $selectedPlayoffs); ?>
                 </div>
                 <div class="stat-gaa stat-holder goalies">
                 </div>
@@ -81,7 +96,7 @@ if(isset($_GET['playoffs'])) {
                 </div>
                 <div class="activity-content rookies"><span class="loader"></span></div>
                 <div class="stat-points stat-holder rookies">
-                    <?= renderStatHolder('rookies', 'points', $season, $selectedPlayoffs); ?>
+                    <?= renderStatHolder('rookies', 'points', $selectedSeason, $selectedPlayoffs); ?>
                 </div>
                 <div class="stat-goals stat-holder rookies">
                 </div>
@@ -92,7 +107,7 @@ if(isset($_GET['playoffs'])) {
             <div class="stats-leaders">
                 <h3>Three Stars of the Week</h3>
                 <div class="three-stars">
-                <?= getThreeStars($season); ?>
+                <?= getThreeStars($selectedSeason); ?>
                 </div>
             </div>
             <?php } ?>

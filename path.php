@@ -20,7 +20,7 @@ function getBaseUrl() {
 define('ROOT_PATH', realpath(dirname(__FILE__)));
 define('BASE_URL', getBaseUrl());
 
-$season = '20242025';
+$season = '20252026';
 $lastSeason = '20242025';
 $draftYear = '2025';
 $draftYearLast = '2024';

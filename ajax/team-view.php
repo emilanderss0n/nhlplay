@@ -97,11 +97,19 @@ $injuredPlayerIds = getInjuredPlayerIds($teamAbbrev2);
                     ?>
                     <div class="stat">
                         <label>PP%</label>
-                        <p class="stat-display"><?= getPercentage($teamStatsAdv->data[0]->powerPlayPct) ?></p>
+                        <?php if ($teamStatsAdv && isset($teamStatsAdv->data[0]->powerPlayPct)) {
+                            echo '<p class="stat-display">' . getPercentage($teamStatsAdv->data[0]->powerPlayPct) . '</p>';
+                        } else {
+                            echo '<p class="stat-display">N/A</p>';
+                        } ?>
                     </div>
                     <div class="stat">
                         <label>PK%</label>
-                        <p class="stat-display"><?= getPercentage($teamStatsAdv->data[0]->penaltyKillPct) ?></p>
+                        <?php if ($teamStatsAdv && isset($teamStatsAdv->data[0]->penaltyKillPct)) {
+                            echo '<p class="stat-display">' . getPercentage($teamStatsAdv->data[0]->penaltyKillPct) . '</p>';
+                        } else {
+                            echo '<p class="stat-display">N/A</p>';
+                        } ?>
                     </div>
                 </div>
             </div>

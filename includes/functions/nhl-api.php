@@ -314,9 +314,19 @@ class NHLApi {
         ];
         return self::buildUrl(self::API_STATS_BASE . '/season', $params);
     }
+
+    /**
+     * Get component season (active season) from stats API
+     * Example: https://api.nhle.com/stats/rest/en/componentSeason
+     * @return string API URL
+     */
+    public static function componentSeason() {
+        return self::API_STATS_BASE . '/componentSeason';
+    }
     
     /**
      * Get player statistics
+     * example url: https://api.nhle.com/stats/rest/en/skater/summary?isAggregate=false&isGame=false&limit=1&cayenneExp=playerId=8478402
      * @param string $playerType "skater" or "goalie"
      * @param string $endpoint Endpoint like "summary", "bios", etc.
      * @param array $conditions Conditions for cayenneExp
@@ -721,4 +731,12 @@ function getMilestonesGoaliesUrl() {
  */
 function getTeamSummaryUrl($season, $gameTypeId = 2, $sort = 'points') {
     return NHLApi::teamSummary($season, $gameTypeId, $sort);
+}
+
+/**
+ * Quick method to get component season (active season) URL
+ * @return string API URL
+ */
+function getComponentSeasonUrl() {
+    return NHLApi::componentSeason();
 }

@@ -7,10 +7,11 @@ $ApiUrl = NHLApi::season();
 $curl = curlInit($ApiUrl);
 $seasons = json_decode($curl);
 
-// Get the last 10 seasons and reverse the order
-$lastSeasons = array_slice($seasons, -10);
+// Get the last 6 seasons and reverse the order
+$lastSeasons = array_slice($seasons, -6);
 $lastSeasons = array_reverse($lastSeasons);
 
-foreach ($lastSeasons as $season) {
-    echo '<a href="javascript:void(0)" class="season-select-link" data-season="'. $season .'">'. $season .'</a>';
+foreach ($lastSeasons as $seasonId) {
+    $isSelected = (isset($season) && $season == $seasonId) ? ' selected' : '';
+    echo '<option class="season-select-option" value="'. $seasonId .'"' . $isSelected . '>'. $seasonId .'</option>';
 }

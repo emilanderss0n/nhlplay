@@ -60,7 +60,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-      --main-bg-color: #03070f;
+      --main-bg-color: #080c15;
       --main-darker-bg: #1c222c;
       --content-box-bg: #121a28;
       --main-link-color: #45d0e7;
@@ -71,7 +71,7 @@
       --low-contrast-color: #434b5b;
       --heading-color: #fff;
       --heading-inverse: #161b28;
-      --dark-bg-color: #060b15;
+      --dark-bg-color: #0a101b;
       --shadow-box: none;
       --odd-bg: #131821;
       --gradient-text: linear-gradient(280.8deg, var(--secondary-link-color) 15.21%, var(--main-link-color) 85.53%);
@@ -79,7 +79,7 @@
       --semi-frost-bg-2: #1a2129b3;
       --shadow-button: 0 3px 4px -1px rgb(0 0 0 / 33%);
       --black-white: #000;
-      --second-content-box-bg: #282c37;
+      --second-content-box-bg: #182131;
       --player-modal-bg: #0c0f1678;
       --invert-one: invert(1);
       --box-shadow-nice: rgb(0 0 0 / 74%) 0px 30px 35px -30px, rgb(0 0 0 / 8%) 0px 5px 3px 0px;
@@ -92,8 +92,8 @@
       --border-stroke-weak: hsl(0deg 0% 100% / 10%);
       --border-stroke: hsl(0deg 0% 100% / 20%);
       --component-header-bg: #0b111c;
-      --table-td: #13181e;
-      --table-td-odd: #0d1116;
+      --table-td: #141c27;
+      --table-td-odd: #101620;
   }
 }
 
@@ -2448,7 +2448,7 @@
     margin-top: 0.5rem;
   }
 
-  .section-stats {
+  .section-stats:not(:has(.jsDataTable-wrapper)) {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 2em;
@@ -2457,6 +2457,10 @@
 
   .section-stats .header-text-gradient {
     grid-column: 1/4;
+  }
+
+  #playerStatsTable a {
+    font-weight: 600;
   }
 
   .stats-leaders .stat-select {
@@ -2497,6 +2501,14 @@
     display: flex;
     flex-direction: column;
     margin-top: 1rem;
+  }
+
+  .stats-leaders .stat-holder .error {
+    padding: 1rem;
+    border: 1px solid var(--border-stroke-weak);
+    background-color: var(--content-box-bg);
+    color: var(--paragraph-color);
+    border-radius: 5px;
   }
 
   .stats-leaders .stat-holder.stat-goals,

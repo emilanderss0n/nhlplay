@@ -32,7 +32,13 @@ function renderPlayerCard($player, $matchingStats, $activeTeam, $type, $injuredP
     $isInjured = in_array($player->id, $injuredPlayerIds);
     ?>
     <a class="player <?= strtolower(positionCodeToName2($player->positionCode)) ?><?php if (isset($player->rookie) == 'true') { echo ' rookie'; } ?><?php if ($isInjured) { echo ' injured'; } ?>" id="player-link" data-link="<?= $player->id ?>" href="#" data-points="<?= $matchingStats ? $matchingStats->points : 0 ?>">
-        <div class="jersey"><span>#</span><?= $player->sweaterNumber ?></div>
+        <div class="jersey">
+            <span>#</span><?php if ($player && isset($player->sweaterNumber)) {
+                echo $player->sweaterNumber;
+            } else {
+                echo '00';
+            }?>
+        </div>
         <div class="info">
             <div class="headshot">
                 <img class="head" id="canTop" height="400" width="400" src="<?= $player->headshot ?>"></img>

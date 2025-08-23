@@ -10,33 +10,28 @@ function renderStatHolder($type, $category, $season, $playoffs, $loadOnDemand = 
     $gameType = $playoffs ? 3 : 2;
     $ApiUrl = buildStatLeaderApiUrl($type, $category, $season, $gameType);
 
-    // Handle caching
-    $cacheDir = dirname(__DIR__, 2) . '/cache/';
+    // Handle caching with season-specific structure
+    $baseCacheDir = dirname(__DIR__, 2) . '/cache/stat-leaders/';
+    $seasonCacheDir = $baseCacheDir . $season . '/';
     $fileName = "{$type}_{$category}_" . ($playoffs ? 'playoffs' : 'regular');
-    $cacheFile = $cacheDir . $fileName . '.json';
+    $cacheFile = $seasonCacheDir . $fileName . '.json';
     $cacheTime = 60 * 60; // 1 hour
 
-    // Make sure cache directory exists
-    if (!is_dir($cacheDir)) {
-        mkdir($cacheDir, 0755, true);
+    // Make sure cache directories exist
+    if (!is_dir($baseCacheDir)) {
+        mkdir($baseCacheDir, 0755, true);
+    }
+    if (!is_dir($seasonCacheDir)) {
+        mkdir($seasonCacheDir, 0755, true);
     }
 
-    // Get stats data from cache or API
-    if (file_exists($cacheFile) && time() - filemtime($cacheFile) < $cacheTime) {
-        $statPoints = json_decode(file_get_contents($cacheFile));
-    } else {
-        $curl = curlInit($ApiUrl);
-        $statPoints = json_decode($curl);
-        if ($statPoints) {
-            file_put_contents($cacheFile, json_encode($statPoints));
-        } else {
-            error_log("Failed to fetch data from API URL: $ApiUrl");
-        }
-    }
+    // Use the shared fetchData helper which handles caching, fetching and fallbacks
+    // fetchData expects ($apiUrl, $cacheFile, $cacheLifetime)
+    $statPoints = fetchData($ApiUrl, $cacheFile, $cacheTime);
 
     // Handle error or missing data
     if (!$statPoints || !isset($statPoints->data) || empty($statPoints->data)) {
-        return '<div class="error">Failed to load data or no data available</div>';
+        return '<div class="error">No data available for this season</div>';
     }
 
     // Use findMaxStatValue to determine the leader in the category
@@ -359,7 +354,7 @@ function getPlayerAdvancedStats($playerId, $season, $gameType = 2) {
  * @param int $limit
  * @return array|null
  */
-function getSkaterLeadersTable($season = '20242025', $type = 'skater', $gameType = 2, $limit = 100) {
+function getSkaterLeadersTable($season, $type = 'skater', $gameType = 2, $limit = 300) {
     // Use the new NHL API utility
     $conditions = [
         'gameTypeId' => $gameType,
