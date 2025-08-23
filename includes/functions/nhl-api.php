@@ -363,6 +363,47 @@ class NHLApi {
         $url = self::API_STATS_BASE . "/team/{$endpoint}";
         return self::buildUrl($url, $params);
     }
+
+    /**
+     * Get team summary from stats API
+     * Example: /team/summary?sort=points&cayenneExp=seasonId=20242025%20and%20gameTypeId=2
+     * @param string $season Season (e.g., '20242025')
+     * @param int $gameTypeId Game type id (1-3). Defaults to 2 (regular season).
+     * @param string $sort Sort field (e.g., 'points')
+     * @return string API URL
+     */
+    public static function teamSummary($season, $gameTypeId = 2, $sort = 'points') {
+        $gameTypeId = intval($gameTypeId);
+        if ($gameTypeId < 1 || $gameTypeId > 3) {
+            $gameTypeId = 2;
+        }
+
+        $params = [
+            'sort' => $sort,
+            'cayenneExp' => "seasonId={$season} and gameTypeId={$gameTypeId}"
+        ];
+
+        return self::buildUrl(self::API_STATS_BASE . '/team/summary', $params);
+    }
+
+    /**
+     * Get milestone tracking for skaters (league-wide list).
+     * This endpoint does not accept additional query parameters in our usage — it returns
+     * a full list of players and their milestone progress.
+     * @return string API URL
+     */
+    public static function milestonesSkaters() {
+        return self::API_STATS_BASE . '/milestones/skaters';
+    }
+    
+    /**
+     * Get milestone tracking for goalies (league-wide list).
+     * This endpoint returns a full list of goalies and their milestone progress.
+     * @return string API URL
+     */
+    public static function milestonesGoalies() {
+        return self::API_STATS_BASE . '/milestones/goalies';
+    }
     
     /**
      * Get stat leaders from stats API
@@ -651,4 +692,33 @@ function getPlayerUrl($playerId, $type = 'landing', $season = null, $seasonType 
         return NHLApi::playerGameLog($playerId, $season, $seasonType);
     }
     return NHLApi::playerLanding($playerId);
+}
+
+/**
+ * Quick method to get milestones skaters URL
+ * @param array $conditions Cayenne conditions array
+ * @param array $params Additional query params
+ * @return string API URL
+ */
+function getMilestonesSkatersUrl($conditions = [], $params = []) {
+    return NHLApi::milestonesSkaters();
+}
+
+/**
+ * Quick method to get milestones goalies URL
+ * @return string API URL
+ */
+function getMilestonesGoaliesUrl() {
+    return NHLApi::milestonesGoalies();
+}
+
+/**
+ * Quick method to get team summary URL
+ * @param string $season Season (e.g., '20242025')
+ * @param int $gameTypeId Game type id (1-3)
+ * @param string $sort Sort field
+ * @return string API URL
+ */
+function getTeamSummaryUrl($season, $gameTypeId = 2, $sort = 'points') {
+    return NHLApi::teamSummary($season, $gameTypeId, $sort);
 }
