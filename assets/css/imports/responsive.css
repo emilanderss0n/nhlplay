@@ -170,29 +170,8 @@
             gap: 1rem;
         }
 
-        .trades .team-1 {
-            padding-left: 0rem;
-            flex: 1;
-        }
-
-        .trades .team-2 {
-            padding-right: 0rem;
-            flex: 1;
-        }
-
-        .trades .team-logo {
-            position: relative;
-            top: 0;
-            left: 0;
-            z-index: 0;
-            opacity: 1;
-            mix-blend-mode: normal;
-        }
-
-        .trades .team-logo img {
-            width: 140px;
-            height: 140px;
-            margin: 0 2rem;
+          .trades-frontpage .team {
+            padding: 2rem 3rem;
         }
     }
 
@@ -606,11 +585,11 @@
             display: none;
         }
 
-        .trades .team-1 {
+        .trades .trade:not(.alt-layout) .team-1 {
             padding-left: 3rem;
         }
 
-        .trades .team-2 {
+        .trades .trade:not(.alt-layout) .team-2 {
             padding-right: 3rem;
         }
     }
@@ -1148,6 +1127,15 @@
             border-top: none;
         }
 
+        .trades-frontpage .team {
+            padding: 1rem 2rem;
+        }
+
+        .trades-frontpage .team .list {
+            height: max-content;
+            margin-top: 1rem;
+        }
+
         .lso-award-winners {
             display: flex;
             flex-direction: column;
@@ -1490,10 +1478,7 @@
         }
 
         .trades-frontpage .trade.alt-layout.expanded {
-            min-height: fit-content;
             height: fit-content;
-            background: none !important;
-            border: 1px solid var(--border-stroke-weak);
         }
 
         .trades-frontpage .teams {
@@ -1506,9 +1491,9 @@
             gap: 1rem;
             width: 100%;
             height: fit-content;
-            padding: 1rem;
+            padding: 2rem 1rem;
             align-items: center;
-            background-color: var(--dark-bg-color);
+            flex-direction: column;
         }
 
         .trades-frontpage .team-1 {
@@ -1516,13 +1501,15 @@
         }
 
         .trades-frontpage .team-info:has(.team-logo) {
-            position: relative;
-            width: fit-content;
-            height: fit-content;
+            flex-direction: row;
         }
 
-        .trades-frontpage .team-logo {
-            height: 60px;
+        .trades-frontpage .team .list {
+            width: 100%;
+            overflow: hidden;
+            text-align: center;
+            justify-content: center;
+            margin-top: 0.5rem;
         }
         
         .trades-frontpage .trade-buttons {

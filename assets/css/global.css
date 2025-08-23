@@ -3877,30 +3877,27 @@
 
   .trades-frontpage .team-logo img {
     margin: 0;
-    opacity: 0.2;
-    height: 200px !important;
-    width: 200px !important;
+    opacity: 1;
+    height: 60px !important;
+    width: 60px !important;
     mask: var(--logo-mask);
   }
 
   .trades-frontpage .teams {
-    align-items: center;
     margin: 0;
-    z-index: 1;
     position: relative;
-    gap: 0 !important;
     height: 100%;
   }
 
   .trades-frontpage .team {
-    padding: 0;
+    padding: 2rem;
     height: 100%;
   }
 
   .trades-frontpage .team .list {
     margin: 0;
-    padding: 0 1rem;
-    height: 100%;
+    height: 140px;
+    overflow-y: auto;
     align-items: center;
     display: flex;
   }
@@ -3922,19 +3919,19 @@
     height: 100%;
   }
 
+  .trades-frontpage .team-info .text {
+    display: none;
+  }
+
   .trades-frontpage .team-info:has(.team-logo) {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
+    position: relative;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
   }
 
-  .trades-frontpage .team-info:has(.team-logo) .name {
-    display: none;
-  }
-
-  .trades-frontpage .team-info:has(.team-logo) .text {
-    display: none;
+  .trades-frontpage .team-2 .team-info:has(.team-logo) {
+    flex-direction: row-reverse;
   }
 
   .trades .team-info .name {
@@ -3946,7 +3943,7 @@
 
   .trades-frontpage .team .list ul li {
     font-size: 0.9rem;
-    margin: 0 1rem 0.5rem;
+    margin: 0 0 0.5rem;
   }
 
   .trades-frontpage .trade-buttons {
@@ -3960,7 +3957,6 @@
     min-height: 240px;
   }
 
-  /* Minimal trade buttons */
   .trades-frontpage .trade.alt-layout:not(.expanded) {
     width: 212px;
     min-height: 80px;
@@ -3998,6 +3994,7 @@
     cursor: default;
     height: 100%;
     outline: 2px solid transparent;
+    background: radial-gradient(ellipse at top, var(--dark-bg-color), transparent),  radial-gradient(ellipse at bottom, var(--content-box-bg), transparent) !important;
     transition: outline 0.4s ease .6s;
     box-shadow: inset 0 0 0 1px var(--border-stroke-weak);
   }
@@ -4008,20 +4005,7 @@
   }
 
   .trades-frontpage .trade.alt-layout.expanded .trade-title {
-    position: absolute;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    text-transform: uppercase;
-    color: var(--medium-contrast-color);
-    padding: 0 1rem 0;
-    font-size: 2rem;
-    font-style: italic;
-    z-index: 0;
-    height: 100%;
-    font-weight: 900;
-    align-items: center;
-    mask: var(--logo-mask-big);
+    display: none;
   }
 
   .trades-frontpage .trade-expanded-container.active .trade.alt-layout.expanded {
