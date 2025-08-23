@@ -255,6 +255,10 @@
       flex-direction: column-reverse;
       text-align: center;
       margin-top: 8rem;
+      background: radial-gradient(ellipse at top, var(--dark-bg-color), transparent), radial-gradient(ellipse at bottom, var(--content-box-bg), transparent);
+      border: 1px solid var(--border-stroke-weak);
+      padding: 2rem;
+      border-radius: 10px;
 
       & h3 {
         font-size: 2rem;
