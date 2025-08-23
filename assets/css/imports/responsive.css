@@ -395,29 +395,32 @@
             align-items: center;
         }
 
+        .sm-hide {
+            display: none;
+        }
+
         .menu-right {
             flex-direction: column;
         }
 
         #main-menu {
             position: absolute;
-            background-color: var(--dark-bg-color);
+            background-color: var(--black-white);
             width: 100%;
             height: 100vh;
             top: 0;
             left: 0;
             z-index: 998;
-            transform: translateX(900px);
+            transform: translateX(1100px);
             transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             visibility: hidden;
-            box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.2);
             padding-bottom: 10rem;
             padding-top: 1rem;
-            margin-top: 63px;
+            margin-top: 65px;
         }
 
         #main-menu.open {
@@ -463,6 +466,10 @@
             transform: translateY(0);
         }
 
+        #main-menu .menu-links .dropdown:not(:checked) ~ .section-dropdown {
+            margin-bottom: 1rem;
+        }
+
         #main-menu .menu-links .section-dropdown,
         #main-menu .menu-teams .section-dropdown {
             position: relative;
@@ -472,9 +479,59 @@
             box-shadow: none;
         }
 
-        .menu-teams .section-dropdown a,
-        .menu-links .section-dropdown a {
+        #main-menu .menu-teams .section-dropdown {
+            background-color: transparent !important;
+        }
+
+        .menu-teams .section-dropdown .fader-top, .menu-teams .section-dropdown .fader-bottom {
+            display: none;
+        }
+
+        .menu-teams .section-dropdown .container {
+            padding: 0;
+            max-height: max-content;
+            gap: 0.5rem;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .menu-teams .section-dropdown a {
             padding: 10px;
+            background: radial-gradient(ellipse at top, var(--dark-bg-color), transparent), radial-gradient(ellipse at bottom, var(--content-box-bg), transparent);
+            border-radius: 7px;
+            justify-content: center;
+            border: 1px solid var(--border-stroke-weak);
+        }
+
+        .menu-teams .section-dropdown a span img {
+            width: 50px;
+            height: auto;
+            margin: 0;
+        }
+
+        .menu-teams .section-dropdown a {
+            padding: 10px;
+            font-size: 1.2rem;
+        }
+
+        .menu-links .section-dropdown {
+            background-color: transparent !important;
+        }
+
+        .menu-links .section-dropdown a {
+            padding: 10px 0;
+            font-size: 1.2rem;
+            outline: none !important;
+        }
+
+        #link-builder {
+            display: none;
+        }
+
+        .menu-links .section-dropdown a:hover,
+        .menu-links .section-dropdown a:focus {
+            background-color: transparent;
+            color: var(--heading-color);
         }
 
         .menu-links .dropdown-sub:checked + label,
