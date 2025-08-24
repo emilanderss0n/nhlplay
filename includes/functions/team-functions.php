@@ -455,7 +455,7 @@ function teamProspects($teamAbbrev) {
     }
 
     if (empty($prospects)) {
-        echo '<div class="item">No prospects found</div>';
+        echo '<div class="alert">No prospects found</div>';
         return;
     }
 

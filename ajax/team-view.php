@@ -167,7 +167,7 @@ $injuredPlayerIds = getInjuredPlayerIds($teamAbbrev2);
             <?php renderTeamRoster($teamRosterInfo, $teamRosterStats, $activeTeam, $injuredPlayerIds); ?>
             </div><!-- END .team-roster -->
             <div class="team-prospects">
-                <h3>Top Prospects</h3>
+                <h3><?= getValue($teamInfo->teamCommonName->default, 'Team') ?> Prospects</h3>
                 <div class="grid grid-300" grid-max-col-count="5">
                     <?php teamProspects($teamAbbrev) ?>
                 </div>
@@ -177,7 +177,7 @@ $injuredPlayerIds = getInjuredPlayerIds($teamAbbrev2);
             $teamSubreddit = getTeamRedditSub($teamAbbrev);
             if ($teamSubreddit) {
                 // Always use the relative path from the current file location
-                include __DIR__ . '/../templates/team-reddit-feed.php';
+                include '../templates/team-reddit-feed.php';
             }
             ?>
             

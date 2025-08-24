@@ -119,6 +119,7 @@ class NHLApi {
     
     /**
      * Get current standings
+     * example: https://api-web.nhle.com/v1/standings/now
      * @return string API URL
      */
     public static function standingsNow() {

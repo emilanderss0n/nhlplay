@@ -1948,6 +1948,10 @@
   .team-prospects {
     margin: 6rem 0;
 
+    &:has(.alert) {
+      display: none;
+    }
+
     & > h3 {
       margin-bottom: 2rem;
     }
@@ -1956,16 +1960,15 @@
       display: flex;
       position: relative;
       color: var(--heading-color);
-      background: radial-gradient(ellipse at top, var(--dark-bg-color), transparent), radial-gradient(ellipse at bottom, var(--content-box-bg), transparent);
       border-radius: 10px;
       overflow: hidden;
-      padding: 1rem;
+      padding: 0.5rem;
       will-change: transform, box-shadow, border;
       transition: all 0.2s linear;
-      border: 1px solid var(--border-stroke-weak);
+      border: 1px solid transparent;
 
       &:hover {
-        transform: scale(1.03);
+        transform: scale(1.06);
         box-shadow: var(--box-shadow-nice);
         border: 1px solid var(--border-stroke);
       }
@@ -1983,7 +1986,7 @@
             color: var(--trans-70);
             text-transform: uppercase;
             letter-spacing: 1px;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             margin-bottom: 0.3rem;
           }
 
@@ -1996,8 +1999,8 @@
         }
 
         & .head {
-          width: 80px;
-          height: 80px;
+          width: 60px;
+          height: 60px;
           background-color: var(--low-contrast-color);
           border-radius: 50%;
         }
