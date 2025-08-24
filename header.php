@@ -143,9 +143,7 @@ $mergedCSS = $isDevelopment ? false : generateMergedCSS([
                                 <a id="link-game-scores" href="<?= BASE_URL ?>/scores" rel="page" role="menuitem">Scores <i class="bi bi-arrow-right-short"></i></a>
                                 <a id="link-stat-leaders" href="<?= BASE_URL ?>/stat-leaders" rel="page" role="menuitem">Stat Leaders <i class="bi bi-arrow-right-short"></i></a>
                                 <a id="link-game-recaps" href="<?= BASE_URL ?>/recaps" rel="page" role="menuitem">Game Recaps <i class="bi bi-arrow-right-short"></i></a>
-                                <?php if ($deviceType == 'tablet' || $deviceType == 'computer'): ?>
-                                    <a id="link-builder" href="<?= BASE_URL ?>/team-builder" rel="page" role="menuitem">Team Builder <i class="bi bi-arrow-right-short"></i></a>
-                                <?php endif; ?>
+                                <a id="link-builder" href="<?= BASE_URL ?>/team-builder" rel="page" role="menuitem">Team Builder <i class="bi bi-arrow-right-short"></i></a>
                                 <a id="link-trades" href="<?= BASE_URL ?>/trades" rel="page" role="menuitem">
                                     <span>Trades</span>
                                     <i class="bi bi-arrow-right-short"></i>
