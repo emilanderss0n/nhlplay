@@ -166,6 +166,12 @@ $injuredPlayerIds = getInjuredPlayerIds($teamAbbrev2);
             <div class="team-roster grid grid-300 grid-gap-lg grid-gap-row-lg" grid-max-col-count="3">
             <?php renderTeamRoster($teamRosterInfo, $teamRosterStats, $activeTeam, $injuredPlayerIds); ?>
             </div><!-- END .team-roster -->
+            <div class="team-prospects">
+                <h3>Top Prospects</h3>
+                <div class="grid grid-300" grid-max-col-count="5">
+                    <?php teamProspects($teamAbbrev) ?>
+                </div>
+            </div>
             <?php
             // Check if this team has a subreddit before including the team reddit section
             $teamSubreddit = getTeamRedditSub($teamAbbrev);

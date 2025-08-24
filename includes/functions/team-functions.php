@@ -396,3 +396,116 @@ function getTeamRedditSub($teamAbbrev) {
     global $teamRedditSubs;
     return isset($teamRedditSubs[$teamAbbrev]) ? $teamRedditSubs[$teamAbbrev] : null;
 }
+
+/**
+ * Fetch and render team prospects section
+ * Uses the new NHLApi::teamProspects endpoint and caches the result
+ * @param string $teamAbbrev Team abbreviation (e.g., 'BOS')
+ */
+function teamProspects($teamAbbrev) {
+    if (empty($teamAbbrev)) return;
+
+    $cacheFile = 'cache/team-prospects-' . strtolower($teamAbbrev) . '.json';
+    $cacheLifetime = 12 * 3600; // 12 hours cache
+
+    // Build API URL using NHLApi helper
+    $apiUrl = NHLApi::teamProspects($teamAbbrev);
+
+    $data = fetchData($apiUrl, $cacheFile, $cacheLifetime);
+
+    if (!$data) {
+        echo '<div class="item">No prospect data available</div>';
+        return;
+    }
+
+    // The API frequently returns prospects grouped by position: forwards, defensemen, goalies
+    $prospects = [];
+
+    // Helper to merge arrays if present
+    $maybeArray = function($obj, $key) {
+        if (isset($obj->{$key}) && is_array($obj->{$key})) return $obj->{$key};
+        return [];
+    };
+
+    // Check common locations for grouped data
+    $prospects = array_merge(
+        $maybeArray($data, 'forwards'),
+        $maybeArray($data, 'defensemen'),
+        $maybeArray($data, 'goalies')
+    );
+
+    // Some responses nest actual payload under data
+    if (empty($prospects) && isset($data->data) && is_object($data->data)) {
+        $prospects = array_merge(
+            $maybeArray($data->data, 'forwards'),
+            $maybeArray($data->data, 'defensemen'),
+            $maybeArray($data->data, 'goalies')
+        );
+    }
+
+    // Fall back to other shapes
+    if (empty($prospects)) {
+        if (isset($data->data) && is_array($data->data)) {
+            $prospects = $data->data;
+        } elseif (is_array($data)) {
+            $prospects = $data;
+        } elseif (isset($data->prospects) && is_array($data->prospects)) {
+            $prospects = $data->prospects;
+        }
+    }
+
+    if (empty($prospects)) {
+        echo '<div class="item">No prospects found</div>';
+        return;
+    }
+
+    // Normalize and render each prospect
+    foreach ($prospects as $p) {
+        // ID
+        $playerId = isset($p->id) ? $p->id : (isset($p->playerId) ? $p->playerId : '');
+
+        // Names: many endpoints use nested objects with a 'default' property
+        $firstName = '';
+        $lastName = '';
+        if (isset($p->firstName)) {
+            $firstName = is_object($p->firstName) && isset($p->firstName->default) ? $p->firstName->default : $p->firstName;
+        } elseif (isset($p->player) && isset($p->player->firstName)) {
+            $firstName = is_object($p->player->firstName) && isset($p->player->firstName->default) ? $p->player->firstName->default : $p->player->firstName;
+        }
+
+        if (isset($p->lastName)) {
+            $lastName = is_object($p->lastName) && isset($p->lastName->default) ? $p->lastName->default : $p->lastName;
+        } elseif (isset($p->player) && isset($p->player->lastName)) {
+            $lastName = is_object($p->player->lastName) && isset($p->player->lastName->default) ? $p->player->lastName->default : $p->player->lastName;
+        }
+
+        // Position code
+        $positionCode = isset($p->positionCode) ? $p->positionCode : (isset($p->position) ? $p->position : '');
+
+        // Headshot
+        $headshot = 'assets/img/player-placeholder.png';
+        if (isset($p->headshot)) {
+            $headshot = $p->headshot;
+        } elseif (isset($p->headshotUrl)) {
+            $headshot = $p->headshotUrl;
+        } elseif (isset($p->player) && isset($p->player->headshot)) {
+            $headshot = $p->player->headshot;
+        }
+
+        $number = isset($p->sweaterNumber) ? $p->sweaterNumber : (isset($p->player) && isset($p->player->sweaterNumber) ? $p->player->sweaterNumber : '00');
+
+        echo '<a class="prospect" id="player-link" href="#" data-link="' . htmlspecialchars($playerId) . '">';
+        
+        echo '<div class="info">';
+        echo '<img class="head" src="' . htmlspecialchars($headshot) . '"/>';
+        echo '<div class="text">';
+        echo '<div class="top">';
+        echo '<div class="jersey"><span>#</span>' . htmlspecialchars($number) . '</div>';
+        echo '<div class="position">' . htmlspecialchars(positionCodeToName($positionCode)) . '</div>';
+        echo '</div>'; // .top
+        echo '<div class="name">' . htmlspecialchars($firstName) . ' ' . htmlspecialchars($lastName) . '</div>';
+        echo '</div>'; // .text
+        echo '</div>'; // .info
+        echo '</a>';
+    }
+}

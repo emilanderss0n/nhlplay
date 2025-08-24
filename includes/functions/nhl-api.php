@@ -159,6 +159,16 @@ class NHLApi {
     public static function teamSchedule($teamAbbrev, $season) {
         return self::API_WEB_BASE . "/club-schedule-season/{$teamAbbrev}/{$season}";
     }
+
+    /**
+     * Get team prospects
+     * Example: https://api-web.nhle.com/v1/prospects/BOS
+     * @param string $teamAbbrev Team abbreviation (e.g., "BOS")
+     * @return string API URL
+     */
+    public static function teamProspects($teamAbbrev) {
+        return self::API_WEB_BASE . "/prospects/{$teamAbbrev}";
+    }
     
     /**
      * Get team scoreboard
@@ -739,4 +749,13 @@ function getTeamSummaryUrl($season, $gameTypeId = 2, $sort = 'points') {
  */
 function getComponentSeasonUrl() {
     return NHLApi::componentSeason();
+}
+
+/**
+ * Quick method to get team prospects URL
+ * @param string $teamAbbrev Team abbreviation (e.g., 'BOS')
+ * @return string API URL
+ */
+function getTeamProspectsUrl($teamAbbrev) {
+    return NHLApi::teamProspects($teamAbbrev);
 }

@@ -1945,6 +1945,66 @@
     }
   }
 
+  .team-prospects {
+    margin: 6rem 0;
+
+    & > h3 {
+      margin-bottom: 2rem;
+    }
+
+    & .prospect {
+      display: flex;
+      position: relative;
+      color: var(--heading-color);
+      background: radial-gradient(ellipse at top, var(--dark-bg-color), transparent), radial-gradient(ellipse at bottom, var(--content-box-bg), transparent);
+      border-radius: 10px;
+      overflow: hidden;
+      padding: 1rem;
+      will-change: transform, box-shadow, border;
+      transition: all 0.2s linear;
+      border: 1px solid var(--border-stroke-weak);
+
+      &:hover {
+        transform: scale(1.03);
+        box-shadow: var(--box-shadow-nice);
+        border: 1px solid var(--border-stroke);
+      }
+
+      & .info {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+
+        & .text {
+
+          & .top {
+            display: flex;
+            gap: 0.3rem;
+            color: var(--trans-70);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.8rem;
+            margin-bottom: 0.3rem;
+          }
+
+          & .name {
+            font-size: 1rem;
+            font-weight: 400;
+            font-family: "Tomorrow", sans-serif;
+            text-transform: uppercase;
+          }
+        }
+
+        & .head {
+          width: 80px;
+          height: 80px;
+          background-color: var(--low-contrast-color);
+          border-radius: 50%;
+        }
+      }
+    }
+  }
+
   .watch-streams {
     margin-top: 3rem;
   }
