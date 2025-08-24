@@ -169,9 +169,10 @@ $injuredPlayerIds = getInjuredPlayerIds($teamAbbrev2);
             <div class="team-prospects">
                 <h3><?= getValue($teamInfo->teamCommonName->default, 'Team') ?> Prospects</h3>
                 <div class="grid grid-300" grid-max-col-count="5">
-                    <?php teamProspects($teamAbbrev) ?>
+                <?php teamProspects($teamAbbrev) ?>
                 </div>
             </div>
+
             <?php
             // Check if this team has a subreddit before including the team reddit section
             $teamSubreddit = getTeamRedditSub($teamAbbrev);
