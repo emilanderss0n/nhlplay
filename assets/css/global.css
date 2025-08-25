@@ -56,6 +56,7 @@
   --break-1000: 1000px;
   --break-1200: 1200px;
   --break-1400: 1400px;
+  --text-shadow: 1px 1px 2px rgb(0 0 0 / 80%);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -94,6 +95,7 @@
       --component-header-bg: #0b111c;
       --table-td: #141c27;
       --table-td-odd: #101620;
+      --text-shadow: 1px 1px 2px rgb(0 0 0 / 80%);
   }
 }
 
@@ -203,6 +205,20 @@
     width: 100%;
     height: 100%;
     background-color: rgb(0 0 0 / 70%);
+  }
+  
+  dialog .youtube-video-container {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+  }
+  dialog .youtube-video-container iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
   }
 
   .card {
@@ -4709,6 +4725,94 @@
     display: inline-block;
     width: 40px;
     height: 40px;
+  }
+
+  .youtube-video-card {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: clip;
+    border-radius: 10px;
+
+    & .video-thumbnail-container {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
+      max-height: max-content;
+      position: relative;
+
+      & img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: all 0.3s ease-out;
+        filter: blur(0px);
+        transform: scale(1);
+        z-index: 1;
+        mask: linear-gradient(181deg, #000, transparent 100%);
+      }
+
+      &:hover img {
+        filter: blur(4px);
+        transform: scale(1.1);
+      }
+
+      & .play-button {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+
+        & svg {
+          grid-column: 1 / 2;
+          grid-row: 1 / 2;
+          width: 64px;
+          height: 64px;
+          fill: var(--heading-color);
+          background-color: var(--semi-frost-bg);
+          box-shadow: var(--box-shadow-nice);
+          backdrop-filter: blur(4px);
+          border-radius: 50%;
+          padding: 12px;
+          transition: all 0.5s linear(0, 0.008 1.1%, 0.034 2.3%, 0.134 4.9%, 0.264 7.3%, 0.683 14.3%, 0.797 16.5%, 0.89 18.6%, 0.967 20.7%, 1.027 22.8%, 1.073 25%, 1.104 27.3%, 1.123 30.6%, 1.119 34.3%, 1.018 49.5%, 0.988 58.6%, 0.985 65.2%, 1 84.5%, 1) 0.25s;
+          opacity: 0;
+          transform: translateY(15px);
+          position: relative;
+          z-index: 1;
+        }
+
+        &:hover svg {
+          opacity: 1;
+          transform: translateY(0px);
+        }
+      }
+    }
+
+    & .video-title {
+      font-size: 1rem;
+      color: var(--heading-color);
+      line-height: 1.3;
+      font-style: normal;
+      font-weight: 500;
+      margin: 0;
+      padding: 1rem;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      pointer-events: none;
+      background-color: var(--semi-frost-bg);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease-out;
+      width: 100%;
+    }
+
+    &:hover .video-title {
+      transform: translateY(200px);
+    }
   }
 
   .season-break-message {

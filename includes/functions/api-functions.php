@@ -254,3 +254,278 @@ function getNHLGameData($gameId) {
     $curl = curlInit($ApiUrl);
     return json_decode($curl);
 }
+
+/**
+ * YouTube API Functions
+ * =====================
+ * 
+ * Easy functions for displaying YouTube videos from any channel on your website.
+ * 
+ * Usage Examples:
+ * 
+ * 1. Simple display with default settings:
+ *    renderYouTubeVideos("UCzRl6BRpz1cQfqK36wXsYhA"); // NHL channel
+ * 
+ * 2. Custom number of videos:
+ *    renderYouTubeVideos("UCzRl6BRpz1cQfqK36wXsYhA", 5); // Show only 5 videos
+ * 
+ * 3. Custom container ID:
+ *    renderYouTubeVideos("UCzRl6BRpz1cQfqK36wXsYhA", 10, "my-videos");
+ * 
+ * 4. Disable caching:
+ *    renderYouTubeVideos("UCzRl6BRpz1cQfqK36wXsYhA", 10, "videos", false);
+ * 
+ * 5. Just get the data without rendering:
+ *    $videos = getYouTubeVideos("UCzRl6BRpz1cQfqK36wXsYhA", 5);
+ *    if ($videos) {
+ *        foreach ($videos as $video) {
+ *            echo $video['snippet']['title'];
+ *        }
+ *    }
+ */
+
+/**
+ * Fetch YouTube videos from a channel
+ * @param string $channelId YouTube channel ID
+ * @param int $maxResults Maximum number of videos to fetch (default: 10)
+ * @param string $apiKey YouTube API key (optional, uses default if not provided)
+ * @return array|false Array of video data or false on error
+ */
+function fetchYouTubeVideos($channelId, $maxResults = 10, $apiKey = null) {
+    // Use default API key if none provided
+    if ($apiKey === null) {
+        $apiKey = "AIzaSyDUMIbtdWIDoZxM7Z-vAaYeELW-i3Ayhxc";
+    }
+    
+    try {
+        // Use uploads playlist but filter out Shorts by getting video details
+        // Get Uploads playlist ID
+        $playlistUrl = "https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=$channelId&key=$apiKey";
+        $playlistResponse = curlInit($playlistUrl);
+        $playlistData = json_decode($playlistResponse, true);
+        
+        if (!$playlistData || !isset($playlistData['items'][0]['contentDetails']['relatedPlaylists']['uploads'])) {
+            error_log("YouTube API Error: Unable to fetch playlist data for channel $channelId. Response: " . $playlistResponse);
+            return false;
+        }
+        
+        $uploadsPlaylist = $playlistData['items'][0]['contentDetails']['relatedPlaylists']['uploads'];
+        
+        // Fetch more videos than needed to account for filtering
+        $fetchCount = $maxResults * 2; // Fetch double to account for filtered Shorts
+        $videosUrl = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=$uploadsPlaylist&maxResults=$fetchCount&key=$apiKey";
+        $videosResponse = curlInit($videosUrl);
+        $videosData = json_decode($videosResponse, true);
+        
+        if (!$videosData || !isset($videosData['items'])) {
+            error_log("YouTube API Error: Unable to fetch videos for playlist $uploadsPlaylist. Response: " . $videosResponse);
+            return false;
+        }
+        
+        // Get video IDs to check durations
+        $videoIds = [];
+        foreach ($videosData['items'] as $item) {
+            if (isset($item['snippet']['resourceId']['videoId'])) {
+                $videoIds[] = $item['snippet']['resourceId']['videoId'];
+            }
+        }
+        
+        if (empty($videoIds)) {
+            return [];
+        }
+        
+        // Get video details including duration
+        $idsString = implode(',', $videoIds);
+        $detailsUrl = "https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=$idsString&key=$apiKey";
+        $detailsResponse = curlInit($detailsUrl);
+        $detailsData = json_decode($detailsResponse, true);
+        
+        // Create map of video ID to duration in seconds
+        $videoDurations = [];
+        if ($detailsData && isset($detailsData['items'])) {
+            foreach ($detailsData['items'] as $video) {
+                $duration = $video['contentDetails']['duration'] ?? '';
+                $seconds = parseDuration($duration);
+                $videoDurations[$video['id']] = $seconds;
+            }
+        }
+        
+        // Filter out Shorts (videos <= 60 seconds) and limit to requested count
+        $filteredItems = [];
+        foreach ($videosData['items'] as $item) {
+            $videoId = $item['snippet']['resourceId']['videoId'] ?? '';
+            $duration = $videoDurations[$videoId] ?? 0;
+            
+            // Skip Shorts (60 seconds or less)
+            if ($duration > 60) {
+                $filteredItems[] = $item;
+                // Stop when we have enough videos
+                if (count($filteredItems) >= $maxResults) {
+                    break;
+                }
+            }
+        }
+        
+        return $filteredItems;
+        
+    } catch (Exception $e) {
+        error_log("YouTube API Exception: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Fallback function to fetch from uploads playlist (may include Shorts)
+ * @param string $channelId YouTube channel ID
+ * @param int $maxResults Maximum number of videos to fetch
+ * @param string $apiKey YouTube API key
+ * @return array|false Array of video data or false on error
+ */
+function fetchYouTubeVideosFromUploads($channelId, $maxResults, $apiKey) {
+    try {
+        // Get Uploads playlist ID
+        $playlistUrl = "https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=$channelId&key=$apiKey";
+        $playlistResponse = curlInit($playlistUrl);
+        $playlistData = json_decode($playlistResponse, true);
+        
+        if (!$playlistData || !isset($playlistData['items'][0]['contentDetails']['relatedPlaylists']['uploads'])) {
+            error_log("YouTube API Error: Unable to fetch playlist data for channel $channelId. Response: " . $playlistResponse);
+            return false;
+        }
+        
+        $uploadsPlaylist = $playlistData['items'][0]['contentDetails']['relatedPlaylists']['uploads'];
+        
+        // Fetch videos
+        $videosUrl = "https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=$uploadsPlaylist&maxResults=$maxResults&key=$apiKey";
+        $videosResponse = curlInit($videosUrl);
+        $videosData = json_decode($videosResponse, true);
+        
+        if (!$videosData || !isset($videosData['items'])) {
+            error_log("YouTube API Error: Unable to fetch videos for playlist $uploadsPlaylist. Response: " . $videosResponse);
+            return false;
+        }
+        
+        return $videosData['items'];
+        
+    } catch (Exception $e) {
+        error_log("YouTube Uploads API Exception: " . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * Parse ISO 8601 duration (PT1M30S) to seconds
+ * @param string $duration ISO 8601 duration string
+ * @return int Duration in seconds
+ */
+function parseDuration($duration) {
+    if (empty($duration)) {
+        return 0;
+    }
+    
+    // Simple regex parsing for common YouTube durations
+    $seconds = 0;
+    
+    // Match hours, minutes, seconds
+    if (preg_match('/PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/', $duration, $matches)) {
+        $hours = isset($matches[1]) ? (int)$matches[1] : 0;
+        $minutes = isset($matches[2]) ? (int)$matches[2] : 0;
+        $secs = isset($matches[3]) ? (int)$matches[3] : 0;
+        
+        $seconds = ($hours * 3600) + ($minutes * 60) + $secs;
+    }
+    
+    return $seconds;
+}
+
+/**
+ * Render YouTube videos HTML with optional caching
+ * @param string $channelId YouTube channel ID
+ * @param int $maxResults Maximum number of videos to fetch (default: 10)
+ * @param string $containerId HTML container ID (default: 'videos')
+ * @param bool $useCache Whether to use caching (default: true)
+ * @param int $cacheLifetime Cache lifetime in seconds (default: 3600 = 1 hour)
+ * @return void Outputs HTML directly
+ */
+function renderYouTubeVideos($channelId, $maxResults = 10, $containerId = 'videos', $useCache = true, $cacheLifetime = 3600) {
+    $videosData = null;
+    
+    if ($useCache) {
+        // Create cache file path
+        $cacheDir = dirname(__DIR__, 2) . '/cache';
+        $cacheFile = $cacheDir . "/youtube-{$channelId}-{$maxResults}.json";
+        
+        // Check if cache exists and is valid
+        if (file_exists($cacheFile) && (filemtime($cacheFile) > (time() - $cacheLifetime))) {
+            $videosData = json_decode(file_get_contents($cacheFile), true);
+        } else {
+            // Fetch fresh data
+            $videos = fetchYouTubeVideos($channelId, $maxResults);
+            if ($videos !== false) {
+                $videosData = $videos;
+                // Save to cache
+                if (!is_dir($cacheDir)) {
+                    mkdir($cacheDir, 0755, true);
+                }
+                file_put_contents($cacheFile, json_encode($videos));
+            }
+        }
+    } else {
+        // Fetch without caching
+        $videosData = fetchYouTubeVideos($channelId, $maxResults);
+    }
+    
+    // Output the container and JavaScript
+    echo '<div id="' . htmlspecialchars($containerId) . '" class="youtube-videos grid grid-400">';
+    
+    if ($videosData !== false && !empty($videosData)) {
+        // Embed video data as JavaScript variable
+        echo '<script>window.youtubeVideosData = ' . json_encode(['items' => $videosData]) . ';</script>';
+    } else {
+        echo '<div class="alert info">No videos available at the moment</div>';
+    }
+    
+    echo '</div>';
+    
+    // Include the JavaScript module
+    echo '<script type="module">';
+    echo 'import { initYouTubeVideos } from "./assets/js/modules/youtube-videos.js";';
+    echo 'document.addEventListener("DOMContentLoaded", initYouTubeVideos);';
+    echo '</script>';
+}
+
+/**
+ * Simple function to just get YouTube videos data without rendering
+ * @param string $channelId YouTube channel ID
+ * @param int $maxResults Maximum number of videos to fetch (default: 10)
+ * @param bool $useCache Whether to use caching (default: true)
+ * @param int $cacheLifetime Cache lifetime in seconds (default: 3600 = 1 hour)
+ * @return array|false Array of video data or false on error
+ */
+function getYouTubeVideos($channelId, $maxResults = 10, $useCache = true, $cacheLifetime = 3600) {
+    if ($useCache) {
+        // Create cache file path
+        $cacheDir = dirname(__DIR__, 2) . '/cache';
+        $cacheFile = $cacheDir . "/youtube-{$channelId}-{$maxResults}.json";
+        
+        // Check if cache exists and is valid
+        if (file_exists($cacheFile) && (filemtime($cacheFile) > (time() - $cacheLifetime))) {
+            return json_decode(file_get_contents($cacheFile), true);
+        } else {
+            // Fetch fresh data
+            $videos = fetchYouTubeVideos($channelId, $maxResults);
+            if ($videos !== false) {
+                // Save to cache
+                if (!is_dir($cacheDir)) {
+                    mkdir($cacheDir, 0755, true);
+                }
+                file_put_contents($cacheFile, json_encode($videos));
+                return $videos;
+            }
+            return false;
+        }
+    } else {
+        // Fetch without caching
+        return fetchYouTubeVideos($channelId, $maxResults);
+    }
+}

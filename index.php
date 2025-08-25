@@ -38,6 +38,7 @@ if (!is_dir($cacheDir)) {
                 echo '<div class="trades trades-frontpage grid grid-300 grid-gap-lg grid-gap-row-lg" grid-max-col-count="2">';
                 echo renderTradeContent(true, 6, true); 
                 echo '</div>';
+
                 echo '<a href="'.BASE_URL.'/pages/last-season-overview" rel="page" tabindex="0" role="button">';
                 echo '<div class="season-break-message" style="background-image: url('.BASE_URL.'/assets/img/stanley_cup_fla_2025.webp);">';
                 echo '<div class="inner">';
@@ -188,9 +189,17 @@ if (!is_dir($cacheDir)) {
             </div>
         <?php } ?>
         <div class="component-header" style="margin-top: 5rem">
-            <h3 class="title">NHL - Popular @ r/hockey</h3>
-            <a href="https://www.reddit.com/r/hockey/" target="_blank" rel="noopener noreferrer" class="btn sm">Visit
-                r/hockey</a>
+            <h3 class="title">Latest NHL Videos</h3>
+            <a href="https://www.youtube.com/@NHL" target="_blank" rel="noopener noreferrer" class="btn sm">NHL on YouTube</a>
+        </div>
+        <?php
+        $channelId = "UCqFMzb-4AUf6WAIbl132QKA"; // NHL channel
+        $maxResults = 9;
+        renderYouTubeVideos($channelId, $maxResults);
+        ?>
+        <div class="component-header" style="margin-top: 5rem">
+            <h3 class="title">Popular at r/hockey</h3>
+            <a href="https://www.reddit.com/r/hockey/" target="_blank" rel="noopener noreferrer" class="btn sm">Visit r/hockey</a>
         </div>
         <div class="reddit-feed" id="reddit-feed-section" data-subreddit="hockey" data-limit="12">
             <?php include 'templates/reddit-frontpage.php'; ?>
