@@ -463,6 +463,49 @@ class NHLApi {
         $url = self::API_STATS_BASE . "/leaders/{$apiType}/{$category}";
         return self::buildUrl($url, $params);
     }
+
+    /**
+     * Get top skater bios by points for forwards (top 100 by default)
+     * Example user URL:
+     * https://api.nhle.com/stats/rest/en/skater/bios?isAggregate=false&isGame=false&sort=[{"property":"points","direction":"DESC"}]&start=0&limit=100&cayenneExp=(positionCode="L" or positionCode="R" or positionCode="C") and gameTypeId=2 and seasonId<=20242025 and seasonId>=20242025
+     * @param string $season Season (e.g., '20242025')
+     * @param int $limit Number of results to return (default 100)
+     * @return string API URL
+     */
+    public static function topForwardsByPoints($season, $limit = 100) {
+        $params = [
+            'isAggregate' => 'false',
+            'isGame' => 'false',
+            'sort' => self::buildSort([['property' => 'points', 'direction' => 'DESC']]),
+            'start' => 0,
+            'limit' => intval($limit),
+            // Using a raw Cayenne expression string to support OR and parentheses
+            'cayenneExp' => "(positionCode='L' or positionCode='R' or positionCode='C') and gameTypeId=2 and seasonId<={$season} and seasonId>={$season}"
+        ];
+
+        return self::buildUrl(self::API_STATS_BASE . '/skater/bios', $params);
+    }
+
+    /**
+     * Get top skater bios by points for defensemen (top 100 by default)
+     * Example user URL:
+     * https://api.nhle.com/stats/rest/en/skater/bios?isAggregate=false&isGame=false&sort=[{"property":"points","direction":"DESC"}]&start=0&limit=100&cayenneExp=gameTypeId=2%20and%20positionCode="D"%20and%20seasonId<=20242025%20and%20seasonId>=20242025
+     * @param string $season Season (e.g., '20242025')
+     * @param int $limit Number of results to return (default 100)
+     * @return string API URL
+     */
+    public static function topDefenseByPoints($season, $limit = 100) {
+        $params = [
+            'isAggregate' => 'false',
+            'isGame' => 'false',
+            'sort' => self::buildSort([['property' => 'points', 'direction' => 'DESC']]),
+            'start' => 0,
+            'limit' => intval($limit),
+            'cayenneExp' => "gameTypeId=2 and positionCode='D' and seasonId<={$season} and seasonId>={$season}"
+        ];
+
+        return self::buildUrl(self::API_STATS_BASE . '/skater/bios', $params);
+    }
     
     // ==========================================
     // RECORDS API ENDPOINTS (records.nhl.com)
@@ -759,4 +802,24 @@ function getComponentSeasonUrl() {
  */
 function getTeamProspectsUrl($teamAbbrev) {
     return NHLApi::teamProspects($teamAbbrev);
+}
+
+/**
+ * Quick method to get top forwards by points URL
+ * @param string $season Season (e.g., '20242025')
+ * @param int $limit Number of results (default 100)
+ * @return string API URL
+ */
+function getTopForwardsByPointsUrl($season, $limit = 100) {
+    return NHLApi::topForwardsByPoints($season, $limit);
+}
+
+/**
+ * Quick method to get top defensemen by points URL
+ * @param string $season Season (e.g., '20242025')
+ * @param int $limit Number of results (default 100)
+ * @return string API URL
+ */
+function getTopDefenseByPointsUrl($season, $limit = 100) {
+    return NHLApi::topDefenseByPoints($season, $limit);
 }

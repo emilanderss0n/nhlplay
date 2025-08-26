@@ -42,7 +42,13 @@ const DraftMode = {
         if (positionInfo) {
             const position = this.getCurrentPosition();
             const positionRound = this.getPositionRound();
-            positionInfo.textContent = `${position.charAt(0).toUpperCase() + position.slice(1)} - Pick ${positionRound}`;
+            // Determine max picks for the current position from roundConfig
+            const maxByPosition = (this.state.roundConfig && this.state.roundConfig[position])
+                ? this.state.roundConfig[position]
+                : (position === 'forwards' ? 12 : position === 'defensemen' ? 6 : 2);
+
+            // Show label with uppercase position and PICK X/Y
+            positionInfo.textContent = `${position.toUpperCase()} - PICK ${positionRound}/${maxByPosition}`;
         }
     },
     
@@ -234,8 +240,10 @@ function createDraftInterface() {
             
             <div class="draft-active" style="display: none;">
                 <div class="draft-progress">
-                    <div class="draft-round-info">Round 1 of 9</div>
-                    <div class="draft-position-info">Forwards - Pick 1</div>
+                    <div class="flex-default">
+                        <div class="draft-round-info">Round 1 of 9</div>
+                        <div class="draft-position-info">Forwards - Pick 1</div>
+                    </div>
                     <div class="draft-progress-bar">
                         <div class="progress-fill" style="width: 0%"></div>
                     </div>
@@ -1000,40 +1008,6 @@ async function autoCompleteDraft(e) {
         if (loading) hideLoadingIndicator(loading);
         if (btn) btn.disabled = false;
     }
-}
-
-function selectFirstAvailablePlayer() {
-    const container = document.querySelector('.draft-players-grid');
-    if (!container) return null;
-    // Prefer visible, enabled, clickable draft-player elements
-    const cards = Array.from(container.querySelectorAll('.draft-player.clickable'));
-    for (const card of cards) {
-        const style = window.getComputedStyle(card);
-        if (style.display !== 'none' && style.visibility !== 'hidden' && card.style.opacity !== '0') {
-            return card;
-        }
-    }
-    // Fallback to first card
-    return cards[0] || null;
-}
-
-function waitForPlayersToLoad(timeout = 3000) {
-    const start = Date.now();
-    return new Promise((resolve) => {
-        const check = () => {
-            const container = document.querySelector('.draft-players-grid');
-            if (container && container.querySelectorAll('.draft-player').length > 0) {
-                resolve(true);
-                return;
-            }
-            if (Date.now() - start > timeout) {
-                resolve(false);
-                return;
-            }
-            setTimeout(check, 100);
-        };
-        check();
-    });
 }
 
 async function transferPlayersToTeamBuilder() {
