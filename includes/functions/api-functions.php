@@ -321,6 +321,8 @@ function fetchYouTubeVideos($channelId, $maxResults = 10, $apiKey = null) {
             error_log("YouTube API Error: Unable to fetch videos for playlist $uploadsPlaylist. Response: " . $videosResponse);
             return false;
         }
+
+        // example response url: https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=UUzRl6BRpz1cQfqK36wXsYhA&maxResults=20&key=AIzaSyDUMIbtdWIDoZxM7Z-vAaYeELW-i3Ayhxc
         
         // Get video IDs to check durations
         $videoIds = [];

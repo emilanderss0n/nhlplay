@@ -34,13 +34,14 @@ function renderYouTubeVideos(videos, container) {
         const videoId = item.snippet.resourceId.videoId;
         const title = stripEmoji(item.snippet.title || '');
         const thumbnail = item.snippet.thumbnails?.standard?.url || item.snippet.thumbnails?.high?.url;
+        const channelTitle = item.snippet.channelTitle || '';
         
-        const videoElement = createVideoElement(videoId, title, thumbnail);
+        const videoElement = createVideoElement(videoId, title, thumbnail, channelTitle);
         container.appendChild(videoElement);
     });
 }
 
-function createVideoElement(videoId, title, thumbnail) {
+function createVideoElement(videoId, title, thumbnail, channelTitle) {
     const videoDiv = document.createElement('div');
     videoDiv.className = 'youtube-video-card';
     
@@ -61,12 +62,12 @@ function createVideoElement(videoId, title, thumbnail) {
     const thumbnailContainer = videoDiv.querySelector('.video-thumbnail-container');
     
     playButton.addEventListener('click', () => {
-        openVideoModal(videoId, title);
+        openVideoModal(videoId, channelTitle);
     });
     
     // Also allow clicking the thumbnail image to open modal
     thumbnailContainer.addEventListener('click', () => {
-        openVideoModal(videoId, title);
+        openVideoModal(videoId, channelTitle);
     });
     
     return videoDiv;
@@ -125,13 +126,13 @@ function createVideoModal() {
     });
 }
 
-function openVideoModal(videoId, title) {
+function openVideoModal(videoId, channelTitle) {
     const dialog = document.getElementById('youtube-video-modal');
     const modalTitle = dialog.querySelector('.modal-title');
     const videoContainer = dialog.querySelector('.youtube-video-container');
     
     // Set title
-    modalTitle.textContent = title;
+    modalTitle.textContent = channelTitle;
     
     // Create iframe
     const iframe = document.createElement('iframe');
