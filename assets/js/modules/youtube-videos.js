@@ -44,14 +44,14 @@ function renderYouTubeVideos(videos, container) {
 function createVideoElement(videoId, title, thumbnail, channelTitle) {
     const videoDiv = document.createElement('div');
     videoDiv.className = 'youtube-video-card';
+    videoDiv.tabIndex = 0;
     
     videoDiv.innerHTML = `
         <div class="video-thumbnail-container">
             <img src="${thumbnail}" alt="${title}" class="video-thumbnail" loading="lazy">
             <div class="play-button" data-video-id="${videoId}">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M8 5v14l11-7z"/>
-                </svg>
+
+                <svg fill="currentColor" width="44px" height="44px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m.001 1.165v21.669c.052.661.601 1.177 1.271 1.177.225 0 .436-.058.62-.16l-.006.003 21.442-10.8c.4-.192.671-.593.671-1.058s-.271-.867-.664-1.055l-.007-.003-21.442-10.8c-.177-.099-.388-.157-.613-.157-.672 0-1.223.521-1.27 1.181v.004z"/></svg>
             </div>
         </div>
         <h4 class="video-title">${title}</h4>

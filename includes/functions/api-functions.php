@@ -478,7 +478,7 @@ function renderYouTubeVideos($channelId, $maxResults = 10, $containerId = 'video
     }
     
     // Output the container and JavaScript
-    echo '<div id="' . htmlspecialchars($containerId) . '" class="youtube-videos grid grid-400">';
+    echo '<div id="' . htmlspecialchars($containerId) . '" class="youtube-videos grid grid-400 grid-gap-lg grid-gap-row-lg">';
     
     if ($videosData !== false && !empty($videosData)) {
         // Embed video data as JavaScript variable
