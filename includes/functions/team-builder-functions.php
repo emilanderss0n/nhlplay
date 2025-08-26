@@ -90,9 +90,45 @@ function getDraftPlayers() {
             return;
         }
 
-        // Randomly select 3 players
+        // Randomly select up to 3 players that have at least 1 career game played.
+        // This check must be enforced regardless of the user's "career stats" filter.
         shuffle($allPlayers);
-        $selectedPlayers = array_slice($allPlayers, 0, 3);
+        $selectedPlayers = [];
+        foreach ($allPlayers as $player) {
+            if (count($selectedPlayers) >= 3) break;
+
+            $playerId = $player->id ?? 0;
+
+            // Defensive: skip invalid ids
+            if (empty($playerId)) continue;
+
+            try {
+                $careerStats = getPlayerCareerStats($playerId);
+            } catch (Exception $e) {
+                // If we can't fetch career stats for a player, skip them
+                error_log("Failed fetching career stats for player {$playerId}: " . $e->getMessage());
+                continue;
+            }
+
+            // Require career stats exist and show at least 1 game played
+            $gamesPlayed = null;
+            if ($careerStats && isset($careerStats->gamesPlayed)) {
+                $gamesPlayed = intval($careerStats->gamesPlayed);
+            }
+
+            if ($gamesPlayed !== null && $gamesPlayed >= 1) {
+                $selectedPlayers[] = $player;
+            } else {
+                // Skip players with no career games
+                continue;
+            }
+        }
+
+        // If no eligible players were found, fail gracefully
+        if (empty($selectedPlayers)) {
+            echo json_encode(['error' => 'No eligible players found for position: ' . $position . ' (requires >=1 career GP)']);
+            return;
+        }
 
         // Apply filters and render players
         $playersHtml = [];
