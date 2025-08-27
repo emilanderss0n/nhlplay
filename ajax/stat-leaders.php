@@ -1,26 +1,19 @@
 <?php
 include_once '../path.php';
 include_once '../includes/functions.php';
-require_once "../includes/MobileDetect.php";
+include_once __DIR__ . '/../includes/controllers/stat-leaders.php';
+
+$app = $app ?? ($GLOBALS['app'] ?? null);
 if(isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') { } else { include '../header.php'; }
 
-$detect = new \Detection\MobileDetect;
-$deviceType = ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'computer');
-
-// Check if user is switching between regular season and playoffs
-$selectedPlayoffs = $playoffs; // Default to global setting
-if(isset($_GET['playoffs'])) {
-    $selectedPlayoffs = $_GET['playoffs'] === 'true';
-}
-
-// Check if user is selecting a different season
-$selectedSeason = $season; // Default to global setting
-if(isset($_GET['season'])) {
-    $selectedSeason = $_GET['season'];
-}
-
-// Keep legacy global $season in sync so includes (seasonSelection.php) render correctly
+// Determine selected season/playoffs from query or app context
+$selectedPlayoffs = isset($_GET['playoffs']) ? ($_GET['playoffs'] === 'true') : ($app['playoffs'] ?? false);
+$selectedSeason = isset($_GET['season']) ? $_GET['season'] : ($app['context']['season'] ?? ($GLOBALS['season'] ?? date('Y')));
+// Keep legacy $season variable for includes that rely on it
 $season = $selectedSeason;
+
+// Optionally fetch prepped data via controller (not required by renderStatHolder but useful)
+$leadersData = statleaders_get_leaders($selectedSeason, $selectedPlayoffs);
 
 ?>
 <main>
@@ -53,10 +46,8 @@ $season = $selectedSeason;
                 <div class="stat-points stat-holder skaters">
                     <?= renderStatHolder('skaters', 'points', $selectedSeason, $selectedPlayoffs); ?>
                 </div>
-                <div class="stat-goals stat-holder skaters">
-                </div>
-                <div class="stat-assists stat-holder skaters">
-                </div>
+                <div class="stat-goals stat-holder skaters"></div>
+                <div class="stat-assists stat-holder skaters"></div>
             </div>
             <div class="stats-leaders defense">
                 <h3>Defensemen</h3>
@@ -69,10 +60,8 @@ $season = $selectedSeason;
                 <div class="stat-points stat-holder defense">
                     <?= renderStatHolder('defense', 'points', $selectedSeason, $selectedPlayoffs); ?>
                 </div>
-                <div class="stat-goals stat-holder defense">
-                </div>
-                <div class="stat-assists stat-holder defense">
-                </div>
+                <div class="stat-goals stat-holder defense"></div>
+                <div class="stat-assists stat-holder defense"></div>
             </div>
             <div class="stats-leaders goalies">
                 <h3>Goalies</h3>
@@ -84,8 +73,7 @@ $season = $selectedSeason;
                 <div class="stat-svp stat-holder goalies">
                     <?= renderStatHolder('goalies', 'savePctg', $selectedSeason, $selectedPlayoffs); ?>
                 </div>
-                <div class="stat-gaa stat-holder goalies">
-                </div>
+                <div class="stat-gaa stat-holder goalies"></div>
             </div>
             <div class="stats-leaders rookie">
                 <h3>Rookies</h3>
@@ -98,10 +86,8 @@ $season = $selectedSeason;
                 <div class="stat-points stat-holder rookies">
                     <?= renderStatHolder('rookies', 'points', $selectedSeason, $selectedPlayoffs); ?>
                 </div>
-                <div class="stat-goals stat-holder rookies">
-                </div>
-                <div class="stat-assists stat-holder rookies">
-                </div>
+                <div class="stat-goals stat-holder rookies"></div>
+                <div class="stat-assists stat-holder rookies"></div>
             </div>
             <?php if (!$selectedPlayoffs) { ?>
             <div class="stats-leaders">

@@ -1,9 +1,6 @@
 <?php
 
 function getDraftPlayers() {
-    // Set JSON header immediately
-    header('Content-Type: application/json');
-
     try {
         global $season, $teamAbbrev;
 
@@ -27,19 +24,16 @@ function getDraftPlayers() {
         }
 
         if (!in_array($position, ['forwards', 'defensemen', 'goalies'])) {
-            echo json_encode(['error' => 'Invalid position']);
-            return;
+            return ['error' => 'Invalid position'];
         }
 
         // Check if globals are available
         if (!isset($teamAbbrev) || !is_array($teamAbbrev)) {
-            echo json_encode(['error' => 'Team abbreviation data not available']);
-            return;
+            return ['error' => 'Team abbreviation data not available'];
         }
 
         if (!isset($season)) {
-            echo json_encode(['error' => 'Season data not available']);
-            return;
+            return ['error' => 'Season data not available'];
         }
 
         // Use a subset of teams for better performance (can expand to all 32 later)
@@ -86,8 +80,7 @@ function getDraftPlayers() {
         }
 
         if (empty($allPlayers)) {
-            echo json_encode(['error' => 'No players found for position: ' . $position]);
-            return;
+            return ['error' => 'No players found for position: ' . $position];
         }
 
         // Randomly select up to 3 players that have at least 1 career game played.
@@ -126,8 +119,7 @@ function getDraftPlayers() {
 
         // If no eligible players were found, fail gracefully
         if (empty($selectedPlayers)) {
-            echo json_encode(['error' => 'No eligible players found for position: ' . $position . ' (requires >=1 career GP)']);
-            return;
+            return ['error' => 'No eligible players found for position: ' . $position . ' (requires >=1 career GP)'];
         }
 
         // Apply filters and render players
@@ -145,29 +137,27 @@ function getDraftPlayers() {
         }
 
         if (empty($playersHtml)) {
-            echo json_encode(['error' => 'Failed to render any players']);
-            return;
+            return ['error' => 'Failed to render any players'];
         }
 
-        echo json_encode([
-            'success' => true,
+        return [
             'players' => $playersHtml,
             'position' => $position,
             'round' => $round
-        ]);
+        ];
 
     } catch (Exception $e) {
-        echo json_encode(['error' => 'Exception: ' . $e->getMessage()]);
+        return ['error' => 'Exception: ' . $e->getMessage()];
     } catch (Error $e) {
-        echo json_encode(['error' => 'Fatal Error: ' . $e->getMessage()]);
+        return ['error' => 'Fatal Error: ' . $e->getMessage()];
     } catch (Throwable $e) {
-        echo json_encode(['error' => 'Throwable: ' . $e->getMessage()]);
+        return ['error' => 'Throwable: ' . $e->getMessage()];
     }
 }
 
 function getRoundPlayers() {
     // Similar to getDraftPlayers but for specific round progression
-    getDraftPlayers();
+    return getDraftPlayers();
 }
 
 function calculateAge($birthDate) {

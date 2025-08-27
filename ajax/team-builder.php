@@ -4,9 +4,13 @@ include_once '../includes/functions.php';
 // Process request parameters based on request type
 if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
     $activeTeam = $_POST['active_team'] ?? null;
+    $isAjax = true;
 } else {
-    include_once '../header.php';
+    if (!defined('IN_PAGE')) include_once '../header.php';
+    // Ensure full-page views have a <main> wrapper so client-side routing can target it
+    echo "<main>\n";
     $activeTeam = null;
+    $isAjax = false;
 }
 
 $teamAbbrev = $activeTeam ? idToTeamAbbrev($activeTeam) : '';
@@ -162,4 +166,10 @@ $teamBuilderActive = true;
     </div>
 </div>
 
-<?php if(isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {} else { include_once '../footer.php'; } ?>
+<?php if(isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
+    // AJAX call - footer handled by caller
+} else {
+    // Close the main wrapper added earlier and include footer for full page
+    echo "</main>\n";
+    include_once '../footer.php';
+} ?>

@@ -1,13 +1,16 @@
 <?php
 include_once '../path.php';
 include_once '../includes/functions.php';
+include_once __DIR__ . '/../includes/controllers/team.php';
 // Process request parameters based on request type
 if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
     // AJAX request - prioritize POST parameter
     $activeTeam = $_POST['active_team'];
 } else {
     // Direct access - check for team_abbr parameter first, then GET active_team
-    include_once '../header.php';
+    if (!defined('IN_PAGE')) {
+        include_once '../header.php';
+    }
     
     if(isset($_GET['team_abbr'])) {
         // Convert abbreviation to team ID using your existing function
@@ -23,17 +26,8 @@ if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH']
 
 
 $utcTimezone = new DateTimeZone('UTC');
-$teamAbbrev = idToTeamAbbrev($activeTeam);
-$teamAbbrev2 = idToTeamAbbrevInjuries($activeTeam);
-
-$teamRosterStats = getTeamRosterStats($teamAbbrev, $season);
-$teamRosterInfo = getTeamRosterInfo($teamAbbrev, $season);
-$injuryCount = getInjuriesTeamCount($teamAbbrev2);
-$medianAge = getTeamMedianAge($teamRosterInfo);
-$teamInfo = getTeamStats($teamAbbrev);
-$teamStatsAdv = getTeamStatsAdv($activeTeam, $season);
-$schedules = getTeamSchedules($teamAbbrev);
-$injuredPlayerIds = getInjuredPlayerIds($teamAbbrev2);
+$data = team_prepare($activeTeam, $season);
+extract($data);
 ?>
 
 <style>
@@ -120,28 +114,32 @@ $injuredPlayerIds = getInjuredPlayerIds($teamAbbrev2);
                     <?php
                     $now = date("Y-m-d");
                     $then = date("Y-m-d", strtotime("+2 week"));
-                    foreach($schedules->gamesByDate as $result) { 
-                    $startTimeUTC = new DateTime($result->games[0]->startTimeUTC, $utcTimezone);
-                    if ($result->games[0]->gameState === 'FUT') { ?>
-                        <div class="swiper-slide item schedule-game <?php if($result->games[0]->gameType === 1) { echo 'preseason'; } elseif ($result->games[0]->gameType === 2) { echo 'regular'; } elseif ($result->games[0]->gameType === 3) { echo 'playoff'; } ?>">
-                            <div class="schedule-game-date"><strong><?= $result->games[0]->gameDate ?></strong> at <?= $result->games[0]->venue->default ?></div>
+                    // schedules was prepared in team_prepare and normalized by controller
+                    if (isset($schedules->games) && is_array($schedules->games)) {
+                        foreach ($schedules->games as $result) {
+                            $g = $result; // keep naming consistent
+                            if ($g->gameState !== 'FUT') continue;
+                    ?>
+                        <div class="swiper-slide item schedule-game <?php if($g->gameType === 1) { echo 'preseason'; } elseif ($g->gameType === 2) { echo 'regular'; } elseif ($g->gameType === 3) { echo 'playoff'; } ?>">
+                            <div class="schedule-game-date"><strong><?= $g->gameDate ?></strong> at <?= $g->venue->default ?></div>
                             <div class="schedule-game-visual">
                                 <div class="schedule-game-away">
-                                    <img class="game-team-logo" src="assets/img/teams/<?= $result->games[0]->awayTeam->id ?>.svg" alt="<?= teamToName($result->games[0]->awayTeam->id) ?> logo" />
-                                    <div class="game-team-fill" style="background: linear-gradient(142deg, <?= teamToColor($result->games[0]->awayTeam->id) ?> 0%, rgba(255,255,255,0) 58%);"></div>
+                                    <img class="game-team-logo" src="assets/img/teams/<?= $g->awayTeam->id ?>.svg" alt="<?= teamToName($g->awayTeam->id) ?> logo" />
+                                    <div class="game-team-fill" style="background: linear-gradient(142deg, <?= teamToColor($g->awayTeam->id) ?> 0%, rgba(255,255,255,0) 58%);"></div>
                                 </div>
                                 <div class="schedule-game-vs">
                                     <div class="vs">VS</div>
-                                    <div class="time theTimeSimple"><?= $result->games[0]->startTimeUTC ?></div>
+                                    <div class="time theTimeSimple"><?= $g->startTimeUTC ?></div>
                                 </div>
                                 <div class="schedule-game-home">
-                                    <img class="game-team-logo" src="assets/img/teams/<?= $result->games[0]->homeTeam->id ?>.svg" alt="<?= teamToName($result->games[0]->homeTeam->id) ?> logo" />
-                                    <div class="game-team-fill" style="background: linear-gradient(-142deg, <?= teamToColor($result->games[0]->homeTeam->id) ?> 0%, rgba(255,255,255,0) 58%);"></div>
+                                    <img class="game-team-logo" src="assets/img/teams/<?= $g->homeTeam->id ?>.svg" alt="<?= teamToName($g->homeTeam->id) ?> logo" />
+                                    <div class="game-team-fill" style="background: linear-gradient(-142deg, <?= teamToColor($g->homeTeam->id) ?> 0%, rgba(255,255,255,0) 58%);"></div>
                                 </div>
                             </div>
                         </div>
-                    <?php } else { ?>
-                    <?php }} ?>
+                    <?php }
+                    }
+                    ?>
                 </div>
             </div>
             <div class="team-roster-header">
@@ -186,4 +184,4 @@ $injuredPlayerIds = getInjuredPlayerIds($teamAbbrev2);
     </div> <!-- END .wrap -->
 </main>
 
-<?php if(isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {} else { include_once '../footer.php'; } ?>
+<?php if(isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {} else { if (!defined('IN_PAGE')) { include_once '../footer.php'; } } ?>

@@ -1,9 +1,9 @@
 <?php
 include_once '../path.php';
 include_once '../includes/functions.php';
-$ApiUrl = 'https://search.d3.nhle.com/api/v1/search/player?culture=en-us&limit=20&q='. $_POST['keystroke']. '&active=true';
-$curl = curlInit($ApiUrl);
-$players = json_decode($curl);
+include_once __DIR__ . '/../includes/controllers/suggestions.php';
+$keystroke = $_POST['keystroke'] ?? '';
+$players = suggestions_search_players($keystroke, $season ?? null, 20);
 
 if (empty($players)) {
     echo '<div class="suggest-message">No matches</div>';

@@ -1,12 +1,24 @@
 <?php
 include_once '../path.php';
 include_once '../includes/functions.php';
-if(isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') { $gameId = $_POST['gameId']; } else { include_once '../header.php'; $gameId = $_GET['gameId']; }
-require_once "../includes/MobileDetect.php";
-$detect = new \Detection\MobileDetect;
-$deviceType = ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'computer');
+include_once __DIR__ . '/../includes/controllers/game.php';
+if(isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') { 
+    $gameId = $_POST['gameId']; 
+} else { 
+    if (!defined('IN_PAGE')) include_once '../header.php';
+    $gameId = $_GET['gameId']; 
+}
 
-include_once '../includes/data/init-post-game.php';
+// Use centralized MobileDetect where available; avoid duplicate instantiation
+if (!class_exists('\Detection\MobileDetect') && file_exists(__DIR__ . '/../includes/MobileDetect.php')) {
+    require_once __DIR__ . '/../includes/MobileDetect.php';
+}
+$detect = $GLOBALS['app']['detect'] ?? (class_exists('\Detection\MobileDetect') ? new \Detection\MobileDetect : null);
+$deviceType = ($detect ? ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'computer') : 'computer');
+
+// Prepare post-game data and extract returned variables for local scope
+$postData = game_prepare_post($gameId ?? ($GLOBALS['gameId_temp'] ?? null));
+if (is_array($postData)) extract($postData);
 ?>
 <style>
     .team-banner-<?= $winnerTeam ?>::before {

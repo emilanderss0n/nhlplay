@@ -1,21 +1,19 @@
 <?php
 include_once '../path.php';
 include_once '../includes/functions.php';
+include_once __DIR__ . '/../includes/controllers/scores.php';
+$app = $app ?? ($GLOBALS['app'] ?? null);
 if(isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') { } else { include '../header.php'; }
 ?>
 <main>
     <div class="wrap">
-        <?php if (!$seasonBreak) {
-        $dateDaysAgo = date('Y-m-d', strtotime('-4 days'));
-        // Use the new NHL API utility
-        $ApiUrl = NHLApi::scheduleByDate($dateDaysAgo);
-        $curl = curlInit($ApiUrl);
-        $scores = json_decode($curl);
+    <?php $seasonBreak = $app['seasonBreak'] ?? ($GLOBALS['seasonBreak'] ?? false); if (!$seasonBreak) {
+    $scores = scores_get_recent(4);
         ?>
         <div class="game-scores schedule grid grid-300 grid-gap-lg grid-gap-row-sm" grid-max-col-count="4">
         <?php gameScores($scores); ?>
         </div>
-        <?php } if ($seasonBreak) { ?>
+    <?php } if ($seasonBreak) { ?>
         <div class="game-scores">
             <div class="season-break-notice">
                 <img src="assets/img/post-season-2.png" alt="Season Break" />

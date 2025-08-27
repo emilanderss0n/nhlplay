@@ -137,7 +137,9 @@ function renderPacificDivision($standing, $detect) {
     renderDivisionTable('P', 'Pacific', $standing, $detect);
 }
 
-function renderDivisionTable($divisionAbbrev, $divisionName, $standing, $detect) {
+function renderDivisionTable($divisionAbbrev, $divisionName, $standing, $detectOrApp) {
+    // detectOrApp may be either the MobileDetect instance or the $app array
+    $detect = is_array($detectOrApp) && isset($detectOrApp['detect']) ? $detectOrApp['detect'] : $detectOrApp;
     ?>
     <h3 class="header-text-gradient"><?= $divisionName ?></h3>
     <table class="divisionTable hover sticky-header" data-order='[[ 0, "asc" ]]'>
@@ -189,7 +191,8 @@ function renderDivisionTable($divisionAbbrev, $divisionName, $standing, $detect)
     <?php
 }
 
-function renderLeagueTable($standing, $detect) {
+function renderLeagueTable($standing, $detectOrApp) {
+    $detect = is_array($detectOrApp) && isset($detectOrApp['detect']) ? $detectOrApp['detect'] : $detectOrApp;
     ?>
     <table id="leagueTable" class="hover sticky-header" data-order='[[ 0, "asc" ]]'>
         <thead>
@@ -245,7 +248,8 @@ function renderLeagueTable($standing, $detect) {
     <?php
 }
 
-function renderConferenceTable($conferenceAbbrev, $conferenceName, $standing, $detect) {
+function renderConferenceTable($conferenceAbbrev, $conferenceName, $standing, $detectOrApp) {
+    $detect = is_array($detectOrApp) && isset($detectOrApp['detect']) ? $detectOrApp['detect'] : $detectOrApp;
     ?>
     <h3 class="header-text-gradient"><?= $conferenceName ?></h3>
     <table class="conferenceTable hover sticky-header" data-order='[[ 0, "asc" ]]'>

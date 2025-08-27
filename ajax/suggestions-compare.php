@@ -1,18 +1,17 @@
-<script>
-    $('#activity-sm').fadeOut("slow");
-</script>
-<div class="suggest-message">No matches</div>
 <?php
+$jqScript = "<script>$('#activity-sm').fadeOut('slow');</script>";
+echo $jqScript;
 include_once '../path.php';
 include_once '../includes/functions.php';
-$ApiUrl = 'https://search.d3.nhle.com/api/v1/search/player?culture=en-us&limit=20&q='. $_POST['keystroke']. '&active=true';
-$curl = curlInit($ApiUrl);
-$players = json_decode($curl);
-if (!empty($players)) { ?>
-<script>
-    $('.suggest-message').hide();
-</script>
-<?php foreach($players as $suggestion) {
+include_once __DIR__ . '/../includes/controllers/suggestions.php';
+$keystroke = $_POST['keystroke'] ?? '';
+$players = suggestions_search_players($keystroke, $season ?? null, 20);
+if (empty($players)) {
+    echo '<div class="suggest-message">No matches</div>';
+    return;
+}
+echo '<script>$(\'.suggest-message\').hide();</script>';
+foreach($players as $suggestion) {
 $name = $suggestion->name;
 $name = explode(' ', $name);
 
@@ -40,4 +39,5 @@ $randomNum = substr(str_shuffle("0123456789"), 0, 2);
         </svg>
     </div><!-- END .headshot -->
 </a>
-<?php }} ?>
+<?php }
+?>

@@ -2,14 +2,56 @@ import { fixAjaxResponseUrls } from './ajax-handler.js';
 import { checkRedditGameThread } from './reddit-thread-handler.js';
 
 export function initRouteHandler(elements) {
+    // Helper to resolve live DOM elements if initial `elements` are null or stale
+    function resolveElements() {
+        return {
+            mainElement: (elements && elements.mainElement) || document.querySelector('main'),
+            activityElement: (elements && elements.activityElement) || document.getElementById('activity') || document.getElementById('activity-sm') || null
+        };
+    }
+    // Safely render HTML into the live <main> element.
+    // If the response contains a top-level <main>, use its inner content to avoid nested <main> tags.
+    function renderIntoMain(html) {
+        const els = resolveElements();
+        try {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            const newMain = doc.querySelector('main');
+
+            if (els.mainElement) {
+                if (newMain) {
+                    els.mainElement.innerHTML = newMain.innerHTML;
+                } else {
+                    els.mainElement.innerHTML = html;
+                }
+                return true;
+            } else if (newMain) {
+                // No existing main element - append parsed main to body
+                document.body.appendChild(newMain);
+                return true;
+            }
+        } catch (err) {
+            console.warn('route-handler.renderIntoMain parse error:', err);
+        }
+
+        // Fallback: try direct write into existing main if available
+        if (els.mainElement) {
+            els.mainElement.innerHTML = html;
+            return true;
+        }
+        return false;
+    }
     function routeLink(url, callback) {
         window.scrollTo({
             top: 0,
             behavior: 'smooth'
         });
 
-        elements.activityElement.style.display = 'block';
-        elements.activityElement.style.opacity = 1;
+        const els = resolveElements();
+        if (els.activityElement) {
+            els.activityElement.style.display = 'block';
+            els.activityElement.style.opacity = 1;
+        }
 
         const xhr = new window.XMLHttpRequest();
         xhr.open("GET", url + "?rel=page", true);
@@ -17,13 +59,19 @@ export function initRouteHandler(elements) {
         xhr.onload = function () {
             // Fix image paths in the response
             const fixedResponse = fixAjaxResponseUrls(this.responseText);
-            elements.mainElement.innerHTML = fixedResponse;
-            elements.mainElement.classList.remove('page-ani');
-            elements.mainElement.classList.add('page-ani');
-
-            elements.mainElement.addEventListener('animationend', function (e) {
-                elements.mainElement.classList.remove('page-ani');
-            }, { once: true });
+            const els2 = resolveElements();
+            // Render safely into main (avoid nested <main> if response contains one)
+            const rendered = renderIntoMain(fixedResponse);
+            if (rendered && resolveElements().mainElement) {
+                const me = resolveElements().mainElement;
+                me.classList.remove('page-ani');
+                me.classList.add('page-ani');
+                me.addEventListener('animationend', function (e) {
+                    me.classList.remove('page-ani');
+                }, { once: true });
+            } else {
+                console.warn('route-handler: main element not found to render AJAX response');
+            }
 
             if (xhr.readyState === xhr.DONE && (xhr.status >= 200 && xhr.status < 300)) {
                 if (this.response) {
@@ -59,43 +107,44 @@ export function initRouteHandler(elements) {
         };
 
         xhr.onloadend = function () {
-            fadeOutElement(elements.activityElement);
+            const els3 = resolveElements();
+            if (els3.activityElement) fadeOutElement(els3.activityElement);
         };
 
         xhr.onerror = function () {
             console.error("Error during AJAX request:", xhr.status, xhr.statusText);
-            fadeOutElement(elements.activityElement);
+            const els4 = resolveElements();
+            if (els4.activityElement) fadeOutElement(els4.activityElement);
         };
-
         xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
         xhr.send();
     }
 
-    // Handle page links
-    const anchors = document.querySelectorAll("a[rel=page]");
-    anchors.forEach(function (trigger) {
-        trigger.addEventListener("click", function (e) {
-            e.preventDefault();
-            let pageUrl = this.getAttribute("href");
+    // Delegate clicks for links with rel=page so dynamically-inserted anchors still work
+    document.addEventListener('click', function (e) {
+        const el = e.target.closest('a[rel="page"]');
+        if (!el) return;
 
-            // Fix URLs to ensure they don't include ajax/ or pages/ in the path
-            if (pageUrl.includes('/ajax/')) {
-                pageUrl = pageUrl.replace('/ajax/', '/');
-            }
-            if (pageUrl.includes('/pages/')) {
-                pageUrl = pageUrl.replace('/pages/', '/');
-            }
+        // Allow default behavior for modified clicks (new tab, ctrl/meta, middle click)
+        if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
 
-            routeLink(pageUrl, function (data) {
-                elements.mainElement.innerHTML = data;
-            });
+        e.preventDefault();
+        let pageUrl = el.getAttribute('href');
 
-            if (pageUrl != window.location) {
-                window.history.pushState({ url: pageUrl, type: 'page' }, '', pageUrl);
-            }
-            return false;
+        // Fix URLs to ensure they don't include ajax/ or pages/ in the path
+        if (pageUrl.includes('/ajax/')) pageUrl = pageUrl.replace('/ajax/', '/');
+        if (pageUrl.includes('/pages/')) pageUrl = pageUrl.replace('/pages/', '/');
+
+        routeLink(pageUrl, function (data) {
+            const elsLocal = resolveElements();
+            renderIntoMain(data);
         });
+
+        if (pageUrl != window.location) {
+            window.history.pushState({ url: pageUrl, type: 'page' }, '', pageUrl);
+        }
+        return false;
     });
 
     // Update popstate handler to better manage history states
@@ -107,35 +156,40 @@ export function initRouteHandler(elements) {
             if (state.type === 'page') {
                 // Handle regular page navigation
                 routeLink(state.url || window.location.pathname, function (data) {
-                    elements.mainElement.innerHTML = data;
+                    const elsLocal = resolveElements();
+                    if (renderIntoMain(data)) {
+                        if (localStorage.getItem('seeScores') == 'yes') {
+                            const scoreSwitch = document.querySelector('.switch input');
+                            if (scoreSwitch) scoreSwitch.checked = true;
 
-                    if (localStorage.getItem('seeScores') == 'yes') {
-                        const scoreSwitch = document.querySelector('.switch input');
-                        if (scoreSwitch) scoreSwitch.checked = true;
-
-                        const games = document.querySelectorAll('.no-team-selected .game');
-                        games.forEach(game => game.classList.toggle('scores'));
+                            const games = document.querySelectorAll('.no-team-selected .game');
+                            games.forEach(game => game.classList.toggle('scores'));
+                        }
                     }
                 });
             } else if (state.gameId) {
                 // Handle game page
                 const gameId = state.gameId;
-
-                elements.activityElement.style.display = 'block';
-                elements.activityElement.style.opacity = 1;
+                const elsLocal = resolveElements();
+                if (elsLocal.activityElement) {
+                    elsLocal.activityElement.style.display = 'block';
+                    elsLocal.activityElement.style.opacity = 1;
+                }
 
                 const xhr = new XMLHttpRequest();
                 xhr.onload = function () {
-                    elements.mainElement.innerHTML = fixAjaxResponseUrls(xhr.responseText);
-                    elements.mainElement.classList.add('page-ani');
+                    if (elsLocal.mainElement) {
+                        elsLocal.mainElement.innerHTML = fixAjaxResponseUrls(xhr.responseText);
+                        elsLocal.mainElement.classList.add('page-ani');
 
-                    elements.mainElement.addEventListener('animationend', function () {
-                        elements.mainElement.classList.remove('page-ani');
-                    }, { once: true });
+                        elsLocal.mainElement.addEventListener('animationend', function () {
+                            elsLocal.mainElement.classList.remove('page-ani');
+                        }, { once: true });
+                    }
                 };
 
                 xhr.onloadend = function () {
-                    fadeOutElement(elements.activityElement);
+                    if (elsLocal.activityElement) fadeOutElement(elsLocal.activityElement);
                 };
 
                 // Determine endpoint based on URL pattern
@@ -164,19 +218,24 @@ export function initRouteHandler(elements) {
                     window.history.replaceState(state, '', newPath);
                 }
 
-                elements.activityElement.style.display = 'block';
-                elements.activityElement.style.opacity = 1;
+                const elsLocal2 = resolveElements();
+                if (elsLocal2.activityElement) {
+                    elsLocal2.activityElement.style.display = 'block';
+                    elsLocal2.activityElement.style.opacity = 1;
+                }
 
                 const xhr = new XMLHttpRequest();
 
                 xhr.onload = function () {
                     if (xhr.status === 200) {
-                        elements.mainElement.innerHTML = fixAjaxResponseUrls(xhr.responseText);
-                        elements.mainElement.classList.add('page-ani');
+                        if (elsLocal2.mainElement) {
+                            elsLocal2.mainElement.innerHTML = fixAjaxResponseUrls(xhr.responseText);
+                            elsLocal2.mainElement.classList.add('page-ani');
 
-                        elements.mainElement.addEventListener('animationend', function () {
-                            elements.mainElement.classList.remove('page-ani');
-                        }, { once: true });
+                            elsLocal2.mainElement.addEventListener('animationend', function () {
+                                elsLocal2.mainElement.classList.remove('page-ani');
+                            }, { once: true });
+                        }
                     } else {
                         console.error('Failed to load team view:', xhr.status);
                         // Fallback to a refresh if the AJAX call fails
@@ -190,7 +249,7 @@ export function initRouteHandler(elements) {
                 };
 
                 xhr.onloadend = function () {
-                    fadeOutElement(elements.activityElement);
+                    if (elsLocal2.activityElement) fadeOutElement(elsLocal2.activityElement);
                 };
 
                 // Use the team-view URL endpoint directly to avoid AJAX conflicts
@@ -218,18 +277,23 @@ export function initRouteHandler(elements) {
                 if (teamElement) {
                     const activeTeam = teamElement.dataset.value;
 
-                    elements.activityElement.style.display = 'block';
-                    elements.activityElement.style.opacity = 1;
+                    const elsTeam = resolveElements();
+                    if (elsTeam.activityElement) {
+                        elsTeam.activityElement.style.display = 'block';
+                        elsTeam.activityElement.style.opacity = 1;
+                    }
 
                     const xhr = new XMLHttpRequest();
                     xhr.onload = function () {
                         if (xhr.status === 200) {
-                            elements.mainElement.innerHTML = fixAjaxResponseUrls(xhr.responseText);
-                            elements.mainElement.classList.add('page-ani');
+                            if (elsTeam.mainElement) {
+                                elsTeam.mainElement.innerHTML = fixAjaxResponseUrls(xhr.responseText);
+                                elsTeam.mainElement.classList.add('page-ani');
 
-                            elements.mainElement.addEventListener('animationend', function () {
-                                elements.mainElement.classList.remove('page-ani');
-                            }, { once: true });
+                                elsTeam.mainElement.addEventListener('animationend', function () {
+                                    elsTeam.mainElement.classList.remove('page-ani');
+                                }, { once: true });
+                            }
                         } else {
                             console.error('Failed to load team view:', xhr.status);
                             window.location.reload();
@@ -242,7 +306,7 @@ export function initRouteHandler(elements) {
                     };
 
                     xhr.onloadend = function () {
-                        fadeOutElement(elements.activityElement);
+                        if (elsTeam.activityElement) fadeOutElement(elsTeam.activityElement);
                     };
 
                     xhr.open('POST', 'ajax/team-view');
@@ -259,17 +323,20 @@ export function initRouteHandler(elements) {
             }
 
             // Default to the original behavior
-            routeLink(window.location.pathname, function (data) {
-                elements.mainElement.innerHTML = data;
+                routeLink(window.location.pathname, function (data) {
+                    const elsLocal3 = resolveElements();
+                    if (elsLocal3.mainElement) {
+                        elsLocal3.mainElement.innerHTML = data;
 
-                if (localStorage.getItem('seeScores') == 'yes') {
-                    const scoreSwitch = document.querySelector('.switch input');
-                    if (scoreSwitch) scoreSwitch.checked = true;
+                        if (localStorage.getItem('seeScores') == 'yes') {
+                            const scoreSwitch = document.querySelector('.switch input');
+                            if (scoreSwitch) scoreSwitch.checked = true;
 
-                    const games = document.querySelectorAll('.no-team-selected .game');
-                    games.forEach(game => game.classList.toggle('scores'));
-                }
-            });
+                            const games = document.querySelectorAll('.no-team-selected .game');
+                            games.forEach(game => game.classList.toggle('scores'));
+                        }
+                    }
+                });
         }
     });
 }

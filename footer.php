@@ -15,7 +15,12 @@
     </div>
 </footer>
 
-<?php if (!$detect->isMobile()) { ?>
+<?php
+// Require $app context; fall back to minimal defaults if missing
+$app = $app ?? ($GLOBALS['app'] ?? null);
+if (!$app) { $app = ['context' => [], 'detect' => null]; }
+$detect = $app['detect'] ?? null;
+if ($detect && !$detect->isMobile()) { ?>
 <script src="assets/js/datatables.min.js"></script>
 <?php } ?>
 <?php if (isset($teamBuilderActive) && $teamBuilderActive) { ?>
@@ -27,7 +32,7 @@
 
 <script>
     ajaxPath = '<?= BASE_URL ?>/ajax/'; 
-    let season = '<?= $season ?>';
+    let season = '<?= $app['context']['season'] ?? '' ?>';
 </script>
 </body>
 </html>

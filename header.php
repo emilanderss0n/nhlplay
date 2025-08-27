@@ -1,13 +1,27 @@
 <?php
 require_once 'path.php';
 require_once 'includes/functions.php';
-require_once "includes/MobileDetect.php";
 require_once 'includes/seo-config.php';
 
+// Prefer $app context exposed by Router. If not present (direct include), fall back to globals.
+// Router must set $app; if not present, initialize minimal defaults
+$app = $app ?? ($GLOBALS['app'] ?? null);
+if (!$app) {
+    $app = ['page' => 'unknown', 'context' => [], 'detect' => null, 'seasonBreak' => false, 'playoffs' => false];
+}
+
 $page = '';
-$detect = new \Detection\MobileDetect;
-$deviceType = ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'computer');
-$isIOS = $detect->isiOS();
+// Use centralized MobileDetect from $app when available, otherwise attempt fallback
+$detect = $app['detect'] ?? null;
+if ($detect === null && class_exists('\\Detection\\MobileDetect')) {
+    try {
+        $detect = new \Detection\MobileDetect();
+    } catch (Throwable $e) {
+        $detect = null;
+    }
+}
+$deviceType = ($detect ? ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'computer') : 'computer');
+$isIOS = ($detect ? $detect->isiOS() : false);
 
 // Generate merged CSS file - but only in production mode
 $isDevelopment = ($_SERVER['HTTP_HOST'] == 'localhost');
@@ -32,13 +46,13 @@ $mergedCSS = $isDevelopment ? false : generateMergedCSS([
     <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=5.0, user-scalable=yes" />
     
     <?php
-    // Use the improved page detection system for dynamic SEO
-    $pageData = PageDetector::detectPageAndContext();
-    $currentPage = $pageData['page'];
-    $seoContext = $pageData['context'];
+        // Use the improved page detection system for dynamic SEO when header is used standalone
+        $pageData = PageDetector::detectPageAndContext();
+        $currentPage = $pageData['page'];
+        $seoContext = $pageData['context'];
 
-    $seoData = SEOConfig::getPageSEO($currentPage, $seoContext);
-    echo SEOConfig::generateMetaTags($seoData);
+        $seoData = SEOConfig::getPageSEO($currentPage, $seoContext);
+        echo SEOConfig::generateMetaTags($seoData);
     ?>
     
     <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
@@ -79,6 +93,11 @@ $mergedCSS = $isDevelopment ? false : generateMergedCSS([
     gtag('config', 'G-N1MMVBJY11');
     </script>
 </head>
+<?php
+// Resolve page class and feature flags from $app
+$page = $page ?? ($app['page'] ?? '');
+$playoffs = $app['playoffs'] ?? ($GLOBALS['playoffs'] ?? false);
+?>
 <body class="<?= $page ?><?php if ($playoffs) { echo ' playoffs'; } ?>">
     <header>
         <div class="cont">

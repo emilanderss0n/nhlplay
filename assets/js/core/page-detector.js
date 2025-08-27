@@ -58,7 +58,10 @@ export class PageDetector {
                 'teambuilder', 
                 'draft-mode',
                 'ui-settings',
-                'menu-handlers'
+                'menu-handlers',
+                'route-handler',
+                'team-handlers',
+                'player-handlers'
             ],
             'live-game': [
                 'live-games', 

@@ -1,15 +1,13 @@
 <?php
 include_once '../path.php';
 include_once '../includes/functions.php';
+include_once __DIR__ . '/../includes/controllers/player.php';
 $playerID = $_POST['player'];
 $seasonSelection = $_POST['season-selection'];
 $seasonType = $_POST['season-type'];
 $playerType = $_POST['player-type'];
 
-// Use the new NHL API utility
-$ApiUrl = NHLApi::playerGameLog($playerID, $seasonSelection, $seasonType);
-$curl = curlInit($ApiUrl);
-$playerGameLog = json_decode($curl);
+$playerGameLog = player_fetch_gamelog($playerID, $seasonSelection, $seasonType);
 
 if ($seasonType == 3) {
     $seasonType = 'Playoffs';

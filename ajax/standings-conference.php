@@ -1,21 +1,11 @@
 <?php
 include_once '../path.php';
 include_once '../includes/functions.php';
-require_once "../includes/MobileDetect.php";
-$detect = new \Detection\MobileDetect;
-$deviceType = ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'computer');
+$app = $app ?? ($GLOBALS['app'] ?? null);
+$detect = $app['detect'] ?? null;
 
-// Use the new NHL API utility
-$ApiUrl = NHLApi::standingsNow();
-$cacheFile = '../cache/standings-conference.json';
-$cacheTime = 30 * 30;
-if (file_exists($cacheFile) && time() - filemtime($cacheFile) < $cacheTime) {
-    $standing = json_decode(file_get_contents($cacheFile));
-} else {
-    $curl = curlInit($ApiUrl);
-    $standing = json_decode($curl);
-    file_put_contents($cacheFile, json_encode($standing));
-}
+require_once __DIR__ . '/../includes/controllers/standings.php';
+$standing = standings_get_data($app);
 
 renderConferenceTable('E', 'Eastern Conference', $standing, $detect);
 renderConferenceTable('W', 'Western Conference', $standing, $detect);

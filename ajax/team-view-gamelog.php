@@ -1,14 +1,11 @@
 <?php
-include_once '../includes/functions.php';
-include_once '../path.php';
-
 $active_team = $_POST['active_team'];
-$teamAbbr = idToTeamAbbrev($active_team);
+include_once __DIR__ . '/../path.php';
+include_once __DIR__ . '/../includes/functions.php';
+include_once __DIR__ . '/../includes/controllers/team.php';
 
-// Use the new NHL API utility instead of building URL manually
-$ApiUrl = NHLApi::teamSchedule($teamAbbr, $season);
-$curl = curlInit($ApiUrl);
-$scores = json_decode($curl);
+$teamAbbr = idToTeamAbbrev($active_team);
+$scores = team_fetch_schedule($active_team, $season);
 $utcTimezone = new DateTimeZone('UTC');
 $currentMonth = '';
 

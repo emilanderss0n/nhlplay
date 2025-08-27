@@ -1,13 +1,13 @@
 <?php
-include_once '../path.php';
-include_once '../includes/functions.php';
-$playerID = $_POST['player'];
+// If included from a page we expect IN_PAGE to be defined; otherwise include bootstraps
+if (!defined('IN_PAGE')) {
+    include_once '../path.php';
+    include_once '../includes/functions.php';
+}
+include_once __DIR__ . '/../includes/controllers/player.php';
 
-// Use the new NHL API utility instead of building URL manually
-$ApiUrl = NHLApi::playerLanding($playerID);
-$curl = curlInit($ApiUrl);
-$playerResult = json_decode($curl);
-$player = $playerResult;
+$playerID = $_POST['player'] ?? ($_GET['playerId'] ?? null);
+$player = player_fetch_landing($playerID);
 
 $cm = $player->heightInCentimeters ?? null;
 

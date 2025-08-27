@@ -76,7 +76,7 @@ $time = $result->startTimeUTC;
         echo '<span class="game-time"><i class="bi bi-clock"></i><div class="theTime">'. $time .'</div></span>'; 
     }
     ?>
-    <?php if ($playoffs) { ?>
+    <?php $app = $app ?? null; $playoffs = $app['playoffs'] ?? false; if ($playoffs) { ?>
     <div class="pseries">
         <?= formatPlayoffSeriesStatus($result->seriesStatus) ?>
     </div>

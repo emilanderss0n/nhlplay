@@ -1,16 +1,14 @@
 <?php
 include_once '../path.php';
 include_once '../includes/functions.php';
+include_once __DIR__ . '/../includes/controllers/recaps.php';
+$app = $app ?? ($GLOBALS['app'] ?? null);
 if(isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') { } else { include '../header.php'; }
 ?>
 <main>
     <div class="wrap">
-        <?php if (!$seasonBreak) {
-        $startDate = date('Y-m-d', strtotime('-4 day'));
-        // Use the new NHL API utility
-        $ApiUrl = NHLApi::scheduleByDate($startDate);
-        $curl = curlInit($ApiUrl);
-        $schedules = json_decode($curl);
+    <?php $seasonBreak = $app['seasonBreak'] ?? ($GLOBALS['seasonBreak'] ?? false); if (!$seasonBreak) {
+    $schedules = recaps_get_recent(4);
         ?>
         <div class="game-recaps schedule grid grid-300 grid-gap-lg grid-gap-row-sm" grid-max-col-count="4">
         <?php gameRecaps($schedules);  ?>

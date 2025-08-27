@@ -2,6 +2,7 @@
 // Make sure to include path.php first to define BASE_URL
 include_once '../path.php';
 include_once '../includes/functions.php';
+include_once __DIR__ . '/../includes/controllers/ajax.php';
 
 // Check if this is a batch request with multiple categories
 if (isset($_POST['batch']) && $_POST['batch'] === 'true') {
@@ -17,7 +18,7 @@ if (isset($_POST['batch']) && $_POST['batch'] === 'true') {
  */
 function processBatchRequest() {
     if (!isset($_POST['categories']) || !isset($_POST['type'])) {
-        sendError('Missing required parameters');
+        send_error('Missing required parameters', 400);
         return;
     }
     
@@ -33,9 +34,8 @@ function processBatchRequest() {
         $results[$category] = renderStatHolder($type, $category, $season, $playoffs, $loadOnDemand);
     }
     
-    // Send JSON response
-    header('Content-Type: application/json');
-    echo json_encode($results);
+    // Send JSON response using standardized envelope
+    send_success(['results' => $results], 200);
 }
 
 /**

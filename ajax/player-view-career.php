@@ -1,12 +1,9 @@
 <?php
+$playerID = $_POST['player'];
 include_once '../path.php';
 include_once '../includes/functions.php';
-$playerID = $_POST['player'];
-
-// Use the new NHL API utility
-$ApiUrl = NHLApi::playerLanding($playerID);
-$curl = curlInit($ApiUrl);
-$careerData = json_decode($curl);
+include_once __DIR__ . '/../includes/controllers/player.php';
+$careerData = player_fetch_career($playerID);
 $careerTotals = $careerData->careerTotals->regularSeason;
 $careerTotalsPlayoffs = $careerData->careerTotals->playoffs ?? (object)[
     'gamesPlayed' => 0,

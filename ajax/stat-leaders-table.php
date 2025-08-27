@@ -2,11 +2,12 @@
 include_once '../path.php';
 include_once '../includes/functions.php';
 include_once '../includes/functions/stats-functions.php';
-require_once "../includes/MobileDetect.php";
+// Prefer centralized app context
+$app = $app ?? ($GLOBALS['app'] ?? null);
 if(isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') { } else { include '../header.php'; }
 
-$detect = new \Detection\MobileDetect;
-$deviceType = ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'computer');
+$detect = $app['detect'] ?? null;
+$deviceType = ($detect ? ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'computer') : 'computer');
 
 // Check for season parameter from POST request
 $selectedSeason = $season; // Default to global setting

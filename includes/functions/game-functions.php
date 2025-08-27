@@ -197,6 +197,20 @@ function gameRosterStats($id, $name, $teamSide, $game) {
 }
 
 function gameScores($scores) {
+    // Accept normalized schedules with ->games
+    if (!isset($scores->gameWeek) && isset($scores->games) && is_array($scores->games)) {
+        $weeks = [];
+        foreach ($scores->games as $g) {
+            $date = $g->gameDate ?? (isset($g->startTimeUTC) ? substr($g->startTimeUTC,0,10) : date('Y-m-d'));
+            if (!isset($weeks[$date])) $weeks[$date] = [];
+            $weeks[$date][] = $g;
+        }
+        $scores->gameWeek = [];
+        foreach ($weeks as $date => $games) {
+            $scores->gameWeek[] = (object)['date' => $date, 'games' => $games];
+        }
+    }
+
     if (!empty($scores->gameWeek)) {
         $reversedScores = array_reverse($scores->gameWeek);
         foreach ($reversedScores as $gameDates) {
@@ -294,6 +308,21 @@ function formatPlayoffSeriesStatus($seriesStatus) {
 }
 
 function gameRecaps($schedules) {
+    // Support normalized schedules with ->games (controller returns this shape)
+    if (!isset($schedules->gameWeek) && isset($schedules->games) && is_array($schedules->games)) {
+        // Group games by date into a pseudo gameWeek array to reuse existing rendering
+        $weeks = [];
+        foreach ($schedules->games as $g) {
+            $date = $g->gameDate ?? (isset($g->startTimeUTC) ? substr($g->startTimeUTC,0,10) : date('Y-m-d'));
+            if (!isset($weeks[$date])) $weeks[$date] = [];
+            $weeks[$date][] = $g;
+        }
+        $schedules->gameWeek = [];
+        foreach ($weeks as $date => $games) {
+            $schedules->gameWeek[] = (object)['date' => $date, 'games' => $games];
+        }
+    }
+
     if (isset($schedules->gameWeek)) {
         $reversedGameWeeks = array_reverse($schedules->gameWeek);
         foreach ($reversedGameWeeks as $gameWeek) {

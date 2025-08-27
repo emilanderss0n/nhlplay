@@ -1,7 +1,7 @@
 <?php
 include_once '../path.php';
 include_once '../includes/functions.php';
-require_once "../includes/MobileDetect.php";
+$app = $app ?? ($GLOBALS['app'] ?? null);
 
 // Handle AJAX request for individual trade
 if (isset($_GET['expanded']) && isset($_GET['index'])) {
@@ -25,8 +25,8 @@ if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'
     include '../header.php';
 }
 
-$detect = new \Detection\MobileDetect;
-$deviceType = ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'computer');
+$detect = $app['detect'] ?? null;
+$deviceType = ($detect ? ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' : 'phone') : 'computer') : 'computer');
 ?>
 <main>
     <div class="wrap">

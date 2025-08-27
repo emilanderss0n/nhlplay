@@ -2,6 +2,7 @@
 // filepath: f:\wamp64\www\nhl\ajax\reddit-feed.php
 include_once '../path.php';
 include_once '../includes/functions.php';
+include_once __DIR__ . '/../includes/controllers/ajax.php';
 
 // Check if this is an AJAX request
 if (!isset($_SERVER['HTTP_X_REQUESTED_WITH']) || $_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') {
@@ -26,18 +27,14 @@ $cacheLifetime = 1800; // 30 minutes
 if (file_exists($cacheFile) && (filemtime($cacheFile) > (time() - $cacheLifetime))) {
     $redditData = json_decode(file_get_contents($cacheFile));
 } else {
-    // Use our dedicated function from api-functions.php
     $redditData = fetchRedditPosts($subreddit, 'hot', 20); // Fetch 20 posts to account for stickied posts
     if ($redditData !== false) {
         file_put_contents($cacheFile, json_encode($redditData));
     } else {
-        // If API fails and cache exists but is expired, use old cache as fallback
         if (file_exists($cacheFile)) {
             $redditData = json_decode(file_get_contents($cacheFile));
         } else {
-            // No data available
-            echo json_encode(['error' => 'No posts available from r/' . $subreddit]);
-            exit;
+            send_error('No posts available from r/' . $subreddit, 500);
         }
     }
 }
@@ -69,5 +66,4 @@ if ($redditData && isset($redditData->data) && isset($redditData->data->children
 }
 
 // Return JSON response
-header('Content-Type: application/json');
-echo json_encode($formattedPosts);
+send_success(['posts' => $formattedPosts], 200);

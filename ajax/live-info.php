@@ -1,36 +1,16 @@
 <?php
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
+include_once __DIR__ . '/../includes/controllers/ajax.php';
+include_once __DIR__ . '/../includes/controllers/game.php';
 
 $gameId = $_GET['gameId'] ?? '';
 if (empty($gameId)) {
-    http_response_code(400);
-    echo json_encode(['error' => 'Game ID required']);
-    exit;
+    send_error('Game ID required', 400);
 }
 
-// Use the new NHL API utility
-$apiUrl = NHLApi::gameCenterBoxscore($gameId);
-$opts = [
-    'http' => [
-        'method' => 'GET',
-        'header' => [
-            'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
-        ]
-    ],
-    'ssl' => [
-        'verify_peer' => false,
-        'verify_peer_name' => false
-    ]
-];
-
-$context = stream_context_create($opts);
-$response = file_get_contents($apiUrl, false, $context);
-
-if ($response === false) {
-    http_response_code(500);
-    echo json_encode(['error' => 'Failed to fetch data']);
-    exit;
+$response = game_fetch_boxscore_json($gameId);
+if ($response === null) {
+    send_error('Failed to fetch data', 500);
 }
 
-echo $response;
+// The boxscore response is already JSON; return as success with data property
+send_success(['data' => json_decode($response)], 200);

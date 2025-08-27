@@ -1,4 +1,5 @@
 <?php
+    $app = $app ?? ($GLOBALS['app'] ?? null);
     $categoryTitle = 'POINTS';
     if ($category == 'goals') { $categoryTitle = 'GOALS';
     } elseif ($category == 'goalsAgainstAverage') { $categoryTitle = 'GAA';

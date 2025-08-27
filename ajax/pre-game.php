@@ -1,10 +1,18 @@
 <?php
 include_once '../path.php';
 include_once '../includes/functions.php';
+include_once __DIR__ . '/../includes/controllers/game.php';
 
-if(isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') { $gameId = $_POST['gameId']; } else { include_once '../header.php'; $gameId = $_GET['gameId']; }
+if(isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') { 
+    $gameId = $_POST['gameId']; 
+} else { 
+    if (!defined('IN_PAGE')) include_once '../header.php';
+    $gameId = $_GET['gameId']; 
+}
 
-include_once '../includes/data/init-pre-game.php';
+// Prepare data for the pre-game view and extract returned variables
+$preData = game_prepare_pre($gameId ?? ($GLOBALS['gameId_temp'] ?? null));
+if (is_array($preData)) extract($preData);
 ?>
 <main>
     <div class="wrap">

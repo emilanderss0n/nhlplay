@@ -2,6 +2,8 @@
 // filepath: f:\wamp64\www\nhl\ajax\find-game-thread.php
 include_once '../path.php';
 include_once '../includes/functions.php';
+include_once __DIR__ . '/../includes/controllers/game.php';
+include_once __DIR__ . '/../includes/controllers/ajax.php';
 
 // Get game ID or team names from request
 $gameId = isset($_GET['gameId']) ? trim($_GET['gameId']) : '';
@@ -20,8 +22,7 @@ if (!empty($gameId) && (empty($homeTeam) || empty($awayTeam))) {
 }
 
 if (empty($homeTeam) || empty($awayTeam)) {
-    echo json_encode(['error' => 'Team names could not be determined']);
-    exit;
+    send_error('Team names could not be determined', 400);
 }
 
 // Function to find game thread posts
@@ -105,19 +106,15 @@ function findGameThreadPosts($homeTeam, $awayTeam) {
         return $matchingPosts[0]; // Return the highest-scoring match
     }
     
-    return ['error' => 'No game thread found for ' . $awayTeam . ' at ' . $homeTeam];
+    return ['error' => 'No game thread found for ' . $awayTeam . ' at ' . $homeTeam, 'fallback' => game_find_reddit_thread($awayTeam, $homeTeam)];
 }
 
 // Try to find a matching game thread
 $result = findGameThreadPosts($homeTeam, $awayTeam);
-
-// Add a flag to indicate if the search was successful
 if (!isset($result['error'])) {
     $result['found'] = true;
+    send_success(['result' => $result]);
 } else {
     $result['found'] = false;
+    send_error($result['error'], 404);
 }
-
-// Return JSON response
-header('Content-Type: application/json');
-echo json_encode($result);

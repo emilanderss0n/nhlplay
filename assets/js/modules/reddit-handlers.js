@@ -106,7 +106,17 @@ function initRedditFeed(feedContainer) {
             }
         })
         .then(response => response.json())
-        .then(posts => {
+        .then(resp => {
+            // Normalize response: support old array response and new envelope { success, posts } or { success, data }
+            let posts = [];
+            if (Array.isArray(resp)) {
+                posts = resp;
+            } else if (resp && Array.isArray(resp.posts)) {
+                posts = resp.posts;
+            } else if (resp && resp.success && Array.isArray(resp.data)) {
+                posts = resp.data;
+            }
+
             // Check if we got posts
             if (posts && Array.isArray(posts) && posts.length > 0) {
                 let postsHTML = '';
@@ -163,7 +173,8 @@ function initRedditFeed(feedContainer) {
                         post.style.animationDelay = `${(index * 0.1) + 0.2}s`;
                     });
                 }
-            } else {                // Show error message if no posts found
+            } else {
+                // Show error message if no posts found
                 redditPosts.innerHTML = `
                     <div class="alert info">
                         <div class="alert-content">
@@ -171,7 +182,8 @@ function initRedditFeed(feedContainer) {
                             <span>No posts available from r/${subreddit} at the moment. Please try again later or <a href="https://www.reddit.com/r/${subreddit}/" target="_blank" rel="noopener noreferrer">visit r/${subreddit} directly</a>.</span>
                         </div>
                     </div>
-                `;            }
+                `;
+            }
         })
         .catch(error => {
             redditPosts.innerHTML = `

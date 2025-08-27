@@ -608,10 +608,7 @@ async function loadTeamState() {
 
         if (teamIds.size === 0) return;
 
-        // Clear all slots first
-        document.querySelectorAll('.player-slot').forEach(slot => {
-            slot.innerHTML = '';
-        });
+
 
         // Load all team rosters in a single bulk request
         const teamRosters = await loadTeamRostersBulk(Array.from(teamIds));
@@ -710,15 +707,18 @@ async function loadTeamRostersBulk(teamIds) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
-        const teamRosters = await response.json();
-        
+        const resp = await response.json();
+        // Normalize possible envelope { success: true, teams: {...} }
+        let teamRosters = resp;
+        if (resp && resp.success && resp.teams) teamRosters = resp.teams;
+
         if (teamRosters.error) {
             throw new Error(teamRosters.error);
         }
-        
+
         // Cache the result
         teamRosterCache.set(cacheKey, teamRosters);
-        
+
         return teamRosters;
     } catch (error) {
         console.error('Error loading team rosters in bulk:', error);
@@ -838,9 +838,19 @@ async function handleTeamSelection(teamElement, skipStateRestore = false) {
             });
         });
 
-        // Restore state if needed
+        // Restore state only if requested or if saved state's activeTeam matches this team
         if (!skipStateRestore) {
-            await loadTeamState();
+            try {
+                const savedStateRaw = localStorage.getItem('teamBuilderState');
+                if (savedStateRaw) {
+                    const savedState = JSON.parse(savedStateRaw);
+                    if (savedState && savedState.activeTeam && savedState.activeTeam === teamId) {
+                        await loadTeamState();
+                    }
+                }
+            } catch (err) {
+                console.warn('Error checking saved team state before restore:', err);
+            }
         }
 
         // Final state update
