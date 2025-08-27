@@ -42,21 +42,34 @@ export function initMenuHandlers() {
         });
     }
 
-    // Close mobile menu when clicking links
+    // Close mobile menu when clicking links (but still follow the link)
     document.addEventListener('click', function (e) {
         const mainMenu = document.getElementById('main-menu');
-        if (mainMenu && mainMenu.classList.contains('open') && e.target.closest('a') && mainMenu.contains(e.target)) {
-            e.preventDefault();
+        const anchor = e.target.closest('a');
+        if (mainMenu && mainMenu.classList.contains('open') && anchor && mainMenu.contains(anchor)) {
+            // capture link details before we mutate DOM
+            const href = anchor.getAttribute('href');
+            const target = anchor.getAttribute('target');
+
+            // Close the menu UI
             mainMenu.classList.remove('open');
             document.body.classList.remove('no-scroll');
-            
-            // Get the nav-mobile element and remove open class
             const navMobile = document.getElementById('nav-mobile');
             if (navMobile) navMobile.classList.remove('open');
-            
-            // Also uncheck the checkbox that controls the mobile menu
             const navMobileCheckbox = document.querySelector('#nav-mobile input[type="checkbox"]');
             if (navMobileCheckbox) navMobileCheckbox.checked = false;
+
+            // If there's no href or it's an in-page hash, let the browser handle it
+            if (!href || href === '#' || href.startsWith('javascript:')) return;
+
+            // Prevent default and navigate programmatically so the closing UI doesn't block navigation
+            e.preventDefault();
+            if (target === '_blank') {
+                window.open(href, '_blank');
+            } else {
+                // small delay to allow CSS transitions if desired
+                setTimeout(() => { window.location.href = href; }, 50);
+            }
         }
     });
 
