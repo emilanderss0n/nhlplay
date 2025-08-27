@@ -26,8 +26,39 @@ function player_compute_radar($playerId, $playerData, $season = null)
 {
     // delegate to existing helper functions used elsewhere
     // expect $playerData to be decoded object or null
-    $player = is_string($playerData) ? json_decode($playerData) : $playerData;
+    if (is_string($playerData)) {
+        $player = json_decode($playerData);
+    } else {
+        $player = $playerData;
+    }
+
+    // If position is missing from provided playerData, try to fetch landing data as fallback
+    if (!$player || !isset($player->position) || empty($player->position)) {
+        $landing = player_fetch_landing($playerId);
+        if ($landing && isset($landing->people) && isset($landing->people[0]->primaryPosition->code)) {
+            if (!$player) {
+                $player = new stdClass();
+            }
+            $player->position = $landing->people[0]->primaryPosition->code;
+        } else {
+            // As a last resort, assume forward (C) to avoid undefined property notices
+            if (!$player) {
+                $player = new stdClass();
+            }
+            $player->position = 'C';
+        }
+    }
+
     $isGoalie = !($player->position == 'C' || $player->position == 'L' || $player->position == 'R' || $player->position == 'D');
+
+    // If no season was provided, try to infer it from the player object (featuredStats->season)
+    if (empty($season)) {
+        if (isset($player->featuredStats) && isset($player->featuredStats->season)) {
+            $season = $player->featuredStats->season;
+        } elseif (isset($landing) && isset($landing->people[0]->featuredStats) && isset($landing->people[0]->featuredStats->season)) {
+            $season = $landing->people[0]->featuredStats->season;
+        }
+    }
 
     if (!$isGoalie) {
         $playerStats = getPlayerSeasonStats($playerId, $season, 'skater');

@@ -28,6 +28,19 @@ if(isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH']
 $utcTimezone = new DateTimeZone('UTC');
 $data = team_prepare($activeTeam, $season);
 extract($data);
+// Defensive defaults to avoid "Trying to get property of non-object" warnings in views
+$teamInfo = (isset($teamInfo) && is_object($teamInfo)) ? $teamInfo : new stdClass();
+$teamNameDefault = isset($teamInfo->teamName->default) ? $teamInfo->teamName->default : 'Team';
+$teamCommonDefault = isset($teamInfo->teamCommonName->default) ? $teamInfo->teamCommonName->default : $teamNameDefault;
+$teamAbbrev = isset($teamAbbrev) ? $teamAbbrev : '';
+$teamAbbrev2 = isset($teamAbbrev2) ? $teamAbbrev2 : '';
+$teamRosterInfo = (isset($teamRosterInfo) && is_object($teamRosterInfo)) ? $teamRosterInfo : null;
+$teamRosterStats = isset($teamRosterStats) ? $teamRosterStats : null;
+$teamStatsAdv = isset($teamStatsAdv) ? $teamStatsAdv : null;
+$injuryCount = isset($injuryCount) ? $injuryCount : 0;
+$medianAge = isset($medianAge) ? $medianAge : '';
+$injuredPlayerIds = isset($injuredPlayerIds) ? $injuredPlayerIds : [];
+$schedules = (isset($schedules) && is_object($schedules)) ? $schedules : (object)[];
 ?>
 
 <style>
@@ -38,9 +51,9 @@ extract($data);
         <div class="team-view-main">
             <div class="team-header">
                 <div class="selected-team">
-                    <img src="assets/img/teams/<?= $activeTeam ?>.svg" alt="<?= getValue($teamInfo->teamName->default, 'Team') ?> logo" />
+                    <img src="assets/img/teams/<?= htmlspecialchars($activeTeam) ?>.svg" alt="<?= htmlspecialchars(getValue($teamNameDefault, 'Team')) ?> logo" />
                     <div class="team-name">
-                        <h2><?= getValue($teamInfo->teamName->default, '') ?></h2>
+                        <h2><?= htmlspecialchars(getValue($teamNameDefault, '')) ?></h2>
                         <div class="team-quick-links">
                             <a href="javascript:void(0)" id="showGameLog" class="btn outline sm" data-value="<?= $activeTeam ?>">Game Log</a>
                         </div>
@@ -55,9 +68,10 @@ extract($data);
                             'otLosses' => 'OT'
                         ];
                         foreach ($stats as $key => $label) {
+                            $val = isset($teamInfo->{$key}) ? $teamInfo->{$key} : null;
                             echo '<div class="stat ' . htmlspecialchars($key) . '">
                                     <div>' . htmlspecialchars($label) . '</div>
-                                    <p class="stat-display">' . getValue($teamInfo->$key) . '</p>
+                                    <p class="stat-display">' . getValue($val) . '</p>
                                 </div>
                                 <div class="divider-vertical"></div>';
                         }
@@ -118,22 +132,25 @@ extract($data);
                     if (isset($schedules->games) && is_array($schedules->games)) {
                         foreach ($schedules->games as $result) {
                             $g = $result; // keep naming consistent
-                            if ($g->gameState !== 'FUT') continue;
+                            if (!is_object($g) || !isset($g->gameDate)) continue;
+                            if (!isset($g->gameState) || $g->gameState !== 'FUT') continue;
                     ?>
-                        <div class="swiper-slide item schedule-game <?php if($g->gameType === 1) { echo 'preseason'; } elseif ($g->gameType === 2) { echo 'regular'; } elseif ($g->gameType === 3) { echo 'playoff'; } ?>">
-                            <div class="schedule-game-date"><strong><?= $g->gameDate ?></strong> at <?= $g->venue->default ?></div>
+                        <div class="swiper-slide item schedule-game <?php if(isset($g->gameType) && $g->gameType === 1) { echo 'preseason'; } elseif (isset($g->gameType) && $g->gameType === 2) { echo 'regular'; } elseif (isset($g->gameType) && $g->gameType === 3) { echo 'playoff'; } ?>">
+                            <div class="schedule-game-date"><strong><?= htmlspecialchars($g->gameDate) ?></strong> at <?= htmlspecialchars(isset($g->venue->default) ? $g->venue->default : '') ?></div>
                             <div class="schedule-game-visual">
                                 <div class="schedule-game-away">
-                                    <img class="game-team-logo" src="assets/img/teams/<?= $g->awayTeam->id ?>.svg" alt="<?= teamToName($g->awayTeam->id) ?> logo" />
-                                    <div class="game-team-fill" style="background: linear-gradient(142deg, <?= teamToColor($g->awayTeam->id) ?> 0%, rgba(255,255,255,0) 58%);"></div>
+                                    <?php $awayId = isset($g->awayTeam->id) ? $g->awayTeam->id : ''; ?>
+                                    <img class="game-team-logo" src="assets/img/teams/<?= htmlspecialchars($awayId) ?>.svg" alt="<?= htmlspecialchars(teamToName($awayId)) ?> logo" />
+                                    <div class="game-team-fill" style="background: linear-gradient(142deg, <?= teamToColor($awayId) ?> 0%, rgba(255,255,255,0) 58%);"></div>
                                 </div>
                                 <div class="schedule-game-vs">
                                     <div class="vs">VS</div>
-                                    <div class="time theTimeSimple"><?= $g->startTimeUTC ?></div>
+                                    <div class="time theTimeSimple"><?= htmlspecialchars(isset($g->startTimeUTC) ? $g->startTimeUTC : '') ?></div>
                                 </div>
                                 <div class="schedule-game-home">
-                                    <img class="game-team-logo" src="assets/img/teams/<?= $g->homeTeam->id ?>.svg" alt="<?= teamToName($g->homeTeam->id) ?> logo" />
-                                    <div class="game-team-fill" style="background: linear-gradient(-142deg, <?= teamToColor($g->homeTeam->id) ?> 0%, rgba(255,255,255,0) 58%);"></div>
+                                    <?php $homeId = isset($g->homeTeam->id) ? $g->homeTeam->id : ''; ?>
+                                    <img class="game-team-logo" src="assets/img/teams/<?= htmlspecialchars($homeId) ?>.svg" alt="<?= htmlspecialchars(teamToName($homeId)) ?> logo" />
+                                    <div class="game-team-fill" style="background: linear-gradient(-142deg, <?= teamToColor($homeId) ?> 0%, rgba(255,255,255,0) 58%);"></div>
                                 </div>
                             </div>
                         </div>
@@ -162,18 +179,18 @@ extract($data);
                 </div>
             </div>            
             <div class="team-roster grid grid-300 grid-gap-lg grid-gap-row-lg" grid-max-col-count="3">
-            <?php renderTeamRoster($teamRosterInfo, $teamRosterStats, $activeTeam, $injuredPlayerIds); ?>
+            <?php if ($teamRosterInfo && $teamRosterStats) { renderTeamRoster($teamRosterInfo, $teamRosterStats, $activeTeam, $injuredPlayerIds); } else { echo '<p>No roster available.</p>'; } ?>
             </div><!-- END .team-roster -->
             <div class="team-prospects">
-                <h3><?= getValue($teamInfo->teamCommonName->default, 'Team') ?> Prospects</h3>
+                <h3><?= htmlspecialchars(getValue($teamCommonDefault, 'Team')) ?> Prospects</h3>
                 <div class="grid grid-300" grid-max-col-count="5">
-                <?php teamProspects($teamAbbrev) ?>
+                <?php if ($teamAbbrev) { teamProspects($teamAbbrev); } ?>
                 </div>
             </div>
 
             <?php
             // Check if this team has a subreddit before including the team reddit section
-            $teamSubreddit = getTeamRedditSub($teamAbbrev);
+            $teamSubreddit = $teamAbbrev ? getTeamRedditSub($teamAbbrev) : null;
             if ($teamSubreddit) {
                 // Always use the relative path from the current file location
                 include '../templates/team-reddit-feed.php';

@@ -618,8 +618,9 @@ export function initPlayerHandlers(elements) {
                             xhr.onload = function () {
                                 if (xhr.status === 200) {
                                     try {
-                                        // Parse the response and store it
-                                        window.playerChartData = JSON.parse(xhr.responseText);
+                                        // Parse the response and store it; unwrap server 'radar' envelope if present
+                                        var _resp = JSON.parse(xhr.responseText);
+                                        window.playerChartData = _resp.radar ? _resp.radar : _resp;
 
                                         // Remove loader and reset the canvas
                                         removeLoaderFromContainer(playerGraph);

@@ -570,7 +570,7 @@ function normalizeMetrics($metricsGroups) {
         foreach ($metrics as $name => $data) {
             $chartData["categories"][] = $category;
             $chartData["metrics"][] = $name;
-            $chartData["tooltips"][] = $data["tooltip"];
+            $chartData["tooltips"][] = isset($data["tooltip"]) ? $data["tooltip"] : null;
             
             // Calculate score on 0-100 scale
             $normalizedValue = normalizeToPercentile($data["value"], $data["benchmark"], $data["elite"]);
@@ -578,7 +578,7 @@ function normalizeMetrics($metricsGroups) {
             
             // Also provide benchmark and elite level normalized values for visual reference
             $chartData["benchmarks"][] = 50; // Benchmark is always 50 on our normalized scale
-            $chartData["elite"][] = 80; // Elite level is always 85 on our normalized scale
+            $chartData["elite"][] = 80; // Elite level is always 80 on our normalized scale
         }
     }
     

@@ -4,16 +4,21 @@ include_once __DIR__ . '/../path.php';
 include_once __DIR__ . '/../includes/functions.php';
 include_once __DIR__ . '/../includes/controllers/team.php';
 
-$teamAbbr = idToTeamAbbrev($active_team);
+$teamAbbr = idToTeamAbbrev($active_team) ?? '';
 $scores = team_fetch_schedule($active_team, $season);
 $utcTimezone = new DateTimeZone('UTC');
 $currentMonth = '';
 
-// Store and reverse games array
-$gamesArray = array_filter($scores->games, function($game) {
-    return $game->gameState === 'FINAL' || $game->gameState === 'OFF';
-});
-$gamesArray = array_reverse($gamesArray);
+// Ensure we have a proper object with a games array to avoid "property of non-object" warnings
+$gamesArray = [];
+if (is_object($scores) && isset($scores->games) && is_array($scores->games)) {
+    $gamesArray = array_filter($scores->games, function($game) {
+        // Be defensive: some game objects may be missing gameState
+        $state = isset($game->gameState) ? $game->gameState : null;
+        return $state === 'FINAL' || $state === 'OFF';
+    });
+    $gamesArray = array_reverse($gamesArray);
+}
 ?>
 
 <dialog id="gameLogModal">
@@ -38,18 +43,40 @@ $gamesArray = array_reverse($gamesArray);
 
 <div class="team-game-log grid grid-400 grid-gap-lg grid-gap-row-lg" grid-max-col-count="3">
 
-<?php foreach($gamesArray as $result) { 
-    $time = new DateTime($result->startTimeUTC, $utcTimezone);
-    $gameDate = new DateTime($result->gameDate);
+<?php foreach($gamesArray as $result) {
+    // Ensure $result is an object with expected properties
+    if (!is_object($result)) continue;
+    if (!isset($result->gameDate)) continue;
+
+    // Safely parse dates - some entries may lack startTimeUTC
+    try {
+        $time = isset($result->startTimeUTC) ? new DateTime($result->startTimeUTC, $utcTimezone) : null;
+    } catch (Exception $e) {
+        $time = null;
+    }
+
+    try {
+        $gameDate = new DateTime($result->gameDate);
+    } catch (Exception $e) {
+        continue; // can't determine month without a valid date
+    }
+
     $month = $gameDate->format('F');
     
     if ($month !== $currentMonth) {
         echo '<div class="break month">' . $month . '</div>';
         $currentMonth = $month;
     }
-    
-    $activeTeamWon = ($teamAbbr === $result->homeTeam->abbrev && $result->homeTeam->score > $result->awayTeam->score) || 
-                     ($teamAbbr === $result->awayTeam->abbrev && $result->awayTeam->score > $result->homeTeam->score);
+
+    // Guard team objects
+    $homeTeam = isset($result->homeTeam) && is_object($result->homeTeam) ? $result->homeTeam : null;
+    $awayTeam = isset($result->awayTeam) && is_object($result->awayTeam) ? $result->awayTeam : null;
+
+    $activeTeamWon = false;
+    if ($homeTeam && $awayTeam && isset($homeTeam->score) && isset($awayTeam->score)) {
+        $activeTeamWon = ($teamAbbr === ($homeTeam->abbrev ?? '') && $homeTeam->score > $awayTeam->score) ||
+                         ($teamAbbr === ($awayTeam->abbrev ?? '') && $awayTeam->score > $homeTeam->score);
+    }
 ?>
     <div 
     data-post-link="<?= $result->id ?>" 
