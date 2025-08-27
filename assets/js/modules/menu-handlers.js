@@ -42,34 +42,21 @@ export function initMenuHandlers() {
         });
     }
 
-    // Close mobile menu when clicking links (but still follow the link)
+    // Close mobile menu when clicking links: close UI but let browser handle navigation
     document.addEventListener('click', function (e) {
         const mainMenu = document.getElementById('main-menu');
         const anchor = e.target.closest('a');
         if (mainMenu && mainMenu.classList.contains('open') && anchor && mainMenu.contains(anchor)) {
-            // capture link details before we mutate DOM
-            const href = anchor.getAttribute('href');
-            const target = anchor.getAttribute('target');
+            // Respect modifier keys and non-primary buttons (user may want new tab / context menu)
+            if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
 
-            // Close the menu UI
+            // Close the menu UI (do not prevent default navigation)
             mainMenu.classList.remove('open');
             document.body.classList.remove('no-scroll');
             const navMobile = document.getElementById('nav-mobile');
             if (navMobile) navMobile.classList.remove('open');
             const navMobileCheckbox = document.querySelector('#nav-mobile input[type="checkbox"]');
             if (navMobileCheckbox) navMobileCheckbox.checked = false;
-
-            // If there's no href or it's an in-page hash, let the browser handle it
-            if (!href || href === '#' || href.startsWith('javascript:')) return;
-
-            // Prevent default and navigate programmatically so the closing UI doesn't block navigation
-            e.preventDefault();
-            if (target === '_blank') {
-                window.open(href, '_blank');
-            } else {
-                // small delay to allow CSS transitions if desired
-                setTimeout(() => { window.location.href = href; }, 50);
-            }
         }
     });
 
