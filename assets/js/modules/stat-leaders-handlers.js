@@ -455,20 +455,18 @@ export function initStatLeadersHandlers() {
                     sectionStats.innerHTML = html;
                     // Ensure season selector stays hidden when table view is active
                     try { setSeasonSelectVisible(false); } catch (e) {}
+                    // Execute inline scripts in the injected HTML
+                    try { executeInlineScripts(sectionStats); } catch (e) {}
                 } else {
                     const tableContainer = table.parentNode;
-                    if (tableContainer) tableContainer.innerHTML = html;
+                    if (tableContainer) {
+                        tableContainer.innerHTML = html;
+                        try { executeInlineScripts(tableContainer); } catch (e) {}
+                    }
                 }
 
-                // Re-initialize DataTable if available
-                try {
-                    if (typeof jsdatatables !== 'undefined' && !/Mobi|Android|iPhone|iPad|iPod/.test(navigator.userAgent)) {
-                        const tbl = document.getElementById('playerStatsTable');
-                        if (tbl) new jsdatatables.JSDataTable('#playerStatsTable', { paging: true, searchable: true, perPage: 25 });
-                    }
-                } catch (e) {
-                    console.warn('Failed to init DataTable after season select on table view:', e);
-                }
+                // Initialize DataTable after DOM injection
+                ensurePlayerStatsTableInitialized({ paging: true, searchable: true, perPage: 25 });
             })
             .catch(error => {
                 console.error('Error loading table data:', error);
@@ -580,19 +578,17 @@ export function initStatLeadersTableHandler() {
                 sectionStats.innerHTML = html;
                 // Hide global season selector when we're showing the full table view
                 try { setSeasonSelectVisible(false); } catch (e) {}
+                try { executeInlineScripts(sectionStats); } catch (e) {}
             } else {
                 // Fallback: replace the table's parent if we have one
                 const tableContainer = table ? table.parentNode : null;
-                if (tableContainer) tableContainer.innerHTML = html;
+                if (tableContainer) {
+                    tableContainer.innerHTML = html;
+                    try { executeInlineScripts(tableContainer); } catch (e) {}
+                }
             }
             // Initialize DataTable client-side because AJAX returns only the table fragment
-            try {
-                if (typeof jsdatatables !== 'undefined' && !/Mobi|Android|iPhone|iPad|iPod/.test(navigator.userAgent)) {
-                    new jsdatatables.JSDataTable('#playerStatsTable', { paging: true, searchable: true });
-                }
-            } catch (e) {
-                console.warn('Failed to init DataTable after season select:', e);
-            }
+            ensurePlayerStatsTableInitialized({ paging: true, searchable: true });
         })
         .catch(error => {
             console.error('Error loading table data:', error);
@@ -660,13 +656,17 @@ export function initStatLeadersTableHandler() {
                 sectionStats.innerHTML = tableEl.outerHTML || html;
                 // Hide global season selector when in table view
                 try { setSeasonSelectVisible(false); } catch (e) {}
+                try { executeInlineScripts(sectionStats); } catch (e) {}
             } else {
                 // Fallback: replace contents of main rather than the node itself
                 const mainEl = document.querySelector('main');
                 if (mainEl) {
                     mainEl.innerHTML = tableEl.outerHTML || html;
+                    try { executeInlineScripts(mainEl); } catch (e) {}
                 }
             }
+            // Initialize DataTable client-side since AJAX returned only the table
+            ensurePlayerStatsTableInitialized({ paging: false, searchable: true });
 
             // Update toggle text to allow returning to card view
             toggle.textContent = 'Cards';
@@ -690,4 +690,79 @@ export function initStatLeadersTableHandler() {
 
     document.removeEventListener('click', handleToggleTable);
     document.addEventListener('click', handleToggleTable);
+}
+
+// Ensure DataTable is initialized for the player stats table after AJAX injection
+function ensurePlayerStatsTableInitialized(opts = {}) {
+    try {
+        if (/Mobi|Android|iPhone|iPad|iPod/.test(navigator.userAgent)) return; // skip mobile
+
+        const tbl = document.getElementById('playerStatsTable');
+        if (!tbl) return;
+
+        // Avoid double-init if already initialized by the library
+        if (tbl.classList.contains('jsDataTable-table') || tbl.dataset.jsdatatableInitialized) return;
+
+        const initFn = () => {
+            try {
+                if (tbl.classList.contains('jsDataTable-table') || tbl.dataset.jsdatatableInitialized) return;
+                const cfg = Object.assign({ paging: true, searchable: true, perPage: 25 }, opts);
+                new jsdatatables.JSDataTable('#playerStatsTable', cfg);
+                tbl.dataset.jsdatatableInitialized = '1';
+            } catch (e) {
+                console.warn('Failed to initialize JSDataTable', e);
+            }
+        };
+
+        if (typeof jsdatatables === 'undefined') {
+            // Try to find existing script tag; otherwise dynamically load the vendor file
+            const existing = Array.from(document.scripts).find(s => s.src && s.src.indexOf('datatables.min.js') !== -1);
+            if (existing) {
+                if (existing.hasAttribute('data-loaded')) {
+                    initFn();
+                } else {
+                    existing.addEventListener('load', initFn);
+                }
+            } else {
+                const s = document.createElement('script');
+                s.src = 'assets/js/datatables.min.js';
+                s.async = false;
+                s.onload = () => { s.setAttribute('data-loaded', '1'); initFn(); };
+                s.onerror = (e) => console.warn('Failed to load datatables.min.js', e);
+                document.head.appendChild(s);
+            }
+        } else {
+            initFn();
+        }
+    } catch (e) {
+        console.warn('ensurePlayerStatsTableInitialized failed', e);
+    }
+}
+
+// Execute inline <script> tags inside a container element (used after injecting HTML via innerHTML)
+function executeInlineScripts(container) {
+    if (!container) return;
+    // Query all script tags inside the container
+    const scripts = Array.from(container.querySelectorAll('script'));
+    scripts.forEach(oldScript => {
+        try {
+            const newScript = document.createElement('script');
+            // Copy type if present
+            if (oldScript.type) newScript.type = oldScript.type;
+            if (oldScript.src) {
+                // External script: add to head to load/execute
+                newScript.src = oldScript.src;
+                newScript.async = false;
+                document.head.appendChild(newScript);
+            } else {
+                // Inline script: execute by setting textContent
+                newScript.text = oldScript.textContent;
+                document.head.appendChild(newScript);
+                // Remove immediately after execution to keep DOM clean
+                document.head.removeChild(newScript);
+            }
+        } catch (e) {
+            console.warn('Failed to execute injected script', e);
+        }
+    });
 }
