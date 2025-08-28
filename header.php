@@ -196,6 +196,14 @@ $playoffs = $app['playoffs'] ?? ($GLOBALS['playoffs'] ?? false);
         </div>
     </header>
 
+    <style>
+        :root {
+            --grain: url(<?= BASE_URL ?>/assets/img/grain.webp);
+            --glitter: url(<?= BASE_URL ?>/assets/img/glitter.png);
+            --pattern: url(<?= BASE_URL ?>/assets/img/pattern-NHLPLAY.png);
+        }
+    </style>
+
     <div id="mobile-search">
         <div class="suggestion-input">
             <div id="activity-sm"><span class="loader"></span></div>

@@ -633,10 +633,6 @@
         padding: 3rem 2rem;
         overflow: hidden;
 
-        --grain: url('../../img/grain.webp');
-        --glitter: url('../../img/glitter.png');
-        --pattern: url('../../img/pattern-NHLPLAY.png');
-
         @media (prefers-color-scheme: dark) {
             background-image: var(--grain);
             background-blend-mode: overlay;
