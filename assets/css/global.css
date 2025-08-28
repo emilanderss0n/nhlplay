@@ -4767,15 +4767,13 @@
         height: 100%;
         object-fit: cover;
         transition: all 0.3s ease-out;
-        filter: blur(0px);
-        transform: scale(1);
+        transform: scale(1) rotate(0deg);
         z-index: 1;
         mask: linear-gradient(181deg, #000, transparent 100%);
       }
 
       &:hover img {
-        filter: blur(4px);
-        transform: scale(1.1);
+        transform: scale(1.1) rotate(3deg);
       }
 
       & .play-button {
@@ -4795,7 +4793,7 @@
         left: 50%;
         top: 50%;
         z-index: 1;
-        transform: translateX(-50px) translateY(65px);
+        transform: translateX(-50px) translateY(65px) scale(0.2);
         border: 1px solid var(--border-stroke-weak);
 
         & svg {
@@ -4808,7 +4806,7 @@
 
         .youtube-video-card:hover & {
           opacity: 1;
-          transform: translateX(-50px) translateY(-50px);
+          transform: translateX(-50px) translateY(-50px) scale(1);
         }
       }
     }

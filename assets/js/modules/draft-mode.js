@@ -19,6 +19,10 @@ const DraftMode = {
     preloadedData: null,     // Cache for preloaded data
     preloadComplete: false,  // Flag to track if preloading is done
     preloadedFilters: [],    // Filters used for preloading
+    // Promise for an in-flight preload so callers can wait (bounded) for it
+    preloadPromise: null,
+    // Flag to avoid repeatedly starting early preload
+    preloadTriggeredEarly: false,
     
     setState(newState) {
         Object.assign(this.state, newState);
@@ -48,7 +52,7 @@ const DraftMode = {
                 : (position === 'forwards' ? 12 : position === 'defensemen' ? 6 : 2);
 
             // Show label with uppercase position and PICK X/Y
-            positionInfo.textContent = `${position.toUpperCase()} - PICK ${positionRound}/${maxByPosition}`;
+            positionInfo.innerHTML = `${position.toUpperCase()} - PICK <div class="tag">${positionRound}/${maxByPosition}</div>`;
         }
     },
     
@@ -83,6 +87,13 @@ export function initDraftMode() {
         // Initialize event listeners and interface
         initializeEventListeners();
         createDraftInterface();
+        // If the draft toggle is present, start an early preload so data is ready
+        // by the time the user opens the interface. This is silent and bounded.
+        if (DOM.draftToggleBtn && !DraftMode.preloadTriggeredEarly) {
+            DraftMode.preloadTriggeredEarly = true;
+            // Kick off preload but don't await it here
+            DraftMode.preloadPromise = preloadDraftDataSilently();
+        }
     };
     
     if (document.readyState === 'loading') {
@@ -401,25 +412,29 @@ function enterDraftMode() {
 
 // Silently preload draft data in the background while user is setting up filters
 async function preloadDraftDataSilently() {
-    try {
-        // Get current filters to preload with
-        const currentFilters = DraftMode.state.filters;
-        
-        // Preload data for all three positions with current filters
-        const positions = ['forwards', 'defensemen', 'goalies'];
-        const preloadPromises = positions.map(position => preloadPositionData(position, currentFilters));
-        
-        await Promise.all(preloadPromises);
-        
-        // Store which filters were used for preloading
-        DraftMode.preloadedFilters = [...currentFilters];
-        
-        DraftMode.preloadComplete = true;
-        
-    } catch (error) {
-        console.warn('Failed to preload draft data:', error);
-        // Don't show error to user, just continue without preloading
-    }
+    // If a preload is already running, return that promise
+    if (DraftMode.preloadPromise) return DraftMode.preloadPromise;
+
+    // Create an in-flight promise and store it so callers can await it
+    DraftMode.preloadPromise = (async () => {
+        try {
+            const currentFilters = DraftMode.state.filters || [];
+            const positions = ['forwards', 'defensemen', 'goalies'];
+            const preloadPromises = positions.map(position => preloadPositionData(position, currentFilters));
+            await Promise.all(preloadPromises);
+            DraftMode.preloadedFilters = [...currentFilters];
+            DraftMode.preloadComplete = true;
+        } catch (error) {
+            console.warn('Failed to preload draft data:', error);
+            DraftMode.preloadComplete = false;
+        } finally {
+            // Clear the in-flight marker so future preloads can run.
+            // Do NOT return the promise itself here (that would resolve a promise to itself).
+            DraftMode.preloadPromise = null;
+        }
+    })();
+
+    return DraftMode.preloadPromise;
 }
 
 // Preload data for a specific position
@@ -520,10 +535,14 @@ let preloadTimeout;
 function debouncePreload() {
     clearTimeout(preloadTimeout);
     preloadTimeout = setTimeout(() => {
-        // Only re-preload if we're in draft mode but haven't started yet
-        if (DraftMode.state.isActive && !document.querySelector('.draft-active').style.display === 'block') {
+        // Only re-preload if we're in draft mode but draft hasn't been started (draft-active not visible)
+        const draftActiveEl = document.querySelector('.draft-active');
+        const draftActiveVisible = draftActiveEl ? (window.getComputedStyle(draftActiveEl).display !== 'none') : false;
+        if (DraftMode.state.isActive && !draftActiveVisible) {
+            // Reset preload flags and start a fresh preload, storing the promise so callers can await it
             DraftMode.preloadComplete = false;
-            preloadDraftDataSilently();
+            DraftMode.preloadedData = null;
+            DraftMode.preloadPromise = preloadDraftDataSilently();
         }
     }, 500); // Wait 500ms after last filter change
 }
@@ -608,6 +627,16 @@ async function startDraft() {
     const currentFilters = JSON.stringify(DraftMode.state.filters);
     const preloadedFilters = JSON.stringify(DraftMode.preloadedFilters || []);
     
+    // Fast-path: if a preload is in-flight, wait a short, bounded time for it to complete
+    if (!DraftMode.preloadComplete && DraftMode.preloadPromise) {
+        try {
+            // Wait up to 800ms for preload to finish
+            await promiseWithTimeout(DraftMode.preloadPromise, 800);
+        } catch (err) {
+            // Timed out or failed; continue without blocking
+        }
+    }
+
     // If data is preloaded AND filters match, use it for instant loading
     if (DraftMode.preloadComplete && DraftMode.preloadedData && currentFilters === preloadedFilters) {
         await loadRoundPlayersFromCache();
@@ -721,6 +750,18 @@ function displayRoundPlayers(playersHtml) {
         
         // Get all the new player cards and initially hide them
         const playerCards = container.querySelectorAll('.draft-player');
+        // Ensure each draft-player has the data-tilt attribute (no value) for tilt library/init
+        playerCards.forEach(card => {
+            try {
+                // Prefer toggleAttribute to add attribute without a value in supporting browsers
+                if (typeof card.toggleAttribute === 'function') {
+                    card.toggleAttribute('data-tilt', true);
+                } else {
+                    // Fallback: set empty string (attribute presence)
+                    card.setAttribute('data-tilt', '');
+                }
+            } catch (e) { /* ignore */ }
+        });
         playerCards.forEach(card => {
             // Start hidden with opacity 0 and slightly scaled down
             card.style.opacity = '0';
@@ -749,6 +790,125 @@ function displayRoundPlayers(playersHtml) {
                     card.style.transform = 'scale(1) translateY(0)';
                 }, 100 + (index * 150)); // 100ms base delay + 150ms stagger per card
             });
+            
+            // Initialize tilt on the player cards if a tilt library is available.
+            try {
+                const cardsArray = Array.from(playerCards).filter(c => c.hasAttribute && c.hasAttribute('data-tilt'));
+                if (!cardsArray.length) return;
+
+                // Delay init until after the staggered animation completes to avoid race conditions
+                const maxDelay = 100 + (playerCards.length * 150) + 50;
+                setTimeout(() => {
+                    // If VanillaTilt is available, destroy any existing instances then init with options
+                    const vtOptions = {
+                        max: 10,
+                        speed: 500,
+                        glare: true,
+                        "max-glare": 0.8,
+                        perspective: 1000,
+                        scale: 1.03
+                    };
+
+                    const initWithVanillaTilt = (vt) => {
+                        try {
+                            // Initialize only the cards that don't already have a VanillaTilt instance.
+                            const toInit = cardsArray.filter(el => !el.vanillaTilt);
+                            if (toInit.length) {
+                                vt.init(toInit, vtOptions);
+                            }
+                            // After initial init, ensure glare elements exist — re-init elements missing glare
+                            ensureGlareExists(cardsArray, vt, vtOptions);
+                        } catch (e) {
+                            console.warn('VanillaTilt init error:', e);
+                        }
+                    };
+
+                    // Ensure glare elements exist by re-initializing elements that lack them.
+                    function ensureGlareExists(cards, vtLib, options, attempt = 0) {
+                        try {
+                            if (!cards || !cards.length) return;
+                            // If vtLib isn't ready, try again later (for lazy-loaded script)
+                            if (!vtLib && !window.VanillaTilt) {
+                                if (attempt < 6) {
+                                    setTimeout(() => ensureGlareExists(cards, window.VanillaTilt, options, attempt + 1), 200);
+                                }
+                                return;
+                            }
+                            const vt = vtLib || window.VanillaTilt;
+                            cards.forEach(el => {
+                                if (!document.contains(el)) return;
+                                // Check for vanilla-tilt's glare element
+                                const hasGlare = el.querySelector && el.querySelector('.js-tilt-glare');
+                                if (hasGlare) return;
+                                try {
+                                    if (el.vanillaTilt && typeof el.vanillaTilt.destroy === 'function') {
+                                        el.vanillaTilt.destroy();
+                                    }
+                                } catch (e) { /* ignore */ }
+                                try {
+                                    vt.init([el], options);
+                                } catch (e) {
+                                    // If init fails and we have attempts left, retry
+                                    if (attempt < 6) {
+                                        setTimeout(() => ensureGlareExists([el], vt, options, attempt + 1), 200);
+                                    }
+                                }
+                            });
+                        } catch (err) {
+                            if (attempt < 6) {
+                                setTimeout(() => ensureGlareExists(cards, vtLib, options, attempt + 1), 200);
+                            }
+                        }
+                    }
+
+                    if (window.VanillaTilt && typeof window.VanillaTilt.init === 'function') {
+                        initWithVanillaTilt(window.VanillaTilt);
+                    } else if (typeof VanillaTilt !== 'undefined' && typeof VanillaTilt.init === 'function') {
+                        initWithVanillaTilt(VanillaTilt);
+                    } else if (typeof window.initTilt === 'function') {
+                        // Optional project-specific initializer
+                        try { window.initTilt(cardsArray); } catch (e) { console.warn('window.initTilt failed:', e); }
+                    } else {
+                        // Lazy-load VanillaTilt from CDN if not present. This handles AJAX-inserted pages
+                        try {
+                            const CDN = 'https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js';
+                            // Avoid adding the script multiple times
+                            let existing = document.querySelector(`script[src="${CDN}"]`);
+                            if (existing) {
+                                // If already loaded, attempt init when available
+                                if (window.VanillaTilt && typeof window.VanillaTilt.init === 'function') {
+                                    initWithVanillaTilt(window.VanillaTilt);
+                                } else {
+                                    existing.addEventListener('load', () => {
+                                        if (window.VanillaTilt && typeof window.VanillaTilt.init === 'function') {
+                                            initWithVanillaTilt(window.VanillaTilt);
+                                        }
+                                    });
+                                }
+                            } else {
+                                const s = document.createElement('script');
+                                s.src = CDN;
+                                s.async = true;
+                                s.onload = () => {
+                                    if (window.VanillaTilt && typeof window.VanillaTilt.init === 'function') {
+                                        initWithVanillaTilt(window.VanillaTilt);
+                                    }
+                                };
+                                s.onerror = () => {
+                                    console.warn('Failed to load VanillaTilt from CDN:', CDN);
+                                };
+                                document.head.appendChild(s);
+                            }
+                        } catch (e) {
+                            console.info('VanillaTilt not found and lazy-load failed:', e);
+                        }
+                    }
+                }, maxDelay);
+            } catch (err) {
+                // Non-fatal: tilt is optional
+                // eslint-disable-next-line no-console
+                console.warn('Tilt init failed:', err);
+            }
         });
     }
     
@@ -759,6 +919,25 @@ function displayRoundPlayers(playersHtml) {
         progressBar.style.transition = 'width 0.5s ease-out';
         progressBar.style.width = progressPercent + '%';
     }
+
+    document.querySelectorAll(".draft-player").forEach(card => {
+        card.addEventListener("tiltChange", e => {
+            const { tiltX, tiltY } = e.detail;
+
+            const x = 50 + tiltX * 2;
+            const y = 50 + tiltY * 2;
+            card.style.setProperty("--foil-shift", `${x}% ${y}%`);
+
+            // rainbow hue rotation
+            const hue = (tiltX + tiltY) * 12;
+            card.style.setProperty("--foil-hue", `${hue}deg`);
+
+            const intensity = Math.sqrt(tiltX * tiltX + tiltY * tiltY); 
+            // map ~0–15deg to 0.05–0.3 opacity
+            const opacity = 0 + Math.min(intensity / 15, 1) * (0.2 - 0);
+            card.style.setProperty("--foil-opacity", opacity.toFixed(3));
+        });
+    });
 }
 
 async function handlePlayerSelection(e) {
@@ -813,26 +992,43 @@ async function handlePlayerSelection(e) {
 
 function animateCardSelection(playerCard) {
     return new Promise((resolve) => {
-        // Disable pointer events to prevent multiple clicks
-        playerCard.style.pointerEvents = 'none';
-        
-        // Add selection animation - pulse and highlight effect
-        playerCard.style.transition = 'all 0.3s ease-out';
-        playerCard.style.transform = 'scale(1.05)';
-        playerCard.style.boxShadow = '0 0 20px rgba(255, 255, 255, 0.5)';
-        playerCard.style.zIndex = '10';
-        
-        // After a short delay, animate out
-        setTimeout(() => {
-            playerCard.style.transition = 'all 0.4s ease-in';
-            playerCard.style.transform = 'scale(0.9)';
-            playerCard.style.opacity = '0.3';
-            
-            // Complete the animation
+        // Prevent extra clicks while animating
+        try {
+            const container = playerCard.closest('.draft-players-grid') || playerCard.parentElement;
+
+            // Mark the selected card with a class so CSS can style it
+            playerCard.classList.add('selected');
+            // Keep pointer events disabled on the selected card to avoid double clicks
+            playerCard.style.pointerEvents = 'none';
+
+            // Dim and scale down the other cards
+            if (container) {
+                const siblings = Array.from(container.querySelectorAll('.draft-player'))
+                    .filter(c => c !== playerCard);
+
+                siblings.forEach((card) => {
+                    // Disable interactions
+                    card.style.pointerEvents = 'none';
+                    // Animate to dimmed, scaled state
+                    card.style.transition = 'all 1s linear';
+                    card.style.filter = 'blur(10px)';
+                    card.style.opacity = '0';
+                });
+            }
+
+            // Allow the selected visual to settle, then resolve.
+            // Keep timings similar to previous behavior: brief emphasis, then settle
             setTimeout(() => {
+                // After settle, keep selected class for external CSS control.
+                // Resolve so caller can continue (load next round etc.)
                 resolve();
-            }, 400);
-        }, 300);
+            }, 500);
+        } catch (err) {
+            // In case of any error, resolve to avoid blocking the flow
+            // eslint-disable-next-line no-console
+            console.warn('animateCardSelection fallback:', err);
+            resolve();
+        }
     });
 }
 
@@ -1129,6 +1325,33 @@ function getPositionName(positionCode) {
         'G': 'Goalie' 
     };
     return positions[positionCode] || positionCode;
+}
+
+// Helper: await a promise but reject if it doesn't finish within ms
+function promiseWithTimeout(promise, ms) {
+    return new Promise((resolve, reject) => {
+        let settled = false;
+        const timer = setTimeout(() => {
+            if (!settled) {
+                settled = true;
+                reject(new Error('timeout'));
+            }
+        }, ms);
+
+        promise.then((v) => {
+            if (!settled) {
+                settled = true;
+                clearTimeout(timer);
+                resolve(v);
+            }
+        }).catch((err) => {
+            if (!settled) {
+                settled = true;
+                clearTimeout(timer);
+                reject(err);
+            }
+        });
+    });
 }
 
 function showLoadingIndicator(message) {

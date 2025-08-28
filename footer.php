@@ -25,6 +25,7 @@ if ($detect && !$detect->isMobile()) { ?>
 <?php } ?>
 <?php if (isset($teamBuilderActive) && $teamBuilderActive) { ?>
 <script src="https://cdn.jsdelivr.net/npm/@shopify/draggable@1.0.0-beta.11/lib/draggable.bundle.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
 <?php } ?>
 <script src="assets/js/swiper.js" defer></script>
 <script src="assets/js/chart.js" defer></script>

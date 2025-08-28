@@ -597,6 +597,14 @@
         color: var(--medium-contrast-color);
         text-transform: uppercase;
         letter-spacing: 1px;
+        display: flex;
+        gap: 0.5rem;
+        align-items: center;
+
+        & .tag {
+            padding: 0.3rem 0.5rem;
+            border-radius: 5px;
+        }
     }
 
     .draft-progress-bar {
@@ -616,186 +624,274 @@
     }
 
     .draft-players-container {
-        background-color: var(--content-box-bg);
+        background-color: var(--low-contrast-color);
         padding: 3rem 2rem;
-    }
+        overflow: hidden;
 
-    .draft-players-container h3 {
-        color: var(--heading-color);
-        margin-bottom: 1.5rem;
-        text-align: center;
-        font-size: 1.3rem;
-    }
+        --grain: url('../../img/grain.webp');
+        --glitter: url('../../img/glitter.png');
+        --pattern: url('../../img/pattern-NHLPLAY.png');
 
-    .draft-players-grid {
-        display: flex;
-        justify-content: space-evenly;
+        @media (prefers-color-scheme: dark) {
+            background-image: var(--grain);
+            background-blend-mode: overlay;
+        }
+
+        & h3 {
+            color: var(--heading-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-size: 1.3rem;
+        }
+
+        & .draft-players-grid {
+            display: flex;
+            justify-content: space-evenly;
+        }
     }
 
     .draft-player {
+        --red: #f80e35;
+        --yellow: #eedf10;
+        --green: #21e985;
+        --blue: #0dbde9;
+        --violet: #c929f1;
+
         position: relative;
-        background-color: var(--main-bg-color);
-        border-radius: 10px;
+        background-color: #080c15;
+        border-radius: 20px;
         padding: 0;
         height: 460px;
         width: 330px;
         overflow: hidden;
         cursor: pointer;
-        transition: all 0.3s ease;
-        box-shadow: 0 0 0 1px var(--border-stroke-weak), var(--shadow-button);
-    }
+        user-select: none;
+        box-shadow: 0 0 0 2px var(--border-stroke-weak), var(--shadow-button);
+        transform-style: preserve-3d;
+        transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1),
+            box-shadow 0.4s ease-out,
+            background-size 1.5s ease-out,
+            opacity 0.4s ease-out;
 
-    .draft-player:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 0 0 2px var(--main-link-color), var(--box-shadow-nice);
-    }
+        &:hover {
+            box-shadow: 0 0 0 2px var(--border-stroke-weak), var(--box-shadow-nice);
+        }
 
-    .draft-player .jersey {
-        position: absolute;
-        right: 1rem;
-        top: 0.7rem;
-        font-size: 1.8rem;
-        font-weight: bold;
-        color: var(--paragraph-color);
-        z-index: 3;
-    }
+        &::before,
+        &::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
 
-    .draft-player .info {
-        display: flex;
-        height: 100%;
-        align-items: center;
-        position: relative;
-        flex-direction: column;
-    }
+        &::before {
+            inset: 0;
+            /* rainbow foil gradient */
+            background: conic-gradient(
+                from 180deg,
+                var(--red),
+                var(--yellow),
+                var(--green),
+                var(--blue),
+                var(--violet),
+                var(--red)
+            );
+            background-size: 250% 250%;
+            opacity: var(--foil-opacity, 0);
+            filter: brightness(1.4) contrast(1.5) hue-rotate(var(--foil-hue, 0deg));;
+            mix-blend-mode: color-dodge;
+            pointer-events: none;
 
-    .draft-player .info .headshot {
-        position: relative;
-        width: 100%;
-        height: 540px;
-        border-radius: inherit;
-        transform: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: var(--semi-frost-bg);
-        overflow: clip;
-    }
+            mask-image: var(--pattern);
+            mask-repeat: repeat;
+            mask-size: 66px;
 
-    .draft-player .info .headshot .head {
-        width: 100%;
-        transform: translateY(1rem) scale(0.9);
-    }
+            transition: background-position 0.3s ease;
+            background-position: var(--foil-shift, 50% 50%);
+        }
 
-    .draft-player .info .headshot .mystery-player {
-        font-size: 6rem;
-        font-weight: 500;
-        color: var(--heading-color);
-        opacity: 0.8;
-        position: absolute;
-        background-color: var(--player-modal-bg);
-        backdrop-filter: blur(20px);
-        width: 100px;
-        height: 100px;
-        line-height: 1;
-        z-index: 5;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 8px;
-    }
+        &::after {
+            inset: 0;
+            background: var(--grain);
+            background-size: cover;
+            mix-blend-mode: screen;
+            opacity: 0.3;
+            pointer-events: none;
+        }
 
-    .draft-player .info .headshot .team-img {
-        transform: scale(1.2);
-        mix-blend-mode: soft-light;
-        mask: var(--logo-mask-big);
-        position: absolute;
-    }
+        & .js-tilt-glare-inner {
+            mix-blend-mode: soft-light;
+        }
 
-    .draft-player .info .text {
-        width: 100%;
-        display: flex;
-        height: 100%;
-        flex-direction: row;
-        flex-wrap: wrap;
-        align-content: flex-start;
-        justify-content: center;
-    }
+        &.selected {
+            transform: scale(0.8) translateY(800px) !important;
+            transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        }
 
-    .draft-player .info .text .name-wrap {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.8rem 0.5rem;
-        width: 100%;
-        height: 50px;
-        background-color: var(--player-modal-bg);
-        border-top: 1px solid var(--border-stroke-weak);
-        border-bottom: 1px solid var(--border-stroke-weak);
-    }
+        & .jersey {
+            position: absolute;
+            right: 1rem;
+            top: 0.7rem;
+            font-size: 1.4rem;
+            padding: 0.3rem 0.6rem;
+            background-color: #1a2129b3;
+            backdrop-filter: blur(4px);
+            border-radius: 10px;
+            font-weight: bold;
+            color: #a8bbcf;
+            box-shadow: var(--box-shadow-nice);
+            z-index: 3;
+            transform: translateZ(180px);
+        }
 
-    .draft-player .info .text .name {
-        font-family: 'Tomorrow', sans-serif;
-        text-transform: uppercase;
-        font-weight: 600;
-        font-size: 1.1rem;
-        color: var(--heading-color);
-    }
+        & .info {
+            display: flex;
+            height: 100%;
+            align-items: center;
+            position: relative;
+            flex-direction: column;
 
-    .draft-player .info .text .info-wrap {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0.5rem;
-        width: 100%;
-        gap: 1rem;
-        margin: 2rem 0;
-    }
+            & .headshot {
+                position: relative;
+                width: 100%;
+                height: 540px;
+                border-radius: inherit;
+                transform: none;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: #72798d14;
+                overflow: clip;
 
-    .draft-player .info .text:not(:has(.career-stats)) .info-wrap {
-        margin-top: 2rem;
-    }
+                & .head {
+                    width: 100%;
+                    transform: translateY(1rem) scale(0.9);
+                }
 
-    .draft-player .info .text > div {
-        color: var(--medium-contrast-color);
-        font-size: 0.9rem;
-    }
+                & .mystery-player {
+                    font-size: 6rem;
+                    font-weight: 500;
+                    color: #fff;
+                    opacity: 0.8;
+                    position: absolute;
+                    background-color: #0c0f1678;
+                    backdrop-filter: blur(20px);
+                    width: 100px;
+                    height: 100px;
+                    line-height: 1;
+                    z-index: 5;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    border-radius: 8px;
+                }
 
-    .draft-player .info .text .position {
-        color: var(--heading-color);
-    }
+                & .team-img {
+                    transform: scale(1.2);
+                    mix-blend-mode: soft-light;
+                    mask: var(--logo-mask-big);
+                    position: absolute;
+                }
+            }
 
-    .draft-player .info .text .career-stats {
-        margin-top: auto;
-        margin-bottom: 2rem;
-        width: fit-content;
-        place-self: center;
-    }
+            & .text {
+                width: 100%;
+                display: flex;
+                height: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                align-content: flex-start;
+                justify-content: center;
 
-    .draft-player .info .text .career-stats .stats-grid {
-        font-weight: 600;
-        color: var(--heading-color);
-        background: var(--semi-frost-bg-2);
-        padding: 0.45rem 0.8rem;
-        border-radius: 7px;
-        width: fit-content;
-        place-self: center;
-        display: flex;
-        gap: 1rem;
-    }
+                & > div {
+                    color: #8b9db0;
+                    font-size: 0.9rem;
+                }
 
-    .draft-player .info .text .career-stats .stat-column {
-        display: flex;
-        flex-direction: column;
-        gap: 0.2rem;
-        align-items: center;
-    }
+                & .name-wrap {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 0.8rem 0.5rem;
+                    width: 100%;
+                    height: 50px;
+                    background-color: #72798d14;
+                    border-top: 1px solid hsl(0deg 0% 100% / 10%);
+                    border-bottom: 1px solid hsl(0deg 0% 100% / 10%);
+                    backdrop-filter: blur(5px);
+                    position: relative;
+                    z-index: 4;
+                }
 
-    .draft-player .info .text .career-stats .stat-column .stat-header {
-        color: var(--medium-contrast-color);
-    }
+                & .name {
+                    font-family: 'Tomorrow', sans-serif;
+                    text-transform: uppercase;
+                    font-weight: 600;
+                    font-size: 1.1rem;
+                    color: #fff;
+                    position: relative;
+                    transform: translateZ(180px);
+                }
 
-    .draft-player .info .text .career-stats .stat-column .stat-value {
-        font-size: 1.2rem;
+                & .info-wrap {
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    padding: 0.5rem;
+                    width: 100%;
+                    gap: 1rem;
+                    margin: 2rem 0;
+
+                    .text:not(:has(.career-stats)) & {
+                        margin-top: 2rem;
+                    }
+                }
+
+                & .position {
+                    color: #fff;
+                }
+
+                & .career-stats {
+                    margin-top: auto;
+                    margin-bottom: 2rem;
+                    width: fit-content;
+                    place-self: center;
+                    transform: translateZ(180px);
+
+                    & .stats-grid {
+                        font-weight: 600;
+                        color: #fff;
+                        background: #72798d14;
+                        padding: 0.45rem 0.8rem;
+                        border-radius: 7px;
+                        backdrop-filter: blur(5px);
+                        width: fit-content;
+                        place-self: center;
+                        display: flex;
+                        gap: 1rem;
+
+                        & .stat-column {
+                            display: flex;
+                            flex-direction: column;
+                            gap: 0.2rem;
+                            align-items: center;
+                            transform: translateZ(280px);
+
+                            & .stat-header {
+                                color: #8b9db0;
+                            }
+
+                            & .stat-value {
+                                font-size: 1.2rem;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     .draft-select-btn {
