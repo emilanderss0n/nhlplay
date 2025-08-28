@@ -36,15 +36,22 @@ function loadStatContent(holder, activityContent, params) {
     
     const key = `${params.type}|${params.category}|${params.season}|${params.playoffs}`;
     if (_inFlightRequests.has(key)) {
-        return _inFlightRequests.get(key);
+        return _inFlightRequests.get(key).promise;
     }
+
+    // Use AbortController to allow timeouts and cancellation if needed
+    const controller = new AbortController();
+    const timeoutMs = params.timeout || 10000; // default 10s timeout
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
     const fetchPromise = fetch('ajax/stat-leaders-demand-load.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Requested-With': 'XMLHttpRequest'
         },
-        body: urlParams.toString()
+        body: urlParams.toString(),
+        signal: controller.signal
     })
     .then(response => {
         if (!response.ok) {
@@ -68,16 +75,35 @@ function loadStatContent(holder, activityContent, params) {
     })
     .catch(error => {
         console.error('Error loading stat content:', error);
+        // If the error was abort due to timeout, try one retry (unless already retried)
+        if (!params._retryAttempted) {
+            console.info('Retrying loadStatContent for', key);
+            params._retryAttempted = true;
+            // small backoff
+            return new Promise((resolve) => setTimeout(resolve, 500)).then(() => {
+                clearTimeout(timeoutId);
+                _inFlightRequests.delete(key);
+                return loadStatContent(holder, activityContent, params);
+            });
+        }
+
         holder.innerHTML = '<div class="error">Failed to load data</div>';
         if (activityContent) {
             activityContent.style.display = 'none';
         }
         throw error;
+    })
+    .finally(() => {
+        clearTimeout(timeoutId);
+        // cleanup stored entry
+        const entry = _inFlightRequests.get(key);
+        if (entry && entry.controller === controller) {
+            _inFlightRequests.delete(key);
+        }
     });
 
-    // store and cleanup in-flight promise
-    _inFlightRequests.set(key, fetchPromise);
-    fetchPromise.finally(() => _inFlightRequests.delete(key));
+    // store and cleanup in-flight promise along with controller
+    _inFlightRequests.set(key, { promise: fetchPromise, controller, timeoutId });
     return fetchPromise;
 }
 
@@ -100,11 +126,15 @@ function reloadStatLeadersContent(playoffs, season) {
             const doc = parser.parseFromString(html, 'text/html');
             const mainContent = doc.querySelector('main');
             
-            // Replace the current main content
-            document.querySelector('main').outerHTML = mainContent.outerHTML;
+            // Replace contents of the current main element to preserve the element identity
+            const mainEl = document.querySelector('main');
+            if (mainEl) {
+                mainEl.innerHTML = mainContent.innerHTML;
+            }
 
-            // Reinitialize any event handlers
-            initStatLeadersHandlers();
+            // Reinitialize any event handlers for this module
+            // (don't rebind global handlers already attached to existing elements)
+            try { initStatLeadersHandlers(); } catch (e) { console.warn(e); }
 
             // Ensure season selector is visible when returning to the card view
             try {
@@ -171,7 +201,8 @@ function runWithConcurrency(tasks, limit = 3) {
 
         function next() {
             if (index === tasks.length && active === 0) {
-                resolve(Promise.all(results));
+                // results is an array of Promises
+                Promise.all(results).then(resolve).catch(reject);
                 return;
             }
             while (active < limit && index < tasks.length) {
@@ -278,6 +309,8 @@ export function initStatLeadersHandlers() {
     } catch (e) {
         // ignore
     }
+
+    // No heavy custom select initialization here; header-style dropdown links are handled by handleHeaderSeasonClick
     
     // Handle stat-select option clicks with debounce
     const handleStatOptionClick = debounce(function(e) {
@@ -456,6 +489,36 @@ export function initStatLeadersHandlers() {
     
     document.removeEventListener('change', handleSeasonSelectChange);
     document.addEventListener('change', handleSeasonSelectChange);
+
+    // Minimal handler for header-style season dropdown links (keeps JS minimal)
+    document.removeEventListener('click', handleHeaderSeasonClick);
+    document.addEventListener('click', handleHeaderSeasonClick);
+
+    // Implementation of the header season click handler
+    function handleHeaderSeasonClick(e) {
+        const link = e.target.closest('.season-select-link');
+        if (!link) return;
+        e.preventDefault();
+
+        const season = link.dataset.value || link.getAttribute('data-value');
+        if (!season) return;
+
+        // Update hidden native select if present
+        const select = document.getElementById('seasonStatLeadersSelect');
+        if (select) {
+            select.value = season;
+            const ev = new Event('change', { bubbles: true });
+            select.dispatchEvent(ev);
+        }
+
+        // Close the header dropdown checkbox if present
+        const checkbox = document.getElementById('seasonDropdown');
+        if (checkbox) checkbox.checked = false;
+
+        // Update the visible label if present
+        const labelSpan = document.querySelector('.season-select-dropdown .season-current');
+        if (labelSpan) labelSpan.textContent = season;
+    }
     
     // Setup/re-attach a mutation observer to watch for content changes from AJAX
     function attachMainObserver() {
@@ -593,18 +656,16 @@ export function initStatLeadersTableHandler() {
             // Insert the returned table into the existing .section-stats so header stays
             const sectionStats = document.querySelector('.section-stats');
             if (sectionStats) {
-                // If tableEl is an element, use its outerHTML, otherwise insert the raw HTML
+                // Prefer inserting table HTML into the section-stats container
                 sectionStats.innerHTML = tableEl.outerHTML || html;
                 // Hide global season selector when in table view
                 try { setSeasonSelectVisible(false); } catch (e) {}
             } else {
-                // Fallback: replace the whole main
-                const newMain = document.createElement('main');
-                const wrap = document.createElement('div');
-                wrap.className = 'wrap';
-                wrap.appendChild(tableEl);
-                newMain.appendChild(wrap);
-                document.querySelector('main').outerHTML = newMain.outerHTML;
+                // Fallback: replace contents of main rather than the node itself
+                const mainEl = document.querySelector('main');
+                if (mainEl) {
+                    mainEl.innerHTML = tableEl.outerHTML || html;
+                }
             }
 
             // Update toggle text to allow returning to card view

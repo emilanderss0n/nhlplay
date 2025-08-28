@@ -56,6 +56,9 @@ function renderStatHolder($type, $category, $season, $playoffs, $loadOnDemand = 
         
         // Format stat value for display
         $formattedStat = formatStatValue($statPoint, $category);
+        if ($formattedStat === null) {
+            $formattedStat = 'N/A';
+        }
         
         // Update ranking logic - players with the same stat get the same rank
         $currentValue = getPlayerStatValue($statPoint, $category);
@@ -71,14 +74,25 @@ function renderStatHolder($type, $category, $season, $playoffs, $loadOnDemand = 
         if ($cardCount < $maxCardDesigns) {
             // Full card design
             ?>
-            <a id="player-link" data-link="<?= $statPoint->player->id ?>" href="#" class="player top-leader">
+            <?php
+            // Defensive extraction of fields to avoid undefined property notices
+            $playerId = $statPoint->player->id ?? null;
+            $teamId = $statPoint->team->id ?? null;
+            $triCode = $statPoint->team->triCode ?? null;
+            $playerName = $statPoint->player->fullName ?? 'Unknown';
+            ?>
+            <a id="player-link" data-link="<?= htmlspecialchars($playerId) ?>" href="#" class="player top-leader">
                 <div class="rank"><?= $rank; ?></div>
-                <img class="head" height="240" width="240" src="https://assets.nhle.com/mugs/nhl/<?= $season ?>/<?= $statPoint->team->triCode ?>/<?= $statPoint->player->id ?>.png" />
-                <img class="team-img" src="assets/img/teams/<?= $statPoint->team->id ?>.svg" width="200" height="200">
-                <div class="team-color" style="background: linear-gradient(142deg, <?= teamToColor($statPoint->team->id) ?> 0%, rgba(255,255,255,0) 58%); right: 0;"></div>
+                <?php if ($playerId && $triCode) : ?>
+                    <img class="head" height="240" width="240" src="https://assets.nhle.com/mugs/nhl/<?= htmlspecialchars($season) ?>/<?= htmlspecialchars($triCode) ?>/<?= htmlspecialchars($playerId) ?>.png" alt="<?= htmlspecialchars($playerName) ?>" />
+                <?php endif; ?>
+                <?php if ($teamId) : ?>
+                    <img class="team-img" src="assets/img/teams/<?= htmlspecialchars($teamId) ?>.svg" width="200" height="200" alt="team" />
+                <?php endif; ?>
+                <div class="team-color" style="background: linear-gradient(142deg, <?= teamToColor($teamId ?? 0) ?> 0%, rgba(255,255,255,0) 58%); right: 0;"></div>
 
                 <div class="info">
-                    <h3><?= $statPoint->player->fullName ?></h3>
+                    <h3><?= htmlspecialchars($playerName) ?></h3>
                     <div class="main-stat"><?= $formattedStat ?></div>
                 </div>
             </a>
@@ -90,11 +104,16 @@ function renderStatHolder($type, $category, $season, $playoffs, $loadOnDemand = 
             $listLeaderClass = $firstListLeader ? "player list-leader first" : "player list-leader";
             $firstListLeader = false; // Mark that we've used the first class
             ?>
-            <a id="player-link" data-link="<?= $statPoint->player->id ?>" href="#" class="<?= $listLeaderClass ?>">
+            <?php
+            $playerId = $statPoint->player->id ?? null;
+            $triCode = $statPoint->team->triCode ?? null;
+            $playerName = $statPoint->player->fullName ?? 'Unknown';
+            ?>
+            <a id="player-link" data-link="<?= htmlspecialchars($playerId) ?>" href="#" class="<?= $listLeaderClass ?>">
                 <div class="rank"><?= $rank; ?></div>
                 <div class="info-simple">
-                    <span class="player-name"><?= $statPoint->player->fullName ?></span>
-                    <span class="player-team tag"><?= $statPoint->team->triCode ?></span>
+                    <span class="player-name"><?= htmlspecialchars($playerName) ?></span>
+                    <span class="player-team tag"><?= htmlspecialchars($triCode ?? '') ?></span>
                 </div>
                 <div class="stat-value"><?= $formattedStat ?></div>
             </a>

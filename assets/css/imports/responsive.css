@@ -640,6 +640,18 @@
             margin-right: 0;
         }
 
+        .component-header .multi {
+            flex-direction: column;
+        }
+
+        .component-header .multi .btn-group {
+            margin: 0 !important;
+        }
+
+        #stat-leaders-toggle-table {
+            display: none;
+        }
+
         .alert {
             gap: 1rem;
         }

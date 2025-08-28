@@ -3,17 +3,46 @@ include_once '../path.php';
 include_once '../includes/functions.php';
 include_once __DIR__ . '/../includes/controllers/stat-leaders.php';
 
-$app = $app ?? ($GLOBALS['app'] ?? null);
-if(isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') { } else { include '../header.php'; }
+// Ensure $app is available but don't break if not
+$app = $app ?? ($GLOBALS['app'] ?? []);
 
-// Determine selected season/playoffs from query or app context
-$selectedPlayoffs = isset($_GET['playoffs']) ? ($_GET['playoffs'] === 'true') : ($app['playoffs'] ?? false);
-$selectedSeason = isset($_GET['season']) ? $_GET['season'] : ($app['context']['season'] ?? ($GLOBALS['season'] ?? date('Y')));
+// Detect AJAX requests in a forgiving way
+$isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strcasecmp($_SERVER['HTTP_X_REQUESTED_WITH'], 'XMLHttpRequest') === 0;
+if (!$isAjax) {
+    include '../header.php';
+}
+
+// Determine selected season/playoffs from query or app context with basic validation
+$selectedPlayoffs = false;
+if (isset($_GET['playoffs'])) {
+    $selectedPlayoffs = filter_var($_GET['playoffs'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?: false;
+} else {
+    $selectedPlayoffs = $app['playoffs'] ?? false;
+}
+
+$selectedSeason = null;
+if (isset($_GET['season']) && is_string($_GET['season'])) {
+    // Accept 'current' or a numeric season like 20242025
+    $s = trim($_GET['season']);
+    if ($s === 'current' || preg_match('/^\d{8}$/', $s)) {
+        $selectedSeason = $s;
+    }
+}
+if (!$selectedSeason) {
+    $selectedSeason = $app['context']['season'] ?? ($GLOBALS['season'] ?? date('Y'));
+}
+
 // Keep legacy $season variable for includes that rely on it
 $season = $selectedSeason;
 
 // Optionally fetch prepped data via controller (not required by renderStatHolder but useful)
-$leadersData = statleaders_get_leaders($selectedSeason, $selectedPlayoffs);
+// Wrap controller call to avoid fatal errors if API fails
+try {
+    $leadersData = statleaders_get_leaders($selectedSeason, $selectedPlayoffs);
+} catch (Exception $e) {
+    error_log('statleaders_get_leaders error: ' . $e->getMessage());
+    $leadersData = [];
+}
 
 ?>
 <main>
@@ -21,11 +50,33 @@ $leadersData = statleaders_get_leaders($selectedSeason, $selectedPlayoffs);
         <div class="component-header stat-leaders">
             <h3 class="title">Stat Leaders</h3>
             <div class="multi">
-                <select id="seasonStatLeadersSelect" class="form-select">
-                    <div class="select-options">
-                        <?php include_once '../includes/seasonSelection.php'; ?>
+                <?php
+                // Build seasons list for the custom dropdown and keep a native select hidden for semantics
+                $apiSeasons = json_decode(curlInit(NHLApi::season()));
+                $lastSeasons = is_array($apiSeasons) ? array_slice($apiSeasons, -6) : [];
+                $lastSeasons = array_reverse($lastSeasons);
+                ?>
+
+                <div class="season-select-dropdown custom-select">
+                    <input class="dropdown" type="checkbox" id="seasonDropdown" name="seasonDropdown" tabindex="-1" />
+                    <label class="for-dropdown" for="seasonDropdown" tabindex="0" role="button" aria-expanded="false" aria-haspopup="true">
+                        <span class="season-current"><?= htmlspecialchars($selectedSeason) ?></span>
+                        <i class="bi bi-arrow-down-short"></i>
+                    </label>
+                    <div class="section-dropdown season-options" role="menu" aria-labelledby="seasonDropdown" aria-hidden="true">
+                        <?php foreach ($lastSeasons as $s) {
+                            $isActive = ($s == $selectedSeason) ? ' active' : '';
+                            echo '<a href="#" class="season-select-link'. $isActive .'" data-value="'. htmlspecialchars($s) .'">'. htmlspecialchars($s) .'</a>';
+                        } ?>
                     </div>
-                </select>
+                    <?php // Hidden native select (keeps existing JS handlers working) ?>
+                    <select id="seasonStatLeadersSelect" class="form-select" style="display:none" aria-hidden="true">
+                        <?php foreach ($lastSeasons as $s) {
+                            $isSelected = ($s == $selectedSeason) ? ' selected' : '';
+                            echo '<option value="'. htmlspecialchars($s) .'"'. $isSelected .'>'. htmlspecialchars($s) .'</option>';
+                        } ?>
+                    </select>
+                </div>
                 <div class="season-select btn-group">
                     <i class="icon bi bi-filter"></i>
                     <a href="javascript:void(0);" class="btn sm <?= !$selectedPlayoffs ? 'active' : '' ?>" data-season="<?= $selectedSeason ?>" data-playoffs="false">Regular Season</a>
@@ -89,15 +140,30 @@ $leadersData = statleaders_get_leaders($selectedSeason, $selectedPlayoffs);
                 <div class="stat-goals stat-holder rookies"></div>
                 <div class="stat-assists stat-holder rookies"></div>
             </div>
-            <?php if (!$selectedPlayoffs) { ?>
-            <div class="stats-leaders">
-                <h3>Three Stars of the Week</h3>
-                <div class="three-stars">
-                <?= getThreeStars($selectedSeason); ?>
+            <!-- Three Stars moved below as its own section -->
+        </div><!-- END .section-stats -->
+
+        <?php
+        // Show Three Stars only for the active season (not for historical seasons or playoffs)
+        $activeSeason = $app['context']['season'] ?? ($GLOBALS['season'] ?? date('Y'));
+        if (!$selectedPlayoffs && $selectedSeason == $activeSeason) {
+            $threeStarsHtml = getThreeStars($selectedSeason);
+            $threeStarsTrim = trim($threeStarsHtml);
+            // If getThreeStars explicitly returns a 'No data' message or empty, show alert
+            $noDataPatterns = ["No data available", "No data available for the selected season"]; 
+            $hasData = $threeStarsTrim !== '' && !preg_match('/' . implode('|', array_map('preg_quote', $noDataPatterns)) . '/i', $threeStarsTrim);
+            ?>
+            <div class="section-three-stars">
+                <div class="wrap">
+                    <div class="component-header three-stars">
+                        <h3 class="title">Three Stars of the Week</h3>
+                    </div>
+                    <div class="three-stars">
+                        <?php if ($hasData) { echo $threeStarsHtml; } else { echo '<div class="alert">Three Stars are not available yet for the active season.</div>'; } ?>
+                    </div>
                 </div>
             </div>
-            <?php } ?>
-        </div><!-- END .section-stats -->
+        <?php } ?>
     </div>
 </main>
 <?php if(isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {} else { include_once '../footer.php'; } ?>
