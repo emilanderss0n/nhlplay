@@ -595,7 +595,9 @@ function clearSelectedPlayersUI() {
     // Clear the draft players grid (previous round's player cards)
     const draftPlayersGrid = document.querySelector('.draft-players-grid');
     if (draftPlayersGrid) {
-        draftPlayersGrid.innerHTML = '';
+    draftPlayersGrid.innerHTML = '';
+    // Restore display in case it was hidden by auto-complete or completion overlay
+    try { draftPlayersGrid.style.display = ''; } catch (e) { /* ignore */ }
     }
     
     // Reset progress bar
@@ -1080,17 +1082,134 @@ function updateDepthChart() {
 }
 
 async function completeDraft() {
-    // Hide draft interface
-    document.querySelector('.draft-active').style.display = 'none';
-    
-    // Show completion message
-    alert('Draft completed! Your team has been built.');
+    // Show completion message with countdown inside draft-players-container
+    // Don't hide draft-active yet - let the completion message handle the exit
+    showDraftCompletionMessage();
     
     // Transfer players to team builder
     await transferPlayersToTeamBuilder();
+}
+
+function showDraftCompletionMessage() {
+    const draftContainer = document.querySelector('.draft-players-container');
+    if (!draftContainer) {
+        // Fallback to alert if container not found
+        alert('Draft completed! Your team has been built.');
+        exitDraftMode();
+        return;
+    }
     
-    // Exit draft mode
-    exitDraftMode();
+    // Make sure the container has relative positioning
+    const currentPosition = window.getComputedStyle(draftContainer).position;
+    if (currentPosition === 'static') {
+        draftContainer.style.position = 'relative';
+    }
+    
+    // Create completion message overlay
+    const completionOverlay = document.createElement('div');
+    completionOverlay.className = 'draft-completion-overlay';
+    // Ensure overlay sits above other elements
+    completionOverlay.style.zIndex = '999999';
+    
+    // Create success icon
+    const successIcon = document.createElement('div');
+    successIcon.className = 'success-icon';
+    successIcon.innerHTML = '🏆';
+    
+    // Create completion message
+    const completionMessage = document.createElement('div');
+    completionMessage.className = 'completion-message';
+    completionMessage.textContent = 'Draft Completed!';
+    
+    // Create subtitle
+    const subtitle = document.createElement('div');
+    subtitle.className = 'completion-subtitle';
+    subtitle.textContent = 'Your team has been successfully built and transferred to the team builder.';
+    
+    // Create countdown container
+    const countdownContainer = document.createElement('div');
+    countdownContainer.className = 'countdown-container';
+    
+    const countdownText = document.createElement('span');
+    countdownText.textContent = 'Redirecting to team builder in ';
+    
+    const countdownNumber = document.createElement('span');
+    countdownNumber.className = 'countdown-number';
+    
+    countdownContainer.appendChild(countdownText);
+    countdownContainer.appendChild(countdownNumber);
+    countdownContainer.appendChild(document.createTextNode(' seconds...'));
+    
+    // Create skip button
+    const skipButton = document.createElement('button');
+    skipButton.className = 'btn skip-button';
+    skipButton.textContent = 'View Team Now';
+    skipButton.addEventListener('click', () => {
+        clearInterval(countdownInterval);
+        // Restore players grid display from saved value on the overlay
+        try {
+            const playersGrid = document.querySelector('.draft-players-grid');
+            const prev = completionOverlay.dataset.prevPlayersGridDisplay;
+            if (playersGrid) {
+                if (typeof prev !== 'undefined' && prev !== null && prev !== '') {
+                    playersGrid.style.display = prev;
+                } else {
+                    playersGrid.style.display = '';
+                }
+            }
+        } catch (e) { /* ignore */ }
+        completionOverlay.remove();
+        exitDraftMode();
+    });
+    
+    // Assemble the completion overlay
+    completionOverlay.appendChild(successIcon);
+    completionOverlay.appendChild(completionMessage);
+    completionOverlay.appendChild(subtitle);
+    completionOverlay.appendChild(countdownContainer);
+    completionOverlay.appendChild(skipButton);
+    
+    // Add to container
+    draftContainer.appendChild(completionOverlay);
+
+    // Hide the players grid while the completion overlay is visible and
+    // save the previous display value onto the overlay so we can restore it
+    try {
+        const playersGrid = document.querySelector('.draft-players-grid');
+        const prevDisplay = playersGrid ? playersGrid.style.display : '';
+        completionOverlay.dataset.prevPlayersGridDisplay = (typeof prevDisplay !== 'undefined' && prevDisplay !== null) ? prevDisplay : '';
+        if (playersGrid) {
+            playersGrid.style.display = 'none';
+        }
+    } catch (e) { /* ignore */ }
+    
+    // Start countdown
+    let timeLeft = 5;
+    countdownNumber.textContent = timeLeft;
+    
+    const countdownInterval = setInterval(() => {
+        timeLeft--;
+        countdownNumber.textContent = timeLeft;
+        
+        if (timeLeft <= 0) {
+            clearInterval(countdownInterval);
+            // Restore players grid display from saved value on the overlay
+            try {
+                const playersGrid = document.querySelector('.draft-players-grid');
+                const prev = completionOverlay.dataset.prevPlayersGridDisplay;
+                if (playersGrid) {
+                    if (typeof prev !== 'undefined' && prev !== null && prev !== '') {
+                        playersGrid.style.display = prev;
+                    } else {
+                        playersGrid.style.display = '';
+                    }
+                }
+            } catch (e) { /* ignore */ }
+
+            completionOverlay.remove();
+            exitDraftMode();
+        }
+    }, 1000);
 }
 
 // Auto-complete the entire draft by selecting the first available player each round
@@ -1099,11 +1218,24 @@ async function autoCompleteDraft(e) {
     if (btn) btn.disabled = true;
 
     DraftMode.setState({ autoCompleting: true });
+    // Show loading overlay inside the players container. Keep the draft-active
+    // area visible so the overlay (which is appended into .draft-players-container)
+    // is actually shown. Hide only the filters area. Also hide the players grid
+    // so stale cards aren't visible while auto-drafting.
     const loading = showLoadingIndicator('Auto-completing draft...');
     const draftActive = document.querySelector('.draft-active');
     const draftFilters = document.querySelector('.draft-filters');
-    if (draftActive) draftActive.style.display = 'none';
+    if (draftActive) draftActive.style.display = 'block';
     if (draftFilters) draftFilters.style.display = 'none';
+    // Ensure the players container is visible so the overlay has a parent to render into
+    const playersContainer = document.querySelector('.draft-players-container');
+    if (playersContainer) playersContainer.style.display = 'block';
+
+    // Hide player cards grid during auto-complete to avoid showing stale cards
+    const playersGrid = document.querySelector('.draft-players-grid');
+    // Preserve previous inline display value so we can restore it
+    const prevPlayersGridDisplay = playersGrid ? playersGrid.style.display : null;
+    if (playersGrid) playersGrid.style.display = 'none';
 
     try {
         // Ensure draft is active
@@ -1186,8 +1318,28 @@ async function autoCompleteDraft(e) {
             });
             selectedIds.add(picked.id);
 
+            // Live-update selected players section and depth chart while auto-drafting
+            try {
+                // Display the selected player in the UI (keeps same contract as manual selection)
+                displaySelectedPlayer(picked);
+            } catch (e) { /* ignore UI errors */ }
+
+            try {
+                updateDepthChart();
+            } catch (e) { /* ignore */ }
+
             // Advance round
             DraftMode.setState({ currentRound: DraftMode.state.currentRound + 1 });
+
+            // Update progress bar so user sees auto-draft progress
+            try {
+                const progressBar = document.querySelector('.progress-fill');
+                if (progressBar) {
+                    const progressPercent = (DraftMode.state.currentRound / DraftMode.state.totalRounds) * 100;
+                    progressBar.style.transition = 'width 0.25s linear';
+                    progressBar.style.width = progressPercent + '%';
+                }
+            } catch (e) { /* ignore */ }
 
             // Small delay to avoid hammering the server
             await new Promise(res => setTimeout(res, 120));
@@ -1201,6 +1353,23 @@ async function autoCompleteDraft(e) {
         alert('Auto-complete failed: ' + (err.message || err));
     } finally {
         DraftMode.setState({ autoCompleting: false });
+        // Restore players grid visibility
+        try {
+            // If the completion overlay is present, let it handle restoring the grid
+            const completionOverlay = document.querySelector('.draft-completion-overlay');
+            if (!completionOverlay) {
+                const playersGridRestore = document.querySelector('.draft-players-grid');
+                if (playersGridRestore) {
+                    // If we saved a previous display value, restore it; otherwise clear the inline style
+                    if (typeof prevPlayersGridDisplay !== 'undefined' && prevPlayersGridDisplay !== null) {
+                        playersGridRestore.style.display = prevPlayersGridDisplay;
+                    } else {
+                        playersGridRestore.style.display = '';
+                    }
+                }
+            }
+        } catch (e) { /* ignore */ }
+
         if (loading) hideLoadingIndicator(loading);
         if (btn) btn.disabled = false;
     }
@@ -1360,52 +1529,75 @@ function showLoadingIndicator(message) {
         return window.showLoadingIndicator(message);
     }
     
-    // Create parent fixed div for overlay
-    const overlay = document.createElement('div');
-    overlay.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        gap: 1rem;
-        background: var(--semi-frost-bg-2);
-        color: var(--heading-color);
-        backdrop-filter: blur(10px);
-        padding: 2rem;
-        border-radius: 10px;
-        z-index: 99999;
-    `;
+    // Create loading indicator inside .draft-players-container
+    const draftContainer = document.querySelector('.draft-players-container');
+    if (!draftContainer) {
+        // Fallback to fixed position if container not found
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            background: var(--semi-frost-bg-2);
+            color: var(--heading-color);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 10px;
+            z-index: 99999;
+        `;
+        
+        const indicator = document.createElement('div');
+        indicator.id = 'activity';
+        indicator.style.cssText = `display: block; width: 56px; height: 56px;`;
+        
+        const loader = document.createElement('div');
+        loader.className = 'loader';
+        loader.style.cssText = `border: 6px solid var(--heading-color); border-bottom-color: var(--secondary-link-color);`;
+        
+        const messageElement = document.createElement('div');
+        messageElement.textContent = message;
+        messageElement.style.fontSize = '0.9rem';
+        
+        indicator.appendChild(loader);
+        overlay.appendChild(indicator);
+        overlay.appendChild(messageElement);
+        document.body.appendChild(overlay);
+        
+        return overlay;
+    }
     
-    // Create #activity element with no custom styling
+    // Create loading overlay that fits inside the draft-players-container
+    const overlay = document.createElement('div');
+    overlay.className = 'draft-loading-overlay';
+    
+    // Make sure the container has relative positioning for the absolute overlay
+    const currentPosition = window.getComputedStyle(draftContainer).position;
+    if (currentPosition === 'static') {
+        draftContainer.style.position = 'relative';
+    }
+    
+    // Create #activity element
     const indicator = document.createElement('div');
     indicator.id = 'activity';
-    indicator.style.cssText = `
-        display: block;
-        width: 56px;
-        height: 56px;
-    `;
     
-    // Create loader div with base.css loader class only
+    // Create loader div
     const loader = document.createElement('div');
     loader.className = 'loader';
-    loader.style.cssText = `
-        border: 6px solid var(--heading-color);
-        border-bottom-color: var(--secondary-link-color);
-    `;
     
     // Create message element
     const messageElement = document.createElement('div');
     messageElement.textContent = message;
-    messageElement.style.fontSize = '0.9rem';
     
     indicator.appendChild(loader);
     overlay.appendChild(indicator);
     overlay.appendChild(messageElement);
-    document.body.appendChild(overlay);
+    draftContainer.appendChild(overlay);
     
     return overlay;
 }

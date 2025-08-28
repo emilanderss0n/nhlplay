@@ -629,12 +629,19 @@
     }
 
     .draft-players-container {
-        background-color: var(--low-contrast-color);
+        background-color: var(--medium-contrast-color);
         padding: 3rem 2rem;
+        min-height: 550px;
         overflow: hidden;
 
-        @media (prefers-color-scheme: dark) {
-            background-image: var(--grain);
+        background-image: var(--backdrop);
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-blend-mode: darken;
+
+        @media screen and (prefers-color-scheme: dark) {
+            background-color: var(--low-contrast-color);
             background-blend-mode: overlay;
         }
 
@@ -1107,4 +1114,100 @@
             flex-direction: row;
         }
     }
+}
+
+/* Draft Mode Overlays */
+.draft-loading-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 200px;
+    height: 200px;
+    gap: 1rem;
+    background: var(--semi-frost-bg-2);
+    color: var(--heading-color);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    z-index: 1000;
+    padding: 2rem;
+    text-align: center;
+}
+
+.draft-loading-overlay #activity {
+    display: block;
+    width: 56px;
+    height: 56px;
+}
+
+.draft-loading-overlay .loader {
+    border: 6px solid var(--heading-color);
+    border-bottom-color: var(--secondary-link-color);
+}
+
+.draft-loading-overlay > div:last-child {
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.draft-completion-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    color: #fff;
+    z-index: 1000;
+    text-align: center;
+    padding: 4rem;
+}
+
+.draft-completion-overlay .success-icon {
+    font-size: 4rem;
+    color: var(--success-color, #28a745);
+    margin-bottom: 1rem;
+}
+
+.draft-completion-overlay .completion-message {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    color: #fff;
+}
+
+.draft-completion-overlay .completion-subtitle {
+    font-size: 1rem;
+    color: #fff;
+    margin-bottom: 2rem;
+}
+
+.draft-completion-overlay .countdown-container {
+    font-size: 1.1rem;
+    color: #fff;
+    margin-bottom: 1rem;
+}
+
+.draft-completion-overlay .countdown-number {
+    font-weight: bold;
+    color: var(--main-link-color);
+    font-size: 1.3rem;
+}
+
+.draft-completion-overlay .skip-button {
+    margin-top: 1rem;
+    padding: 0.5rem 1rem;
+    background: var(--main-link-color);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
 }
