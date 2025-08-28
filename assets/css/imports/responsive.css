@@ -476,7 +476,7 @@
 
         .menu-teams .section-dropdown a {
             padding: 10px;
-            background: radial-gradient(ellipse at top, var(--dark-bg-color), transparent), radial-gradient(ellipse at bottom, var(--content-box-bg), transparent);
+            background: var(--card-gradient-bg);
             border-radius: 7px;
             justify-content: center;
             border: 1px solid var(--border-stroke-weak);

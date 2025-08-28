@@ -685,6 +685,11 @@
         border-radius: 7px;
         box-shadow: var(--shadow-box);
 
+        @media screen and (prefers-color-scheme: dark) {
+            border-top: 1px solid hsla(188, 100%, 85%, 0.08);
+            box-shadow: inset 0px 3px 9px 0px rgba(148, 229, 243, 0.05);
+        }
+
         & .title {
             font-size: 1.4rem;
             color: var(--paragraph-color);
