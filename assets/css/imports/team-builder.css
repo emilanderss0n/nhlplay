@@ -713,9 +713,10 @@
             mix-blend-mode: color-dodge;
             pointer-events: none;
 
-            mask-image: var(--pattern);
-            mask-repeat: repeat;
-            mask-size: 66px;
+            mask-image: var(--pattern), repeating-radial-gradient(transparent 0 2px, black 2px 3px);
+            mask-repeat: repeat, no-repeat;
+            mask-size: 66px, 100% 100%;
+            mask-composite: subtract;
 
             transition: background-position 0.3s ease;
             background-position: var(--foil-shift, 50% 50%);
@@ -724,8 +725,7 @@
         &::after {
             inset: 0;
             background: var(--grain);
-            background-size: cover;
-            mix-blend-mode: screen;
+            mix-blend-mode: exclusion;
             opacity: 0.3;
             pointer-events: none;
         }
