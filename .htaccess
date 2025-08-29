@@ -20,6 +20,9 @@ ErrorDocument 404 /%{ENV:BASE_PATH}/404.php
 # Handle team abbreviation URLs (3 uppercase letters)
 RewriteRule ^([A-Z]{3})/?$ ajax/team-view.php?team_abbr=$1 [QSA,L]
 
+# Handle player SEO URLs (/player/firstname-lastname-playerid)
+RewriteRule ^player/([a-z0-9\-]+)/?$ index.php [QSA,L]
+
 # Block access to non-existent PHP files to prevent 403 errors
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d

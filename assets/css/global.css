@@ -2496,6 +2496,10 @@
     margin: 5rem 0;
   }
 
+  .player-page-container #player-modal .title.stats .header-text {
+    font-size: 1.4rem;
+  }
+
   .trophies .trophy {
     display: flex;
     align-items: center;
@@ -4738,13 +4742,12 @@
     display: flex;
     flex-direction: column;
     position: relative;
-    overflow: clip;
-    border-radius: 10px;
     cursor: pointer;
     outline: 2px solid transparent;
     transition: outline 0.3s ease;
+    border-radius: 10px;
 
-    &:hover, &:focus-within {
+    &:focus-visible {
       outline: 2px solid var(--main-link-color);
     }
 
@@ -4754,6 +4757,8 @@
       object-fit: cover;
       max-height: max-content;
       position: relative;
+      border-radius: 10px;
+      overflow: hidden;
 
       &::before {
         content: "";
@@ -4774,13 +4779,13 @@
         height: 100%;
         object-fit: cover;
         transition: all 0.3s ease-out;
-        transform: scale(1) rotate(0deg);
+        transform: scale(1);
         z-index: 1;
-        mask: linear-gradient(181deg, #000, transparent 100%);
+        mask: linear-gradient(181deg, #000000, #00000066 100%);
       }
 
-      &:hover img {
-        transform: scale(1.1) rotate(3deg);
+      .youtube-video-card:hover & img {
+        transform: scale(1.1);
       }
 
       & .play-button {
@@ -4827,19 +4832,13 @@
       font-weight: 500;
       margin: 0;
       padding: 1rem;
-      position: absolute;
-      bottom: 0;
-      left: 0;
       pointer-events: none;
-      background-color: var(--semi-frost-bg);
-      backdrop-filter: blur(10px);
       transition: all 0.3s ease-out;
       width: 100%;
-      z-index: 2;
     }
 
     &:hover .video-title {
-      transform: translateY(200px);
+      color: var(--heading-color);
     }
   }
 

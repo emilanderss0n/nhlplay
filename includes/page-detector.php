@@ -9,6 +9,7 @@ if (!defined('BASE_URL')) {
 
 // Include team functions for validation
 require_once __DIR__ . '/functions/team-functions.php';
+require_once __DIR__ . '/functions/player-slug-functions.php';
 
 /**
  * PageDetector class for robust page and context detection
@@ -160,7 +161,13 @@ class PageDetector {
                 case 'player':
                     if (isset($pathParts[1])) {
                         $pageType = 'player';
-                        $context['player_id'] = $pathParts[1];
+                        // Check if it's a player slug (format: firstname-lastname-playerid) or just a player ID
+                        if (is_numeric($pathParts[1])) {
+                            $context['player_id'] = $pathParts[1];
+                        } else {
+                            // Treat as player slug
+                            $context['player_slug'] = $pathParts[1];
+                        }
                     }
                     break;
                 case 'team':

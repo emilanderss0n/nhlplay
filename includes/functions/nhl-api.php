@@ -188,6 +188,8 @@ class NHLApi {
      * Get player landing page data
      * @param string $playerId Player ID
      * @return string API URL
+     * 
+     * example: https://api-web.nhle.com/v1/player/8478402/landing
      */
     public static function playerLanding($playerId) {
         return self::API_WEB_BASE . "/player/{$playerId}/landing";

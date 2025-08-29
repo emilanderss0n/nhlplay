@@ -1,6 +1,59 @@
 import { fadeInElement, fadeOutElement, eventManager } from './utils.js';
 import { fixAjaxResponseUrls } from './ajax-handler.js';
 
+// Fallback share function for browsers without Web Share API
+function fallbackShare(url) {
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(() => {
+            // Show a brief notification
+            showShareNotification('Link copied to clipboard!');
+        }).catch(err => {
+            console.error('Failed to copy to clipboard:', err);
+            // Last resort - open in new window
+            window.open(url, '_blank');
+        });
+    } else {
+        // Very old browsers - just open in new window
+        window.open(url, '_blank');
+    }
+}
+
+// Show a brief notification for share actions
+function showShareNotification(message) {
+    const notification = document.createElement('div');
+    notification.textContent = message;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #333;
+        color: white;
+        padding: 10px 15px;
+        border-radius: 5px;
+        z-index: 10001;
+        font-size: 14px;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Fade in
+    setTimeout(() => {
+        notification.style.opacity = '1';
+    }, 10);
+    
+    // Fade out and remove
+    setTimeout(() => {
+        notification.style.opacity = '0';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                document.body.removeChild(notification);
+            }
+        }, 300);
+    }, 2000);
+}
+
 // Function to dynamically show the loader in the target container
 export function showLoaderInContainer(container) {
     const loader = document.createElement('div');
@@ -579,7 +632,38 @@ export function initPlayerHandlers(elements) {
 
         function setupModalEventListeners() {
             // Clean up any previous handlers to avoid duplicates
-            eventManager.removeEventListenersBySelector('#career-link, #season-link, #graph-toggle');
+            eventManager.removeEventListenersBySelector('#career-link, #season-link, #graph-toggle, #share-player');
+
+            // Add share handler
+            const shareButton = elements.playerModal.querySelector('#share-player');
+            if (shareButton) {
+                eventManager.addEventListener(shareButton, 'click', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Get the URL from the href attribute
+                    const shareUrl = this.href;
+                    
+                    // Try to use Web Share API if available
+                    if (navigator.share) {
+                        const playerTitle = elements.playerModal.querySelector('.player-name');
+                        const title = playerTitle ? playerTitle.textContent + ' - NHL Stats' : 'NHL Player Stats';
+                        
+                        navigator.share({
+                            title: title,
+                            text: 'Check out these NHL stats!',
+                            url: shareUrl
+                        }).catch(err => {
+                            console.log('Error sharing:', err);
+                            // Fallback to copying to clipboard
+                            fallbackShare(shareUrl);
+                        });
+                    } else {
+                        // Fallback for browsers without Web Share API
+                        fallbackShare(shareUrl);
+                    }
+                });
+            }
 
             // Add graph toggle handler
             const graphToggle = elements.playerModal.querySelector('#graph-toggle');

@@ -20,19 +20,22 @@
                     echo '</div>';
                 }
             } else {
+                echo '<div class="alert danger" style="margin-bottom: 5rem;">';
+                echo 'Hello dear hockey fan! Season is on break until October 7, 2025, some pages may have limited content until then.';
+                echo '</div>';
                 echo '<div class="trades trades-frontpage grid grid-300 grid-gap-lg grid-gap-row-lg" grid-max-col-count="2">';
                 echo renderTradeContent(true, 6, true);
                 echo '</div>';
 
-                echo '<a href="'.BASE_URL.'/pages/last-season-overview" rel="page" tabindex="0" role="button">';
-                echo '<div class="season-break-message" style="background-image: url('.BASE_URL.'/assets/img/stanley_cup_fla_2025.webp);">';
-                echo '<div class="inner">';
-                echo '<img class="season-break-logo" src="'.BASE_URL.'/assets/img/teams/13.svg" alt="Florida Panthers" />';
-                echo '<h3>Congratulations to the Florida Panthers for winning the Stanley Cup in 2025!</h3>';
-                echo '<p>Click here to see the last season overview</p>';
-                echo '</div>';
-                echo '</div>';
-                echo '</a>';
+                // echo '<a href="'.BASE_URL.'/pages/last-season-overview" rel="page" tabindex="0" role="button">';
+                // echo '<div class="season-break-message" style="background-image: url('.BASE_URL.'/assets/img/stanley_cup_fla_2025.webp);">';
+                // echo '<div class="inner">';
+                // echo '<img class="season-break-logo" src="'.BASE_URL.'/assets/img/teams/13.svg" alt="Florida Panthers" />';
+                // echo '<h3>Congratulations to the Florida Panthers for winning the Stanley Cup in 2025!</h3>';
+                // echo '<p>Click here to see the last season overview</p>';
+                // echo '</div>';
+                // echo '</div>';
+                // echo '</a>';
             } ?>
         </div>
             <?php $seasonBreak = $app['seasonBreak'] ?? false; if (!$seasonBreak) { ?>
@@ -175,15 +178,6 @@
             </div>
         <?php } ?>
         <div class="component-header" style="margin-top: 5rem">
-            <h3 class="title">Latest NHL Videos</h3>
-            <a href="https://www.youtube.com/@NHL" target="_blank" rel="noopener noreferrer" class="btn sm">NHL on YouTube</a>
-        </div>
-        <?php
-        $channelId = "UCqFMzb-4AUf6WAIbl132QKA"; // NHL channel
-        $maxResults = 9;
-        renderYouTubeVideos($channelId, $maxResults);
-        ?>
-        <div class="component-header" style="margin-top: 5rem">
             <h3 class="title">Popular at r/hockey</h3>
             <a href="https://www.reddit.com/r/hockey/" target="_blank" rel="noopener noreferrer" class="btn sm">Visit r/hockey</a>
         </div>
@@ -194,4 +188,14 @@
             import { initRedditPosts } from './assets/js/modules/reddit-handlers.js';
             document.addEventListener('DOMContentLoaded', initRedditPosts);
         </script>
+
+        <div class="component-header" style="margin-top: 5rem">
+            <h3 class="title">Latest NHL Videos</h3>
+            <a href="https://www.youtube.com/@NHL" target="_blank" rel="noopener noreferrer" class="btn sm">NHL on YouTube</a>
+        </div>
+        <?php
+        $channelId = "UCqFMzb-4AUf6WAIbl132QKA"; // NHL channel
+        $maxResults = 9;
+        renderYouTubeVideos($channelId, $maxResults);
+        ?>
     </div>

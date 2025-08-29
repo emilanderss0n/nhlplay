@@ -73,7 +73,7 @@ class SEOConfig {
         }
 
         // Handle player pages
-        if (isset($context['player_id'])) {
+        if (isset($context['player_id']) || isset($context['player_slug'])) {
             return self::getPlayerPageSEO($context);
         }
 
@@ -112,14 +112,81 @@ class SEOConfig {
     }
 
     private static function getPlayerPageSEO($context) {
-        $playerId = $context['player_id'];
-        $playerName = $context['player_name'] ?? "Player #{$playerId}";
+        // Include player functions for slug handling
+        require_once __DIR__ . '/functions/player-slug-functions.php';
+        require_once __DIR__ . '/functions/player-functions.php';
+        require_once __DIR__ . '/data/position-data.php';
+        require_once __DIR__ . '/controllers/player.php';
+        
+        $playerId = $context['player_id'] ?? null;
+        $playerSlug = $context['player_slug'] ?? null;
+        
+        // Extract player ID from slug if needed
+        if (!$playerId && $playerSlug) {
+            $playerId = extractPlayerIdFromSlug($playerSlug);
+        }
+        
+        // Try to fetch player data for accurate SEO
+        $playerData = null;
+        $playerName = "Player";
+        $teamName = "";
+        $position = "";
+        $canonicalSlug = $playerSlug;
+        
+        if ($playerId) {
+            try {
+                $playerData = player_fetch_landing($playerId);
+                if ($playerData && isset($playerData->firstName) && isset($playerData->lastName)) {
+                    $firstName = isset($playerData->firstName->default) ? $playerData->firstName->default : '';
+                    $lastName = isset($playerData->lastName->default) ? $playerData->lastName->default : '';
+                    $playerName = trim($firstName . ' ' . $lastName);
+                    
+                    // Safely get team name
+                    $teamName = '';
+                    if (isset($playerData->fullTeamName)) {
+                        if (is_string($playerData->fullTeamName)) {
+                            $teamName = $playerData->fullTeamName;
+                        } elseif (is_object($playerData->fullTeamName) && isset($playerData->fullTeamName->default)) {
+                            $teamName = $playerData->fullTeamName->default;
+                        }
+                    }
+                    
+                    // Safely get position name
+                    $position = '';
+                    if (isset($playerData->position) && function_exists('positionCodeToName')) {
+                        try {
+                            $position = positionCodeToName($playerData->position);
+                            $position = is_string($position) ? $position : '';
+                        } catch (Exception $e) {
+                            $position = '';
+                        }
+                    }
+                    
+                    $canonicalSlug = isset($playerData->playerSlug) ? $playerData->playerSlug : createPlayerSlug($playerData);
+                }
+            } catch (Exception $e) {
+                // Fallback to basic data
+                $playerName = $context['player_name'] ?? "Player #{$playerId}";
+            }
+        }
+        
+        $title = "{$playerName} - NHL Player Stats & Profile";
+        $description = "Complete {$playerName} profile with current season and career stats, advanced analytics, recent performance, and biographical information.";
+        
+        if (!empty($teamName)) {
+            $title .= " | {$teamName}";
+            $description .= " Follow {$playerName}'s performance with the {$teamName}.";
+        }
+        
+        if (!empty($position)) {
+            $description = str_replace("Complete {$playerName} profile", "Complete {$playerName} ({$position}) profile", $description);
+        }
         
         return [
-            'title' => "{$playerName} - NHL Player Stats & Profile | NHL PLAY",
-            'description' => "Complete {$playerName} profile with career stats, advanced analytics, recent performance, and biographical information. Track {$playerName}'s NHL career on NHL PLAY.",
-            'keywords' => "{$playerName}, NHL player, hockey stats, career statistics, player profile, NHL analytics",
-            'canonical' => "/player/{$playerId}",
+            'title' => $title,
+            'description' => $description,
+            'keywords' => "{$playerName}, NHL player, hockey stats, career statistics, player profile, NHL analytics, {$teamName}, {$position}",
+            'canonical' => "/player/{$canonicalSlug}",
             'type' => 'profile'
         ];
     }

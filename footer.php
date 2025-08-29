@@ -21,15 +21,15 @@ $app = $app ?? ($GLOBALS['app'] ?? null);
 if (!$app) { $app = ['context' => [], 'detect' => null]; }
 $detect = $app['detect'] ?? null;
 if ($detect && !$detect->isMobile()) { ?>
-<script src="assets/js/datatables.min.js"></script>
+<script src="<?= BASE_URL ?>/assets/js/datatables.min.js"></script>
 <?php } ?>
 <?php if (isset($teamBuilderActive) && $teamBuilderActive) { ?>
 <script src="https://cdn.jsdelivr.net/npm/@shopify/draggable@1.0.0-beta.11/lib/draggable.bundle.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
 <?php } ?>
-<script src="assets/js/swiper.js" defer></script>
-<script src="assets/js/chart.js" defer></script>
-<script type="module" src="assets/js/global.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.5.0/chart.umd.min.js" defer></script>
+<script type="module" src="<?= BASE_URL ?>/assets/js/global.js"></script>
 
 <script>
     ajaxPath = '<?= BASE_URL ?>/ajax/'; 

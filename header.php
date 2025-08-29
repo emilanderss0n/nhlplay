@@ -55,24 +55,24 @@ $mergedCSS = $isDevelopment ? false : generateMergedCSS([
         echo SEOConfig::generateMetaTags($seoData);
     ?>
     
-    <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
-    <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="assets/img/favicon-192x192.png">
-    <link rel="icon" type="image/png" sizes="48x48" href="assets/img/favicon-48x48.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32x32.png">
+    <link rel="icon" type="image/x-icon" href="<?= BASE_URL ?>/assets/img/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= BASE_URL ?>/assets/img/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="<?= BASE_URL ?>/assets/img/favicon-192x192.png">
+    <link rel="icon" type="image/png" sizes="48x48" href="<?= BASE_URL ?>/assets/img/favicon-48x48.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= BASE_URL ?>/assets/img/favicon-32x32.png">
 
     <?php if ($mergedCSS): ?>
-        <link rel="stylesheet" type="text/css" media="screen" href="<?= $mergedCSS ?>">
+        <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/<?= $mergedCSS ?>">
     <?php else: ?>
-        <link rel="stylesheet" type="text/css" media="screen" href="assets/css/datatables.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="assets/css/global.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="assets/css/imports/base.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="assets/css/imports/animations.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="assets/css/imports/darkmode-specific.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="assets/css/imports/responsive.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="assets/css/imports/team-builder.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="assets/css/swiper.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="assets/css/bootstrap-icons.min.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/datatables.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/global.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/imports/base.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/imports/animations.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/imports/darkmode-specific.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/imports/responsive.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/imports/team-builder.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/swiper.css">
+        <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/bootstrap-icons.min.css">
     <?php endif; ?>
 
     <!-- Preload Google Fonts for faster loading and to prevent FOUT -->

@@ -22,7 +22,7 @@ class Router
     private static $pageMap = [
         'home' => ['pages/home.php'],
         'team' => ['pages/team.php', 'team-view.php', 'team.php'],
-        'player' => ['pages/player.php', 'player-view.php', 'player.php'],
+        'player' => ['pages/player-seo.php', 'pages/player.php', 'player-view.php', 'player.php'],
         'game' => ['pages/game.php', 'live-game.php', 'game.php'],
         'scores' => ['pages/scores.php', 'scores.php'],
         'stat-leaders' => ['pages/stat-leaders.php', 'stat-leaders.php'],

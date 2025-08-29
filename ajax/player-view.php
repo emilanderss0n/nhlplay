@@ -5,6 +5,8 @@ if (!defined('IN_PAGE')) {
     include_once '../includes/functions.php';
 }
 include_once __DIR__ . '/../includes/controllers/player.php';
+include_once __DIR__ . '/../includes/functions/player-slug-functions.php';
+include_once __DIR__ . '/../includes/functions/share-functions.php';
 
 $playerID = $_POST['player'] ?? ($_GET['playerId'] ?? null);
 $player = player_fetch_landing($playerID);
@@ -109,6 +111,7 @@ $playerBirthplaceLong = \Locale::getDisplayRegion('-' . $playerBirthplace, 'en')
                 <i class="bi bi-filter icon"></i>
                 <a href="javascript:void(0);" class="btn sm" id="graph-toggle" data-player="<?= $playerID ?>" data-needs-stats="<?= $needsAdvancedStats ? 'true' : 'false' ?>" data-player-data='<?= htmlspecialchars(json_encode($player), ENT_QUOTES, 'UTF-8') ?>'>Radar</a>
                 <a href="javascript:void(0);" class="btn sm" id="career-link" data-link="<?= $playerID ?>">Career</a>
+                <a href="<?= getPlayerCanonicalUrl($player) ?>" class="btn sm share-btn" id="share-player" title="View full player page" target="_blank"><i class="bi bi-share"></i> Share</a>
             </div>
         </div>
         <div class="stats-player">
