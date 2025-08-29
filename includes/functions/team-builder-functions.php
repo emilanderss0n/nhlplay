@@ -206,173 +206,194 @@ function renderDraftPlayer($player, $filters = []) {
         $lastName = isset($player->lastName->default) ? $player->lastName->default : '';
         $fullName = trim($firstName . ' ' . $lastName);
 
-        // Safely access other properties
-        $birthCountry = $player->birthCountry ?? '';
-        $birthDate = $player->birthDate ?? '';
-        $age = calculateAge($birthDate);
-        $shoots = $player->shootsCatches ?? '';
-        $sweaterNumber = $player->sweaterNumber ?? '??';
-        $playerId = $player->id ?? 0;
-        $headshot = $player->headshot ?? '';
+    // Safely access other properties
+    $birthCountry = $player->birthCountry ?? '';
+    $birthDate = $player->birthDate ?? '';
+    $age = calculateAge($birthDate);
+    $shoots = $player->shootsCatches ?? '';
+    $sweaterNumber = $player->sweaterNumber ?? '??';
+    $playerId = $player->id ?? 0;
+    $headshot = $player->headshot ?? '';
+    // Height (cm) and weight (lbs) - used for draft card display
+    $heightCm = $player->heightInCentimeters ?? null;
+    $weightLbs = $player->weightInPounds ?? null;
 
-        // Apply filters to hide information (when filter is active, information is HIDDEN)
-        $showHeadshot = !in_array('headshot', $filters);
-        $showFullName = !in_array('first_last_name', $filters);
-        $showFirstName = !in_array('first_name', $filters);
-        $showLastName = !in_array('last_name', $filters);
-        $showBirthCountry = !in_array('birth_country', $filters);
-        $showTeamInfo = !in_array('team_info', $filters);
-        $showCareerStats = !in_array('career_stats', $filters);
-        $showHandedness = !in_array('handedness', $filters);
-        $showPosition = !in_array('position', $filters);
-        $showAge = !in_array('age', $filters);
-        $showJerseyNumber = !in_array('jersey_number', $filters);
+    // Convert birth country for flag display
+    $playerBirthplace = convertCountryAlphas3To2($birthCountry) ?? null;
+    $playerBirthplaceLong = $playerBirthplace ? \Locale::getDisplayRegion('-' . $playerBirthplace, 'en') : $birthCountry;
 
-        // Determine what name to show based on filters
-        $displayName = '';
+    // Apply filters to hide information (when filter is active, information is HIDDEN)
+    $showHeadshot = !in_array('headshot', $filters);
+    $showFullName = !in_array('first_last_name', $filters);
+    $showFirstName = !in_array('first_name', $filters);
+    $showLastName = !in_array('last_name', $filters);
+    $showBirthCountry = !in_array('birth_country', $filters);
+    $showTeamInfo = !in_array('team_info', $filters);
+    $showCareerStats = !in_array('career_stats', $filters);
+    $showHandedness = !in_array('handedness', $filters);
+    $showPosition = !in_array('position', $filters);
+    $showAge = !in_array('age', $filters);
+    // Toggle display of height & weight in draft cards separately
+    $showHeight = !in_array('height', $filters);
+    $showWeight = !in_array('weight', $filters);
+    $showJerseyNumber = !in_array('jersey_number', $filters);
 
-        if (in_array('first_last_name', $filters)) {
-            // Hide full name completely
-            $displayName = '???';
-        } elseif (in_array('first_name', $filters)) {
-            // Hide first name, show only last name
-            $displayName = !empty($lastName) ? $lastName : '???';
-        } elseif (in_array('last_name', $filters)) {
-            // Hide last name, show only first name
-            $displayName = !empty($firstName) ? $firstName : '???';
-        } else {
-            // No name filter active, show full name
-            $displayName = !empty($fullName) ? $fullName : '???';
-        }
+    // Determine what name to show based on filters
+    $displayName = '';
 
-        ob_start();
-        ?>
-        <div class="draft-player clickable <?= $positionClass ?><?= $rookieClass ?>" 
-                data-team-id="<?= $player->teamId ?>"
-                data-player-id="<?= $playerId ?>"
-                data-player-data="<?= htmlspecialchars(json_encode($player)) ?>"
-                style="background-image: linear-gradient(142deg, <?= $showTeamInfo ? $teamColor : '#666' ?> -100%, rgba(255,255,255,0) 70%);"
-                title="Click to select this player">
-            
-            <?php if ($showJerseyNumber): ?>
-                <div class="jersey"><span>#</span><?= $sweaterNumber ?></div>
-            <?php else: ?>
-                <div class="jersey"><span>#</span>??</div>
-            <?php endif; ?>
-            
-            <div class="info">
-                <?php if ($showHeadshot && !empty($headshot)): ?>
-                    <div class="headshot">
-                        <img class="head" loading="lazy" height="200" width="200" src="<?= $headshot ?>" alt="<?= $displayName ?>">
-                        <?php if ($showTeamInfo): ?>
-                            <img class="team-img" loading="lazy" height="600" width="600" src="<?= $teamLogo ?>" alt="Team logo">
-                        <?php endif; ?>
-                    </div>
-                <?php else: ?>
-                    <div class="headshot">
-                        <div class="mystery-player">?</div>
-                        <?php if ($showTeamInfo): ?>
-                            <img class="team-img" loading="lazy" height="600" width="600" src="<?= $teamLogo ?>" alt="Team logo">
-                        <?php endif; ?>
-                    </div>
+    if (in_array('first_last_name', $filters)) {
+        // Hide full name completely
+        $displayName = '???';
+    } elseif (in_array('first_name', $filters)) {
+        // Hide first name, show only last name
+        $displayName = !empty($lastName) ? $lastName : '???';
+    } elseif (in_array('last_name', $filters)) {
+        // Hide last name, show only first name
+        $displayName = !empty($firstName) ? $firstName : '???';
+    } else {
+        // No name filter active, show full name
+        $displayName = !empty($fullName) ? $fullName : '???';
+    }
+
+    ob_start();
+    ?>
+    <div class="draft-player clickable <?= $positionClass ?><?= $rookieClass ?>" 
+            data-team-id="<?= $player->teamId ?>"
+            data-player-id="<?= $playerId ?>"
+            data-player-data="<?= htmlspecialchars(json_encode($player)) ?>"
+            style="background-image: linear-gradient(142deg, <?= $showTeamInfo ? $teamColor : '#666' ?> -100%, rgba(255,255,255,0) 70%);"
+            title="Click to select this player">
+        
+        <?php if ($showJerseyNumber): ?>
+            <div class="jersey"><span>#</span><?= $sweaterNumber ?></div>
+        <?php else: ?>
+            <div class="jersey"><span>#</span>??</div>
+        <?php endif; ?>
+
+        <?php if ($showBirthCountry && !empty($birthCountry)): ?>
+            <div class="country">
+                <?php if ($playerBirthplace): ?>
+                    <img class="flag" title="<?= htmlspecialchars($playerBirthplaceLong) ?>" src="<?= BASE_URL ?>/assets/img/flags/<?= $playerBirthplace ?>.svg" height="32" width="42" alt="<?= htmlspecialchars($playerBirthplaceLong) ?> flag" />
                 <?php endif; ?>
-                
-                <div class="text">
-                    <div class="name-wrap">
-                        <div class="name"><?= $displayName ?></div>
-                    </div>
-                    <div class="info-wrap">
-                    <?php if ($showPosition): ?>
-                        <div class="position"><?= $positionName ?></div>
-                    <?php else: ?>
-                        <div class="position">???</div>
-                    <?php endif; ?>
-                    
-                    <?php if ($showAge && $age !== '??'): ?>
-                        <div class="age">Age: <?= $age ?></div>
-                    <?php endif; ?>
-                    
-                    <?php if ($showBirthCountry && !empty($birthCountry)): ?>
-                        <div class="country"><?= $birthCountry ?></div>
-                    <?php endif; ?>
-                    
-                    <?php if ($showHandedness && !empty($shoots)): ?>
-                        <div class="shoots"><?= $shoots ?></div>
-                    <?php endif; ?>
-                    </div>
-                    
-                    <?php if ($showCareerStats): ?>
-                        <div class="career-stats">
-                            <?php 
-                            // Get career stats for the player
-                            $careerStats = getPlayerCareerStats($playerId);
-                            if ($careerStats && !empty($careerStats)): 
-                                if ($player->positionCode === 'G'): // Goalie stats
-                                    $wins = $careerStats->wins ?? 0;
-                                    $losses = $careerStats->losses ?? 0;
-                                    $savePct = isset($careerStats->savePctg) ? number_format($careerStats->savePctg, 3) : '0.000';
-                                    $gaa = isset($careerStats->goalsAgainstAvg) ? number_format($careerStats->goalsAgainstAvg, 2) : '0.00';
-                                    ?>
-                                    <div class="stats-grid">
-                                        <div class="stat-column">
-                                            <div class="stat-header">GP</div>
-                                            <div class="stat-value"><?= $careerStats->gamesPlayed ?? 0 ?></div>
-                                        </div>
-                                        <div class="stat-column">
-                                            <div class="stat-header">W</div>
-                                            <div class="stat-value"><?= $wins ?></div>
-                                        </div>
-                                        <div class="stat-column">
-                                            <div class="stat-header">L</div>
-                                            <div class="stat-value"><?= $losses ?></div>
-                                        </div>
-                                        <div class="stat-column">
-                                            <div class="stat-header">SV%</div>
-                                            <div class="stat-value"><?= $savePct ?></div>
-                                        </div>
-                                        <div class="stat-column">
-                                            <div class="stat-header">GAA</div>
-                                            <div class="stat-value"><?= $gaa ?></div>
-                                        </div>
-                                    </div>
-                                    <?php
-                                else: // Skater stats
-                                    $goals = $careerStats->goals ?? 0;
-                                    $assists = $careerStats->assists ?? 0;
-                                    $points = $careerStats->points ?? 0;
-                                    $games = $careerStats->gamesPlayed ?? 0;
-                                    ?>
-                                    <div class="stats-grid">
-                                        <div class="stat-column">
-                                            <div class="stat-header">GP</div>
-                                            <div class="stat-value"><?= $games ?></div>
-                                        </div>
-                                        <div class="stat-column">
-                                            <div class="stat-header">G</div>
-                                            <div class="stat-value"><?= $goals ?></div>
-                                        </div>
-                                        <div class="stat-column">
-                                            <div class="stat-header">A</div>
-                                            <div class="stat-value"><?= $assists ?></div>
-                                        </div>
-                                        <div class="stat-column">
-                                            <div class="stat-header">P</div>
-                                            <div class="stat-value"><?= $points ?></div>
-                                        </div>
-                                    </div>
-                                    <?php
-                                endif;
-                            else:
-                                echo "Career stats unavailable";
-                            endif;
-                            ?>
-                        </div>
+            </div>
+        <?php endif; ?>
+        
+        <div class="info">
+            <?php if ($showHeadshot && !empty($headshot)): ?>
+                <div class="headshot">
+                    <img class="head" loading="lazy" height="200" width="200" src="<?= $headshot ?>" alt="<?= $displayName ?>">
+                    <?php if ($showTeamInfo): ?>
+                        <img class="team-img" loading="lazy" height="600" width="600" src="<?= $teamLogo ?>" alt="Team logo">
                     <?php endif; ?>
                 </div>
+            <?php else: ?>
+                <div class="headshot">
+                    <div class="mystery-player">?</div>
+                    <?php if ($showTeamInfo): ?>
+                        <img class="team-img" loading="lazy" height="600" width="600" src="<?= $teamLogo ?>" alt="Team logo">
+                    <?php endif; ?>
+                </div>
+            <?php endif; ?>
+            
+            <div class="text">
+                <div class="name-wrap">
+                    <div class="name"><?= $displayName ?></div>
+                </div>
+                <div class="info-wrap">
+                <?php if ($showPosition): ?>
+                    <div class="position"><?= $positionName ?></div>
+                <?php else: ?>
+                    <div class="position">???</div>
+                <?php endif; ?>
+                
+                <?php if ($showAge && $age !== '??'): ?>
+                    <div class="age">Age: <?= $age ?></div>
+                <?php endif; ?>
+                
+                <?php if ($showHandedness && !empty($shoots)): ?>
+                    <div class="shoots"><?= $shoots ?></div>
+                <?php endif; ?>
+
+                <?php if ($showHeight && !empty($heightCm)): ?>
+                    <div class="height"><?= htmlspecialchars(convert_to_inches($heightCm), ENT_QUOTES) ?></div>
+                <?php endif; ?>
+                <?php if ($showWeight && !empty($weightLbs)): ?>
+                    <div class="weight"><?= htmlspecialchars($weightLbs, ENT_QUOTES) ?> lbs</div>
+                <?php endif; ?>
+                </div>
+                
+                <?php if ($showCareerStats): ?>
+                    <div class="career-stats">
+                        <?php 
+                        // Get career stats for the player
+                        $careerStats = getPlayerCareerStats($playerId);
+                        if ($careerStats && !empty($careerStats)): 
+                            if ($player->positionCode === 'G'): // Goalie stats
+                                $wins = $careerStats->wins ?? 0;
+                                $losses = $careerStats->losses ?? 0;
+                                $savePct = isset($careerStats->savePctg) ? number_format($careerStats->savePctg, 3) : '0.000';
+                                $gaa = isset($careerStats->goalsAgainstAvg) ? number_format($careerStats->goalsAgainstAvg, 2) : '0.00';
+                                ?>
+                                <div class="stats-grid">
+                                    <div class="stat-column">
+                                        <div class="stat-header">GP</div>
+                                        <div class="stat-value"><?= $careerStats->gamesPlayed ?? 0 ?></div>
+                                    </div>
+                                    <div class="stat-column">
+                                        <div class="stat-header">W</div>
+                                        <div class="stat-value"><?= $wins ?></div>
+                                    </div>
+                                    <div class="stat-column">
+                                        <div class="stat-header">L</div>
+                                        <div class="stat-value"><?= $losses ?></div>
+                                    </div>
+                                    <div class="stat-column">
+                                        <div class="stat-header">SV%</div>
+                                        <div class="stat-value"><?= $savePct ?></div>
+                                    </div>
+                                    <div class="stat-column">
+                                        <div class="stat-header">GAA</div>
+                                        <div class="stat-value"><?= $gaa ?></div>
+                                    </div>
+                                </div>
+                                <?php
+                            else: // Skater stats
+                                $goals = $careerStats->goals ?? 0;
+                                $assists = $careerStats->assists ?? 0;
+                                $points = $careerStats->points ?? 0;
+                                $games = $careerStats->gamesPlayed ?? 0;
+                                ?>
+                                <div class="stats-grid">
+                                    <div class="stat-column">
+                                        <div class="stat-header">GP</div>
+                                        <div class="stat-value"><?= $games ?></div>
+                                    </div>
+                                    <div class="stat-column">
+                                        <div class="stat-header">G</div>
+                                        <div class="stat-value"><?= $goals ?></div>
+                                    </div>
+                                    <div class="stat-column">
+                                        <div class="stat-header">A</div>
+                                        <div class="stat-value"><?= $assists ?></div>
+                                    </div>
+                                    <div class="stat-column">
+                                        <div class="stat-header">P</div>
+                                        <div class="stat-value"><?= $points ?></div>
+                                    </div>
+                                </div>
+                                <?php
+                            endif;
+                        else:
+                            echo "Career stats unavailable";
+                        endif;
+                        ?>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
-        <?php
-        return ob_get_clean();
+    </div>
+    <?php
+    return ob_get_clean();
 
     } catch (Exception $e) {
         error_log("Error rendering draft player: " . $e->getMessage());

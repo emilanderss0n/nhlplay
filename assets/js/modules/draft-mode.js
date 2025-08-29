@@ -241,6 +241,20 @@ function createDraftInterface() {
                         </svg>
                         <span>Hide Jersey Number</span>
                     </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="filter-height" name="filter-height" class="draft-filter-toggle" value="height">
+                        <svg viewBox="0 0 64 64" height="2em" width="2em">
+                            <path d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16" pathLength="575.0541381835938" class="path"></path>
+                        </svg>
+                        <span>Hide Height</span>
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="filter-weight" name="filter-weight" class="draft-filter-toggle" value="weight">
+                        <svg viewBox="0 0 64 64" height="2em" width="2em">
+                            <path d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16" pathLength="575.0541381835938" class="path"></path>
+                        </svg>
+                        <span>Hide Weight</span>
+                    </label>
                     <button class="btn sm nhlplay-preset-btn"><i class="bi bi-star-fill"></i> NHLPLAY Preset</button>
                 </div>
                 <div class="draft-buttons">
