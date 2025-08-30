@@ -204,7 +204,14 @@ function createDraftInterface() {
                         <svg viewBox="0 0 64 64" height="2em" width="2em">
                             <path d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16" pathLength="575.0541381835938" class="path"></path>
                         </svg>
-                        <span>Hide Team Info</span>
+                        <span>Hide Team Color</span>
+                    </label>
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="filter-team-logo" name="filter-team-logo" class="draft-filter-toggle" value="team_logo">
+                        <svg viewBox="0 0 64 64" height="2em" width="2em">
+                            <path d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16" pathLength="575.0541381835938" class="path"></path>
+                        </svg>
+                        <span>Hide Team Logo</span>
                     </label>
                     <label class="checkbox-container">
                         <input type="checkbox" id="filter-career-stats" name="filter-career-stats" class="draft-filter-toggle" value="career_stats">
@@ -575,7 +582,9 @@ function applyNHLPLAYPreset() {
         'headshot',       // Hide Headshot
         'last_name',      // Hide Last Name  
         'career_stats',   // Hide Career Stats
-        'jersey_number'   // Hide Jersey Number
+        'jersey_number',  // Hide Jersey Number
+        'team_info',      // Hide Team Info
+        'team_logo'       // Hide Team Logo
     ];
     
     // Clear all current filters

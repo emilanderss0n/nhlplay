@@ -231,6 +231,7 @@ function renderDraftPlayer($player, $filters = []) {
     $showLastName = !in_array('last_name', $filters);
     $showBirthCountry = !in_array('birth_country', $filters);
     $showTeamInfo = !in_array('team_info', $filters);
+    $showTeamLogo = !in_array('team_logo', $filters);
     $showCareerStats = !in_array('career_stats', $filters);
     $showHandedness = !in_array('handedness', $filters);
     $showPosition = !in_array('position', $filters);
@@ -274,11 +275,11 @@ function renderDraftPlayer($player, $filters = []) {
         
         <div class="info">
             <?php if ($showHeadshot && !empty($headshot)): ?>
-                <div class="headshot <?php if ($showTeamInfo): ?>has-logo<?php endif; ?>" <?php if ($showTeamInfo): ?>style="--team-img: url('<?= $teamLogo ?>');"<?php endif; ?>>
+                <div class="headshot <?php if ($showTeamLogo): ?>has-logo<?php endif; ?>" <?php if ($showTeamLogo): ?>style="--team-img: url('<?= $teamLogo ?>');"<?php endif; ?>>
                     <img class="head" loading="lazy" height="200" width="200" src="<?= $headshot ?>" alt="<?= $displayName ?>">
                 </div>
             <?php else: ?>
-                <div class="headshot">
+                <div class="headshot <?php if ($showTeamLogo): ?>has-logo<?php endif; ?>" <?php if ($showTeamLogo): ?>style="--team-img: url('<?= $teamLogo ?>');"<?php endif; ?>>
                     <div class="mystery-player">?</div>
                 </div>
             <?php endif; ?>
