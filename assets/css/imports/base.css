@@ -1688,25 +1688,8 @@
         cursor: pointer;
         position: relative;
         transition: all linear 0.2s;
-        box-shadow: var(--shadow-button);
-    }
-
-    .fancy-button::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(to bottom, var(--content-box-bg) 0, var(--content-box-bg) 100%);
-        border-radius: inherit;
-        z-index: 1;
-        opacity: 0;
-        transition: all linear 0.2s;
-    }
-
-    .fancy-button:hover::after {
-        opacity: 1;
+        box-shadow: var(--shadow-button), inset 0px 3px 9px 0px rgba(148, 229, 243, 0.05);
+        border-top: 1px solid hsla(188, 100%, 85%, 0.08);
     }
 
     .fancy-button:active::after {
@@ -1714,8 +1697,8 @@
     }
 
     .fancy-button:hover {
-        box-shadow: var(--box-shadow-nice);
-        transform: translateY(-5px);
+        box-shadow: var(--box-shadow-nice), inset 0px 3px 9px 0px rgba(148, 229, 243, 0.05);
+        transform: translateY(-3px);
     }
 
     .fancy-button:active {
@@ -1735,12 +1718,6 @@
         animation-fill-mode: forwards;
         -webkit-text-size-adjust: none;
         z-index: 2;
-    }
-
-    .fancy-button:hover span {
-        background: linear-gradient(to right, var(--heading-color) 0, var(--heading-color) 10%, var(--heading-color) 20%);
-        -webkit-background-clip: text;
-        animation: none;
     }
 
     .jsDataTable-bottom {
