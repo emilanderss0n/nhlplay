@@ -30,7 +30,7 @@ $teamBuilderActive = true;
         </div>
     </div>
     <div class="tb-selection-players">
-        <div class="swiper" id="swiper-pool-1">
+        <div class="swiper teambuilder" id="swiper-pool-1">
             <div class="forwards tb-pool swiper-wrapper" id="tb-pool-1">
                 <?php renderTeamBuilderRoster($teamRosterInfo, $activeTeam, 'forwards'); ?>
             </div>
@@ -39,7 +39,7 @@ $teamBuilderActive = true;
             <div class="swiper-scrollbar"></div>
         </div>
         
-        <div class="swiper" id="swiper-pool-2">
+        <div class="swiper teambuilder" id="swiper-pool-2">
             <div class="defensemen tb-pool swiper-wrapper" id="tb-pool-2">
                 <?php renderTeamBuilderRoster($teamRosterInfo, $activeTeam, 'defensemen'); ?>
             </div>
@@ -48,7 +48,7 @@ $teamBuilderActive = true;
             <div class="swiper-scrollbar"></div>
         </div>
         
-        <div class="swiper" id="swiper-pool-3">
+        <div class="swiper teambuilder" id="swiper-pool-3">
             <div class="goalies tb-pool swiper-wrapper" id="tb-pool-3">
                 <?php renderTeamBuilderRoster($teamRosterInfo, $activeTeam, 'goalies'); ?>
             </div>

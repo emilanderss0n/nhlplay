@@ -178,6 +178,16 @@
             </div>
         <?php } ?>
         <div class="component-header" style="margin-top: 5rem">
+            <h3 class="title">Latest NHL Videos</h3>
+            <a href="https://www.youtube.com/@NHL" target="_blank" rel="noopener noreferrer" class="btn sm">NHL on YouTube</a>
+        </div>
+        <?php
+        $channelId = "UCqFMzb-4AUf6WAIbl132QKA"; // NHL channel
+        $maxResults = 9;
+        renderYouTubeVideos($channelId, $maxResults);
+        ?>
+
+        <div class="component-header" style="margin-top: 5rem">
             <h3 class="title">Popular at r/hockey</h3>
             <a href="https://www.reddit.com/r/hockey/" target="_blank" rel="noopener noreferrer" class="btn sm">Visit r/hockey</a>
         </div>
@@ -188,14 +198,4 @@
             import { initRedditPosts } from './assets/js/modules/reddit-handlers.js';
             document.addEventListener('DOMContentLoaded', initRedditPosts);
         </script>
-
-        <div class="component-header" style="margin-top: 5rem">
-            <h3 class="title">Latest NHL Videos</h3>
-            <a href="https://www.youtube.com/@NHL" target="_blank" rel="noopener noreferrer" class="btn sm">NHL on YouTube</a>
-        </div>
-        <?php
-        $channelId = "UCqFMzb-4AUf6WAIbl132QKA"; // NHL channel
-        $maxResults = 9;
-        renderYouTubeVideos($channelId, $maxResults);
-        ?>
     </div>

@@ -25,20 +25,106 @@ export function initYouTubeVideos() {
 
 function renderYouTubeVideos(videos, container) {
     container.innerHTML = ''; // Clear any existing content
-    
+
+    // Build Swiper structure
+    const swiperEl = document.createElement('div');
+    swiperEl.className = 'swiper youtube-swiper';
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'swiper-wrapper';
+    swiperEl.appendChild(wrapper);
+
+    // Navigation & pagination elements (scoped inside container)
+    const prevBtn = document.createElement('button');
+    prevBtn.className = 'youtube-swiper-prev swiper-button-prev';
+    prevBtn.setAttribute('aria-label', 'Previous videos');
+
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'youtube-swiper-next swiper-button-next';
+    nextBtn.setAttribute('aria-label', 'Next videos');
+
+    const pagination = document.createElement('div');
+    pagination.className = 'youtube-swiper-pagination swiper-pagination';
+
+    // Create slides
     videos.forEach(item => {
         if (!item.snippet || !item.snippet.resourceId) {
             return; // Skip invalid items
         }
-        
+
         const videoId = item.snippet.resourceId.videoId;
         const title = stripEmoji(item.snippet.title || '');
         const thumbnail = item.snippet.thumbnails?.standard?.url || item.snippet.thumbnails?.high?.url;
         const channelTitle = item.snippet.channelTitle || '';
-        
+
+        const slideEl = document.createElement('div');
+        slideEl.className = 'swiper-slide';
+
         const videoElement = createVideoElement(videoId, title, thumbnail, channelTitle);
-        container.appendChild(videoElement);
+        // Keep existing card markup inside the slide
+        slideEl.appendChild(videoElement);
+
+        wrapper.appendChild(slideEl);
     });
+
+    // Append navigation/pagination and swiper to container
+    swiperEl.appendChild(pagination);
+    swiperEl.appendChild(prevBtn);
+    swiperEl.appendChild(nextBtn);
+    container.appendChild(swiperEl);
+
+    // Initialize Swiper if available. If not yet loaded, retry on window load and poll briefly.
+    function tryInitSwiper() {
+        if (typeof Swiper === 'undefined') return false;
+
+        try {
+            new Swiper(swiperEl, {
+                slidesPerView: 1.1,
+                spaceBetween: 12,
+                centeredSlides: false,
+                loop: false,
+                lazy: {
+                    loadPrevNext: true,
+                },
+                keyboard: {
+                    enabled: true,
+                },
+                breakpoints: {
+                    640: { slidesPerView: 2.05, spaceBetween: 12 },
+                    900: { slidesPerView: 3.05, spaceBetween: 14 }
+                },
+                pagination: {
+                    el: pagination,
+                    clickable: true,
+                },
+                navigation: {
+                    nextEl: nextBtn,
+                    prevEl: prevBtn,
+                }
+            });
+            return true;
+        } catch (e) {
+            console.warn('Failed to initialize Swiper for YouTube videos', e);
+            return false;
+        }
+    }
+
+    if (!tryInitSwiper()) {
+        // If Swiper isn't available yet, wait for the window load event (external deferred scripts will have run)
+        window.addEventListener('load', () => {
+            if (!tryInitSwiper()) {
+                // As a final fallback, poll a few times in case of timing edge-cases
+                let attempts = 0;
+                const maxAttempts = 6; // ~3s
+                const interval = setInterval(() => {
+                    attempts += 1;
+                    if (tryInitSwiper() || attempts >= maxAttempts) {
+                        clearInterval(interval);
+                    }
+                }, 500);
+            }
+        });
+    }
 }
 
 function createVideoElement(videoId, title, thumbnail, channelTitle) {

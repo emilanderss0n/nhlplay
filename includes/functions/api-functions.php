@@ -478,7 +478,8 @@ function renderYouTubeVideos($channelId, $maxResults = 10, $containerId = 'video
     }
     
     // Output the container and JavaScript
-    echo '<div id="' . htmlspecialchars($containerId) . '" class="youtube-videos grid grid-400 grid-gap-lg grid-gap-row-lg">';
+    // Mark container as swiper-enabled (JS will enhance to a Swiper carousel)
+    echo '<div id="' . htmlspecialchars($containerId) . '" class="youtube-videos grid grid-400 grid-gap-lg grid-gap-row-lg" data-swiper-enabled="1">';
     
     if ($videosData !== false && !empty($videosData)) {
         // Embed video data as JavaScript variable
