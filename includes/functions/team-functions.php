@@ -118,7 +118,15 @@ function getTeamSchedules($teamAbbrev) {
 }
 
 function getTeamLogo($teamId) {
-    return 'assets/img/teams/' . $teamId . '.svg';
+    // Return an absolute URL using BASE_URL so CSS custom properties that
+    // receive this value don't accidentally resolve relative to the CSS file
+    // (which caused paths like assets/css/imports/assets/img/...).
+    if (!defined('BASE_URL')) {
+        // Fallback: return a relative path if BASE_URL is not available
+        return 'assets/img/teams/' . $teamId . '.svg';
+    }
+
+    return rtrim(BASE_URL, '/') . '/assets/img/teams/' . $teamId . '.svg';
 }
 
 function renderAtlanticDivision($standing, $detect) {

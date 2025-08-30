@@ -210,7 +210,9 @@ function renderDraftPlayer($player, $filters = []) {
     $birthCountry = $player->birthCountry ?? '';
     $birthDate = $player->birthDate ?? '';
     $age = calculateAge($birthDate);
-    $shoots = $player->shootsCatches ?? '';
+    $shoots = $player->shootsCatches ?? '??';
+    if ($shoots === 'L') $shoots = 'Left';
+    if ($shoots === 'R') $shoots = 'Right';
     $sweaterNumber = $player->sweaterNumber ?? '??';
     $playerId = $player->id ?? 0;
     $headshot = $player->headshot ?? '';
@@ -269,29 +271,15 @@ function renderDraftPlayer($player, $filters = []) {
         <?php else: ?>
             <div class="jersey"><span>#</span>??</div>
         <?php endif; ?>
-
-        <?php if ($showBirthCountry && !empty($birthCountry)): ?>
-            <div class="country">
-                <?php if ($playerBirthplace): ?>
-                    <img class="flag" title="<?= htmlspecialchars($playerBirthplaceLong) ?>" src="<?= BASE_URL ?>/assets/img/flags/<?= $playerBirthplace ?>.svg" height="32" width="42" alt="<?= htmlspecialchars($playerBirthplaceLong) ?> flag" />
-                <?php endif; ?>
-            </div>
-        <?php endif; ?>
         
         <div class="info">
             <?php if ($showHeadshot && !empty($headshot)): ?>
-                <div class="headshot">
+                <div class="headshot <?php if ($showTeamInfo): ?>has-logo<?php endif; ?>" <?php if ($showTeamInfo): ?>style="--team-img: url('<?= $teamLogo ?>');"<?php endif; ?>>
                     <img class="head" loading="lazy" height="200" width="200" src="<?= $headshot ?>" alt="<?= $displayName ?>">
-                    <?php if ($showTeamInfo): ?>
-                        <img class="team-img" loading="lazy" height="600" width="600" src="<?= $teamLogo ?>" alt="Team logo">
-                    <?php endif; ?>
                 </div>
             <?php else: ?>
                 <div class="headshot">
                     <div class="mystery-player">?</div>
-                    <?php if ($showTeamInfo): ?>
-                        <img class="team-img" loading="lazy" height="600" width="600" src="<?= $teamLogo ?>" alt="Team logo">
-                    <?php endif; ?>
                 </div>
             <?php endif; ?>
             
@@ -301,24 +289,40 @@ function renderDraftPlayer($player, $filters = []) {
                 </div>
                 <div class="info-wrap">
                 <?php if ($showPosition): ?>
-                    <div class="position"><?= $positionName ?></div>
+                    <div class="position tagged"><?= $positionName ?></div>
                 <?php else: ?>
-                    <div class="position">???</div>
+                    <div class="position tagged">??</div>
                 <?php endif; ?>
-                
-                <?php if ($showAge && $age !== '??'): ?>
-                    <div class="age">Age: <?= $age ?></div>
+
+                <?php if ($showBirthCountry && !empty($birthCountry)): ?>
+                    <div class="country">
+                        <?php if ($playerBirthplace): ?>
+                            <img class="flag" title="<?= htmlspecialchars($playerBirthplaceLong) ?>" src="<?= BASE_URL ?>/assets/img/flags/<?= $playerBirthplace ?>.svg" height="21" width="28" alt="<?= htmlspecialchars($playerBirthplaceLong) ?> flag" />
+                        <?php endif; ?>
+                    </div>
                 <?php endif; ?>
                 
                 <?php if ($showHandedness && !empty($shoots)): ?>
-                    <div class="shoots"><?= $shoots ?></div>
+                    <div class="shoots tagged" title="Shoots/Catches"><?= $shoots ?></div>
+                <?php else: ?>
+                    <div class="shoots tagged">??</div>
+                <?php endif; ?>
+
+                <?php if ($showAge && $age !== '??'): ?>
+                    <div class="age tagged">Age: <?= $age ?></div>
+                <?php else: ?>
+                    <div class="age tagged">Age: ??</div>
                 <?php endif; ?>
 
                 <?php if ($showHeight && !empty($heightCm)): ?>
-                    <div class="height"><?= htmlspecialchars(convert_to_inches($heightCm), ENT_QUOTES) ?></div>
+                    <div class="height tagged"><?= htmlspecialchars(convert_to_inches($heightCm), ENT_QUOTES) ?></div>
+                <?php else: ?>
+                    <div class="height tagged">??</div>
                 <?php endif; ?>
                 <?php if ($showWeight && !empty($weightLbs)): ?>
-                    <div class="weight"><?= htmlspecialchars($weightLbs, ENT_QUOTES) ?> lbs</div>
+                    <div class="weight tagged"><?= htmlspecialchars($weightLbs, ENT_QUOTES) ?> lbs</div>
+                <?php else: ?>
+                    <div class="weight tagged">?? lbs</div>
                 <?php endif; ?>
                 </div>
                 
