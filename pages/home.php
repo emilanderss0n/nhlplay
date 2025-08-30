@@ -20,8 +20,8 @@
                     echo '</div>';
                 }
             } else {
-                echo '<div class="alert danger" style="margin-bottom: 5rem;">';
-                echo 'Hello dear hockey fan! Season is on break until October 7, 2025, some pages may have limited content until then.';
+                echo '<div class="alert danger">';
+                echo 'Season is on break until October 7, 2025, some pages may have limited content right now';
                 echo '</div>';
                 echo '<div class="trades trades-frontpage grid grid-300 grid-gap-lg grid-gap-row-lg" grid-max-col-count="2">';
                 echo renderTradeContent(true, 6, true);

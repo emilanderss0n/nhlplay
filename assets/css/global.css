@@ -3950,7 +3950,7 @@
 
   .trades-frontpage {
     display: grid;
-    margin-bottom: 5rem;
+    margin: 4rem 0 5rem;
   }
 
   .trades-frontpage .trade {
