@@ -743,3 +743,27 @@ function calculateGoalieMetrics($playerStats) {
     
     return normalizeMetrics($metrics);
 }
+
+/**
+ * Check if a season has stat leaders data available
+ * @param string $season The season ID (e.g., '20242025')
+ * @param bool $playoffs Whether to check playoffs or regular season
+ * @return bool True if data is available
+ */
+function seasonHasStatData($season, $playoffs = false) {
+    $gameType = $playoffs ? 3 : 2;
+    $apiUrl = buildStatLeaderApiUrl('skaters', 'points', $season, $gameType);
+    
+    $baseCacheDir = dirname(__DIR__, 2) . '/cache/stat-leaders/';
+    $seasonCacheDir = $baseCacheDir . $season . '/';
+    $fileName = "skaters_points_" . ($playoffs ? 'playoffs' : 'regular');
+    $cacheFile = $seasonCacheDir . $fileName . '.json';
+    $cacheTime = 60 * 60; // 1 hour
+    
+    try {
+        $data = fetchData($apiUrl, $cacheFile, $cacheTime);
+        return $data && isset($data->data) && !empty($data->data);
+    } catch (Exception $e) {
+        return false;
+    }
+}

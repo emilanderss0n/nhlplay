@@ -2772,11 +2772,19 @@
     font-style: italic;
   }
 
+  .section-three-stars {
+    margin-top: 6rem;
+  }
+
   .three-stars {
     display: flex;
     flex-direction: column-reverse;
     gap: 1rem;
     margin: 1.5rem 0 0;
+
+    &.content {
+      flex-direction: row-reverse;
+    }
 
     & .item {
       position: relative;

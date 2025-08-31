@@ -1,9 +1,5 @@
 @layer responsive {
     @media screen and (min-width: 1450px) {
-        .section-stats {
-            grid-template-columns: repeat(3, 1fr);
-        }
-
         .stats-leaders .stat-select a {
             font-weight: 600;
             font-size: 0.9rem;

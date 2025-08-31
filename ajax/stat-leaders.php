@@ -35,6 +35,31 @@ if (!$selectedSeason) {
 // Keep legacy $season variable for includes that rely on it
 $season = $selectedSeason;
 
+// Get available seasons and filter to those with data
+$apiSeasons = json_decode(curlInit(NHLApi::season()));
+$allSeasons = is_array($apiSeasons) ? array_slice($apiSeasons, -6) : [];
+$allSeasons = array_reverse($allSeasons);
+$availableSeasons = [];
+foreach ($allSeasons as $s) {
+    if (seasonHasStatData($s, false)) { // Check for regular season data
+        $availableSeasons[] = $s;
+    }
+}
+
+// Find the latest season with three stars data
+$latestThreeStarsSeason = null;
+foreach ($allSeasons as $s) {
+    if (seasonHasThreeStarsData($s)) {
+        $latestThreeStarsSeason = $s;
+        break;
+    }
+}
+
+// If no seasons selected or selected season not available, use the latest available
+if (!$selectedSeason || !in_array($selectedSeason, $availableSeasons)) {
+    $selectedSeason = !empty($availableSeasons) ? $availableSeasons[0] : $selectedSeason;
+}
+
 // Optionally fetch prepped data via controller (not required by renderStatHolder but useful)
 // Wrap controller call to avoid fatal errors if API fails
 try {
@@ -52,9 +77,7 @@ try {
             <div class="multi">
                 <?php
                 // Build seasons list for the custom dropdown and keep a native select hidden for semantics
-                $apiSeasons = json_decode(curlInit(NHLApi::season()));
-                $lastSeasons = is_array($apiSeasons) ? array_slice($apiSeasons, -6) : [];
-                $lastSeasons = array_reverse($lastSeasons);
+                $lastSeasons = $availableSeasons;
                 ?>
 
                 <div class="season-select-dropdown custom-select">
@@ -144,24 +167,21 @@ try {
         </div><!-- END .section-stats -->
 
         <?php
-        // Show Three Stars only for the active season (not for historical seasons or playoffs)
-        $activeSeason = $app['context']['season'] ?? ($GLOBALS['season'] ?? date('Y'));
-        if (!$selectedPlayoffs && $selectedSeason == $activeSeason) {
-            $threeStarsHtml = getThreeStars($selectedSeason);
+        // Show Three Stars only for the latest season with data (not for playoffs)
+        if (!$selectedPlayoffs && $latestThreeStarsSeason) {
+            $threeStarsHtml = getThreeStars($latestThreeStarsSeason);
             $threeStarsTrim = trim($threeStarsHtml);
             // If getThreeStars explicitly returns a 'No data' message or empty, show alert
             $noDataPatterns = ["No data available", "No data available for the selected season"]; 
             $hasData = $threeStarsTrim !== '' && !preg_match('/' . implode('|', array_map('preg_quote', $noDataPatterns)) . '/i', $threeStarsTrim);
             ?>
             <div class="section-three-stars">
-                <div class="wrap">
                     <div class="component-header three-stars">
                         <h3 class="title">Three Stars of the Week</h3>
                     </div>
-                    <div class="three-stars">
-                        <?php if ($hasData) { echo $threeStarsHtml; } else { echo '<div class="alert">Three Stars are not available yet for the active season.</div>'; } ?>
+                    <div class="three-stars content">
+                        <?php if ($hasData) { echo $threeStarsHtml; } else { echo '<div class="alert">Three Stars are not available yet for the latest season with data.</div>'; } ?>
                     </div>
-                </div>
             </div>
         <?php } ?>
     </div>

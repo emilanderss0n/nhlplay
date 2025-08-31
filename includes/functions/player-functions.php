@@ -255,6 +255,22 @@ function getThreeStars($season) {
     return $output;
 }
 
+/**
+ * Check if a season has three stars data available
+ * @param string $season The season ID (e.g., '20242025')
+ * @return bool True if data is available
+ */
+function seasonHasThreeStarsData($season) {
+    $apiUrl = NHLApi::threeStars($season);
+    $curl = curlInit($apiUrl);
+    $result = json_decode($curl);
+    
+    if (isset($result->data->{$season}) && is_array($result->data->{$season}) && count($result->data->{$season}) > 0) {
+        return true;
+    }
+    return false;
+}
+
 function renderLastGames($lastGames, $isSkater) {
     ob_start();
     ?>
