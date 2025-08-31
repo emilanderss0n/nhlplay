@@ -34,24 +34,87 @@ function renderStatHolder($type, $category, $season, $playoffs, $loadOnDemand = 
         return '<div class="error">No data available for this season</div>';
     }
 
-    // Use findMaxStatValue to determine the leader in the category
-    $maxPoints = findMaxStatValue($statPoints->data, $category);
-
-    // Initialize variables for tracking rankings
-    $rank = 1;
+    $displayRank = 0; // For displaying rank with T for ties
     $previousValue = null;
-    $sameRankCount = 0;
-    $cardCount = 0; // Counter for full card designs
-    $maxCardDesigns = 3; // Maximum number of full card designs
-    $firstListLeader = true; // Track if this is the first list-leader element
 
     // Build HTML output
     ob_start();
     
     // Process only first 10 players
     $playerCount = min(count($statPoints->data), 10);
-    
-    for ($i = 0; $i < $playerCount; $i++) {
+
+    // Get first player for the holder
+    $firstPlayer = $statPoints->data[0] ?? null;
+    $firstPlayerHtml = '';
+    if ($firstPlayer) {
+        $playerId = $firstPlayer->player->id ?? null;
+        $teamId = $firstPlayer->team->id ?? null;
+        $logo = $firstPlayer->team->logos ?? null;
+        $triCode = $firstPlayer->team->triCode ?? null;
+        $positionCode = $firstPlayer->player->positionCode ?? null;
+        $playerName = $firstPlayer->player->fullName ?? 'Unknown';
+        $formattedStat = formatStatValue($firstPlayer, $category);
+        $sweaterNumber = $firstPlayer->player->sweaterNumber ?? '';
+        
+        // Find the latest logo
+        if (is_array($logo) && !empty($logo)) {
+            $latestLogo = null;
+            $latestEndSeason = 0;
+            foreach ($logo as $logoEntry) {
+                if (isset($logoEntry->endSeason) && isset($logoEntry->secureUrl)) {
+                    if ((int)$logoEntry->endSeason > $latestEndSeason) {
+                        $latestEndSeason = (int)$logoEntry->endSeason;
+                        $latestLogo = $logoEntry->secureUrl;
+                    }
+                }
+            }
+            $logo = $latestLogo;
+        } else {
+            $logo = null;
+        }
+        
+        $firstPlayerHtml = '
+            <div class="player-card" data-player-id="' . $playerId . '" data-team-id="' . $teamId . '" data-tricode="' . $triCode . '" data-name="' . htmlspecialchars($playerName) . '" data-position="' . $positionCode . '" data-logo="' . $logo . '" data-bg-color="' . teamToColor($teamId ?? 0) . '" data-stat="' . $formattedStat . '" data-headshot="https://assets.nhle.com/mugs/nhl/' . htmlspecialchars($season) . '/' . htmlspecialchars($triCode) . '/' . htmlspecialchars($playerId) . '.png" data-jersey="'. $sweaterNumber .'">
+                <a class="headshot" href="#" id="player-link" data-link="' . $playerId . '">
+                    <svg class="headshot_wrap" width="128" height="128">
+                        <mask id="circleMask:r2:">
+                            <svg>
+                                <path fill="#FFFFFF" d="M128 0H0V72H8C8 79.354 9.44848 86.636 12.2627 93.4303C15.077 100.224 19.2019 106.398 24.402 111.598C29.6021 116.798 35.7755 120.923 42.5697 123.737C49.364 126.552 56.646 128 64 128C71.354 128 78.636 126.552 85.4303 123.737C92.2245 120.923 98.3979 116.798 103.598 111.598C108.798 106.398 112.923 100.225 115.737 93.4303C118.552 86.636 120 79.354 120 72H128V0Z"></path>
+                            </svg>
+                        </mask>
+                        <image mask="url(#circleMask:r2:)" fill="#000000" id="canTop" height="128" href="https://assets.nhle.com/mugs/nhl/'. htmlspecialchars($season) .'/'. htmlspecialchars($triCode) .'/'. htmlspecialchars($playerId) .'.png"></image>
+                    </svg>
+                    <svg class="team-fill" width="128" height="128">
+                        <circle cx="64" cy="72" r="56" fill="'. teamToColor($teamId ?? 0) .'"></circle>
+                        <defs>
+                            <linearGradient id="gradient:r2:" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="20%" stop-opacity="0" stop-color="#000000"></stop>
+                                <stop offset="65%" stop-opacity="0.35" stop-color="#000000"></stop>
+                            </linearGradient>
+                        </defs>
+                        <circle cx="64" cy="72" r="56" fill="url(#gradient:r2:)"></circle>
+                    </svg>
+                </a>
+                <div class="player-info">
+                    <div class="mob-flex">
+                        <div class="player-name">' . htmlspecialchars($playerName) . '</div>
+                        <div class="player-meta">
+                            <img src="' . $logo . '" alt="' . $triCode . '" class="team-logo">
+                            <span class="team-code">' . $triCode . '</span>
+                            <span class="player-number">#' . $sweaterNumber . '</span>
+                            <div class="player-position">' . $positionCode . '</div>
+                        </div>
+                    </div>
+                    <div class="player-stat"><h2>' . $formattedStat . '</h2><span>' . $category . '</span></div>
+                </div>
+            </div>
+        ';
+    }
+
+    ?>
+    <div class="stat-leader-holder"><?php echo $firstPlayerHtml; ?></div>
+    <div class="stat-leader-list">
+    <?php for ($i = 0; $i < $playerCount; $i++) {
         $statPoint = $statPoints->data[$i];
         
         // Format stat value for display
@@ -60,66 +123,59 @@ function renderStatHolder($type, $category, $season, $playoffs, $loadOnDemand = 
             $formattedStat = 'N/A';
         }
         
-        // Update ranking logic - players with the same stat get the same rank
+        // Update ranking logic
         $currentValue = getPlayerStatValue($statPoint, $category);
+        $isTiedWithPrevious = ($i > 0 && $currentValue === $previousValue);
+        $isTiedWithNext = ($i < $playerCount - 1 && $currentValue === getPlayerStatValue($statPoints->data[$i+1], $category));
         
-        if ($i > 0 && $currentValue === $previousValue) {
-            $sameRankCount++;
-        } else {
-            $rank = $i + 1 - $sameRankCount;
+        if (!$isTiedWithPrevious) {
+            $displayRank = $i + 1;
         }
+        
+        $rankText = ($isTiedWithPrevious || $isTiedWithNext) ? 'T' . $displayRank : $displayRank;
         $previousValue = $currentValue;
         
         // Show full card design for the first 3 players only, regardless of rank
-        if ($cardCount < $maxCardDesigns) {
+
             // Full card design
             ?>
             <?php
             // Defensive extraction of fields to avoid undefined property notices
             $playerId = $statPoint->player->id ?? null;
             $teamId = $statPoint->team->id ?? null;
+            $logo = $statPoint->team->logos ?? null;
             $triCode = $statPoint->team->triCode ?? null;
+            $positionCode = $statPoint->player->positionCode ?? null;
             $playerName = $statPoint->player->fullName ?? 'Unknown';
-            ?>
-            <a id="player-link" data-link="<?= htmlspecialchars($playerId) ?>" href="#" class="player top-leader">
-                <div class="rank"><?= $rank; ?></div>
-                <?php if ($playerId && $triCode) : ?>
-                    <img class="head" height="240" width="240" src="https://assets.nhle.com/mugs/nhl/<?= htmlspecialchars($season) ?>/<?= htmlspecialchars($triCode) ?>/<?= htmlspecialchars($playerId) ?>.png" alt="<?= htmlspecialchars($playerName) ?>" />
-                <?php endif; ?>
-                <?php if ($teamId) : ?>
-                    <img class="team-img" src="assets/img/teams/<?= htmlspecialchars($teamId) ?>.svg" width="200" height="200" alt="team" />
-                <?php endif; ?>
-                <div class="team-color" style="background: linear-gradient(142deg, <?= teamToColor($teamId ?? 0) ?> 0%, rgba(255,255,255,0) 58%); right: 0;"></div>
+            $sweaterNumber = $statPoint->player->sweaterNumber ?? '';
 
-                <div class="info">
-                    <h3><?= htmlspecialchars($playerName) ?></h3>
-                    <div class="main-stat"><?= $formattedStat ?></div>
-                </div>
+            // Find the maximum value for $logo->endSeason and use the latest logo available (secureUrl)
+            if (is_array($logo) && !empty($logo)) {
+                $latestLogo = null;
+                $latestEndSeason = 0;
+                foreach ($logo as $logoEntry) {
+                    if (isset($logoEntry->endSeason) && isset($logoEntry->secureUrl)) {
+                        if ((int)$logoEntry->endSeason > $latestEndSeason) {
+                            $latestEndSeason = (int)$logoEntry->endSeason;
+                            $latestLogo = $logoEntry->secureUrl;
+                        }
+                    }
+                }
+                $logo = $latestLogo;
+            } else {
+                $logo = null;
+            }
+            ?>
+            <a class="stat-leader-list-item" href="#" data-player-id="<?= $playerId ?>" data-team-id="<?= $teamId ?>" data-tricode="<?= $triCode ?>" data-rank="<?= $rankText; ?>" data-name="<?= htmlspecialchars($playerName) ?>" data-position="<?= $positionCode; ?>" data-logo="<?= $logo ?>" data-bg-color="<?= teamToColor($teamId ?? 0) ?>" data-stat="<?= $formattedStat ?>" data-headshot="https://assets.nhle.com/mugs/nhl/<?= htmlspecialchars($season) ?>/<?= htmlspecialchars($triCode) ?>/<?= htmlspecialchars($playerId) ?>.png" data-jersey="<?= $sweaterNumber ?>">
+                <div class="rank"><?= $rankText; ?></div>
+                <div class="name"><?= htmlspecialchars($playerName) ?></div>
+                <div class="main-stat"><?= $formattedStat ?></div>
             </a>
             <?php
-            $cardCount++; // Increment card counter
-        } else {
-            // Simple list design for players after the first 3
-            // Add "first" class to the first list-leader element
-            $listLeaderClass = $firstListLeader ? "player list-leader first" : "player list-leader";
-            $firstListLeader = false; // Mark that we've used the first class
-            ?>
-            <?php
-            $playerId = $statPoint->player->id ?? null;
-            $triCode = $statPoint->team->triCode ?? null;
-            $playerName = $statPoint->player->fullName ?? 'Unknown';
-            ?>
-            <a id="player-link" data-link="<?= htmlspecialchars($playerId) ?>" href="#" class="<?= $listLeaderClass ?>">
-                <div class="rank"><?= $rank; ?></div>
-                <div class="info-simple">
-                    <span class="player-name"><?= htmlspecialchars($playerName) ?></span>
-                    <span class="player-team tag"><?= htmlspecialchars($triCode ?? '') ?></span>
-                </div>
-                <div class="stat-value"><?= $formattedStat ?></div>
-            </a>
-            <?php
-        }
     }
+    ?>
+    </div>
+    <?php
     $output = ob_get_clean();
     return $output;
 }
@@ -227,15 +283,15 @@ function isStatLeader($statPoint, $category, $maxValue) {
 function formatStatValue($statPoint, $category) {
     switch ($category) {
         case 'savePctg':
-            return number_format($statPoint->savePctg, 3) . ' SV%';
+            return number_format($statPoint->savePctg, 3);
         case 'gaa':
-            return number_format($statPoint->gaa, 2) . ' GAA';
+            return number_format($statPoint->gaa, 2);
         case 'goals':
-            return $statPoint->goals . ' Goals';
+            return $statPoint->goals;
         case 'assists':
-            return $statPoint->assists . ' Assists';
+            return $statPoint->assists;
         case 'points':
-            return $statPoint->points . ' Points';
+            return $statPoint->points;
         default:
             return $statPoint->{$category};
     }

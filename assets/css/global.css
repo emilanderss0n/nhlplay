@@ -2589,8 +2589,177 @@
 
   .stats-leaders .stat-holder {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    gap: 1rem;
     margin-top: 1rem;
+
+    @media (max-width: 760px) {
+      flex-direction: column;
+    }
+
+    & .stat-leader-holder {
+      flex: 1;
+
+      & .player-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1rem;
+        text-align: center;
+
+        @media (max-width: 760px) {
+          flex-direction: row;
+          text-align: left;
+          align-items: center;
+        }
+
+        @media (max-width: 580px) {
+          gap: 0.3rem;
+        }
+
+        & .headshot {
+          display: grid;
+          justify-items: center;
+          align-items: center;
+          transform: none;
+
+          @media (max-width: 760px) {
+            justify-items: start;
+            align-items: start;
+            width: 140px;
+            height: 140px;
+          }
+
+          @media (max-width: 580px) {
+            zoom: 0.6;
+          }
+
+          & .headshot_wrap {
+            grid-row: 1;
+            grid-column: 1;
+            position: relative;
+          }
+
+          & .team-fill {
+            grid-row: 1;
+            grid-column: 1;
+            position: relative;
+          }
+        }
+
+        & .player-info {
+
+          @media (max-width: 760px) {
+              flex: 1;
+              display: flex;
+              position: relative;
+              align-items: center;
+          }
+
+          @media (max-width: 580px) {
+            gap: 0.5rem;
+          }
+          
+          & .player-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            line-height: 1.2;
+            font-family: "Tomorrow", sans-serif;
+            text-transform: uppercase;
+
+            @media (max-width: 580px) {
+              font-size: 1.1rem;
+              font-weight: 500;
+              line-height: 1;
+            }
+          }
+
+          & .player-meta {
+            display: flex;
+            gap: 0.4rem;
+            justify-content: center;
+            align-items: center;
+            color: var(--medium-contrast-color);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+
+            @media (max-width: 760px) {
+              justify-content: flex-start;
+            }
+
+            & .team-logo {
+              width: 32px;
+              height: auto;
+              mask: var(--logo-mask-subtle);
+            }
+          }
+
+          & .player-stat {
+            margin-top: 2rem;
+
+            @media (max-width: 760px) {
+              margin-top: 0;
+              margin-left: auto;
+              text-align: right;
+            }
+
+            & > h2 {
+              font-size: 4rem;
+              line-height: 1;
+              margin-bottom: 0.2rem;
+              font-style: normal;
+
+              @media (max-width: 760px) {
+                font-size: 3rem;
+              }
+
+              @media (max-width: 580px) {
+                font-size: 2.2rem;
+              }
+            }
+            
+            & > span {
+              color: var(--medium-contrast-color);
+              text-transform: uppercase;
+            }
+          }
+        }
+      }
+    }
+
+    & .stat-leader-list {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      padding-top: 1rem;
+
+      & .stat-leader-list-item {
+        display: flex;
+        justify-content: flex-start;
+        padding: 0.5rem 1rem;
+        background-color: var(--second-content-box-bg);
+        color: var(--heading-color);
+        border-radius: 5px;
+        font-weight: 500;
+        font-size: 0.9rem;
+        transition: all 0.2s linear;
+
+        &.active {
+          background-color: var(--main-link-color);
+          color: var(--black-white);
+        }
+
+        & .rank {
+          width: 2rem;
+        }
+
+        & .name {
+          flex: 1;
+        }
+      }
+    }
   }
 
   .stats-leaders .stat-holder .error {
@@ -2605,166 +2774,6 @@
   .stats-leaders .stat-holder.stat-assists,
   .stats-leaders .stat-holder.stat-gaa {
     display: none;
-  }
-
-  .stats-leaders .player {
-    display: flex;
-    gap: 3rem;
-    align-items: center;
-    position: relative;
-    padding: 0.5rem 0.7rem;
-    color: var(--heading-color);
-    will-change: transform;
-    cursor: pointer;
-    background-color: var(--dark-bg-color);
-    border-radius: 5px;
-    margin-bottom: 0.3rem;
-    overflow: hidden;
-    min-height: 80px;
-    container: stat-player / inline-size;
-  }
-
-  .stats-leaders .player:hover {
-    transform: scale(1.02);
-    background-color: var(--content-box-bg);
-  }
-
-  .stats-leaders .player:last-child {
-    border-bottom: none;
-  }
-
-  .stats-leaders .player .rank {
-    color: #fff;
-    font-size: 3.6em;
-    font-weight: bold;
-    font-family: "Tomorrow", sans-serif;
-    text-align: center;
-    min-width: 55px;
-    height: 100%;
-    position: absolute;
-    opacity: 0.5;
-    z-index: 3;
-    text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.3);
-  }
-
-  .stats-leaders .player:hover .rank {
-    mix-blend-mode: normal;
-    animation-name: rankHover;
-    animation-duration: 0.5s;
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: 1;
-    animation-fill-mode: forwards;
-  }
-
-  .stats-leaders .player .head {
-    width: 120px;
-    height: 120px;
-    position: absolute;
-    transform: translateX(30px);
-    z-index: 3;
-  }
-
-  .stats-leaders .player .team-img {
-    transform: translateX(-30px) scale(0.8);
-    transition: all 0.3s linear;
-    opacity: 0.2;
-    position: absolute;
-    mask: var(--logo-mask-card);
-    z-index: 2;
-  }
-
-  .stats-leaders .player:hover .team-img {
-    opacity: 0.4;
-  }
-
-  .stats-leaders .player .team-color {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    z-index: 1;
-    opacity: 0.4;
-  }
-
-  .stats-leaders .player .info {
-    padding-left: 160px;
-    position: relative;
-    z-index: 3;
-  }
-
-  .stats-leaders .player .info h3 {
-    font-size: 1rem;
-    font-weight: normal;
-    text-transform: none;
-    font-style: normal;
-  }
-
-  .stats-leaders .player .info .main-stat {
-    font-weight: bold;
-    font-size: 1.2em;
-  }
-
-  .stats-leaders .player.list-leader {
-    height: auto;
-    padding: 0.5rem 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: var(--content-box-bg);
-    margin-bottom: 0.5rem;
-    box-shadow: none;
-    min-height: 0px;
-    gap: 1rem;
-  }
-
-  .stats-leaders .player.list-leader:hover {
-    background-color: var(--second-content-box-bg);
-  }
-
-  .stats-leaders .player.list-leader.first {
-    margin-top: 0.5rem;
-  }
-
-  .stats-leaders .player.list-leader .rank {
-    position: relative;
-    left: auto;
-    top: auto;
-    width: 28px;
-    height: auto;
-    line-height: 1;
-    font-size: 1.2rem;
-    margin: 0;
-    opacity: 1;
-    mix-blend-mode: normal;
-    min-width: 0;
-    color: var(--heading-color);
-    text-shadow: none;
-  }
-
-  .stats-leaders .player.list-leader:hover .rank {
-    animation: none;
-  }
-
-  .stats-leaders .player.list-leader .info-simple {
-    display: flex;
-    flex: 1;
-    align-items: center;
-  }
-
-  .stats-leaders .player.list-leader .player-name {
-    font-weight: 500;
-    font-size: 1rem;
-    color: var(--paragraph-color);
-    margin-right: 0.5rem;
-  }
-
-  .stats-leaders .player.list-leader:hover .player-name {
-    color: var(--heading-color);
-  }
-
-  .stats-leaders .player.list-leader .stat-value {
-    font-weight: 600;
-    color: var(--heading-color);
-    font-size: 1rem;
   }
 
   .voted-info {

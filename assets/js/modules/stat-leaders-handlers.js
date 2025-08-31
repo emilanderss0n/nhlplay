@@ -64,7 +64,7 @@ function loadStatContent(holder, activityContent, params) {
         holder.innerHTML = fixAjaxResponseUrls(text);
         // Only show the holder immediately if caller requested it (default true)
         if (params.showOnLoad !== false) {
-            holder.style.display = 'block';
+            holder.style.display = 'flex';
         }
         
         // Hide activity indicator
@@ -282,7 +282,7 @@ function initializeStatHoldersVisibility() {
         // Show only the active stat holder
         const activeHolder = document.querySelector(`.stat-${activeType}.stat-holder.${category}`);
         if (activeHolder) {
-            activeHolder.style.display = 'block';
+            activeHolder.style.display = 'flex';
         }
     });
 }
@@ -360,7 +360,7 @@ export function initStatLeadersHandlers() {
         } else {
             // Content already loaded, just show it
             document.querySelectorAll(`.stat-${type}.${list}`).forEach(el => {
-                el.style.display = 'block';
+                el.style.display = 'flex';
             });
 
             if (activityContent) {
@@ -546,6 +546,110 @@ export function initStatLeadersHandlers() {
             console.warn('Failed to initialize table handler:', e);
         }
     }
+
+    // Handle hover on stat leader list items to update the holder
+    const handleStatLeaderHover = function(e) {
+        // Ensure e.target is an element before calling closest
+        if (!e.target || typeof e.target.closest !== 'function') return;
+        
+        const item = e.target.closest('.stat-leader-list-item');
+        if (!item) return;
+        
+        // Remove active class from all items in the same list
+        const list = item.closest('.stat-leader-list');
+        if (list) {
+            list.querySelectorAll('.stat-leader-list-item').forEach(el => {
+                el.classList.remove('active');
+            });
+        }
+        
+        // Add active class to the hovered item
+        item.classList.add('active');
+        
+        const holder = item.closest('.stat-holder').querySelector('.stat-leader-holder');
+        if (!holder) return;
+        
+        // Get player data from the item's data attributes
+        const playerId = item.dataset.playerId;
+        const teamId = item.dataset.teamId;
+        const triCode = item.dataset.tricode;
+        const playerName = item.dataset.name;
+        const position = item.dataset.position;
+        const logo = item.dataset.logo;
+        const bgColor = item.dataset.bgColor;
+        const stat = item.dataset.stat;
+        const headshot = item.dataset.headshot;
+        const playerNumber = item.dataset.jersey;
+        const rank = item.dataset.rank;
+        const category = item.closest('.stat-holder').classList.contains('stat-points') ? 'Points' : 
+                        item.closest('.stat-holder').classList.contains('stat-goals') ? 'Goals' : 
+                        item.closest('.stat-holder').classList.contains('stat-assists') ? 'Assists' : 
+                        item.closest('.stat-holder').classList.contains('stat-svp') ? 'Save %' : 
+                        item.closest('.stat-holder').classList.contains('stat-gaa') ? 'GAA' : 'Stat';
+        
+        // Create the player card HTML
+        const playerCardHtml = `
+            <div class="player-card" data-player-id="${playerId}" data-team-id="${teamId}" data-tricode="${triCode}" data-name="${playerName}" data-position="${position}" data-logo="${logo}" data-bg-color="${bgColor}" data-stat="${stat}" data-headshot="${headshot}">
+                <a class="headshot" href="#" id="player-link" data-link="${playerId}">
+                    <svg class="headshot_wrap" width="128" height="128">
+                        <mask id="circleMask:r2:">
+                            <svg>
+                                <path fill="#FFFFFF" d="M128 0H0V72H8C8 79.354 9.44848 86.636 12.2627 93.4303C15.077 100.224 19.2019 106.398 24.402 111.598C29.6021 116.798 35.7755 120.923 42.5697 123.737C49.364 126.552 56.646 128 64 128C71.354 128 78.636 126.552 85.4303 123.737C92.2245 120.923 98.3979 116.798 103.598 111.598C108.798 106.398 112.923 100.225 115.737 93.4303C118.552 86.636 120 79.354 120 72H128V0Z"></path>
+                            </svg>
+                        </mask>
+                        <image mask="url(#circleMask:r2:)" fill="#000000" id="canTop" height="128" href="${headshot}"></image>
+                    </svg>
+                    <svg class="team-fill" width="128" height="128">
+                        <circle cx="64" cy="72" r="56" fill="${bgColor}"></circle>
+                        <defs>
+                            <linearGradient id="gradient:r2:" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="20%" stop-opacity="0" stop-color="#000000"></stop>
+                                <stop offset="65%" stop-opacity="0.35" stop-color="#000000"></stop>
+                            </linearGradient>
+                        </defs>
+                        <circle cx="64" cy="72" r="56" fill="url(#gradient:r2:)"></circle>
+                    </svg>
+                </a>
+                <div class="player-info">
+                    <div class="mob-flex">
+                        <div class="player-name">${playerName}</div>
+                        <div class="player-meta">
+                            <img src="${logo}" alt="${triCode}" class="team-logo">
+                            <span class="team-code">${triCode}</span>
+                            <span class="player-number">#${playerNumber}</span>
+                            <div class="player-position">${position}</div>
+                        </div>
+                    </div>
+                    <div class="player-stat"><h2>${stat}</h2><span>${category}</span></div>
+                </div>
+            </div>
+        `;
+        
+        // Update the holder content
+        holder.innerHTML = playerCardHtml;
+    };
+    
+    // Add hover event listeners to stat leader list items
+    document.addEventListener('mouseenter', handleStatLeaderHover, true);
+    
+    // Optional: Add mouseleave to revert to first player when not hovering
+    // This handler used to revert to the first item; change to no-op so the last hovered item remains active
+    const handleStatLeaderLeave = function(e) {
+        // Keep a safety check to avoid errors when e.target is not an Element
+        if (!e || !e.target || typeof e.target.closest !== 'function') return;
+        // Intentionally do nothing here so the active class persists on the last hovered item
+        return;
+    };
+
+    document.addEventListener('mouseleave', handleStatLeaderLeave, true);
+
+    // Initialize active class on first stat leader list item
+    document.querySelectorAll('.stat-leader-list').forEach(list => {
+        const firstItem = list.querySelector('.stat-leader-list-item:first-child');
+        if (firstItem) {
+            firstItem.classList.add('active');
+        }
+    });
 }
 
 export function initStatLeadersTableHandler() {
