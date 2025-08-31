@@ -4,6 +4,7 @@
   --main-darker-bg: #f2f4f7;
   --content-box-bg: #fff;
   --main-link-color: #2e52ff;
+  --main-link-color-medium: #63798b;
   --secondary-link-color: #e74343;
   --green: #00b894;
   --dark-bg-color: #f1f3f5;
@@ -66,6 +67,7 @@
       --main-darker-bg: #1c222c;
       --content-box-bg: #121a28;
       --main-link-color: #45d0e7;
+      --main-link-color-medium: #395b68;
       --secondary-link-color: #cb93fd;
       --green: #00b894;
       --paragraph-color: #a8bbcf;
@@ -4763,6 +4765,7 @@
     outline: 2px solid transparent;
     transition: outline 0.3s ease;
     border-radius: 10px;
+    user-select: none;
 
     &:focus-visible {
       outline: 2px solid var(--main-link-color);
@@ -4798,45 +4801,10 @@
         transition: all 0.3s ease-out;
         transform: scale(1);
         z-index: 1;
-        mask: linear-gradient(181deg, #000000, #00000066 100%);
       }
 
       .youtube-video-card:hover & img {
         transform: scale(1.1);
-      }
-
-      & .play-button {
-        width: 100px;
-        height: 100px;
-        place-self: center;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: var(--semi-frost-bg);
-        box-shadow: var(--box-shadow-nice);
-        backdrop-filter: blur(4px);
-        border-radius: 50%;
-        opacity: 0;
-        transition: all 0.5s linear(0, 0.008 1.1%, 0.034 2.3%, 0.134 4.9%, 0.264 7.3%, 0.683 14.3%, 0.797 16.5%, 0.89 18.6%, 0.967 20.7%, 1.027 22.8%, 1.073 25%, 1.104 27.3%, 1.123 30.6%, 1.119 34.3%, 1.018 49.5%, 0.988 58.6%, 0.985 65.2%, 1 84.5%, 1) 0.25s;
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        z-index: 1;
-        transform: translateX(-50px) translateY(65px) scale(0.2);
-        border: 1px solid var(--border-stroke-weak);
-
-        & svg {
-          width: 44px;
-          height: 44px;
-          opacity: 0.7;
-          fill: var(--heading-color);
-          mask: var(--logo-mask-subtle);
-        }
-
-        .youtube-video-card:hover & {
-          opacity: 1;
-          transform: translateX(-50px) translateY(-50px) scale(1);
-        }
       }
     }
 
