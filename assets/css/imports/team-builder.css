@@ -997,54 +997,59 @@
     }
 
     .selected-players-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 2rem;
-    }
+        justify-content: start;
 
-    .selected-player-summary {
-        background-color: var(--content-box-bg);
-        padding: 0.75rem;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        min-width: 200px;
-        height: 50px;
-    }
+        & .selected-player-summary {
+            background-color: var(--content-box-bg);
+            padding: 0.75rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            height: 50px;
+            min-width: min-content;
+            max-width: 400px;
 
-    .player-summary {
-        display: flex;
-        width: 100%;
-        align-items: center;
-        gap: 0.75rem;
-        position: relative;
-    }
+            & .player-summary {
+                display: flex;
+                width: 100%;
+                align-items: center;
+                gap: 0.75rem;
+                position: relative;
 
-    .player-summary img {
-        width: 100px;
-        height: auto;
-        object-fit: cover;
-        clip-path: rect(0px 100px 74px 0px round 0%);
-        position: absolute;
-        transform: translateX(-20px);
-    }
+                & img {
+                    width: 100px;
+                    height: auto;
+                    object-fit: cover;
+                    clip-path: rect(0px 100px 74px 0px round 0%);
+                    position: absolute;
+                    transform: translateX(-20px);
+                }
 
-    .player-summary span {
-        color: var(--paragraph-color);
-        font-weight: 500;
-        display: inline-block;
-        margin-left: 65px;
-    }
+                & span {
+                    color: var(--paragraph-color);
+                    font-weight: 600;
+                    display: inline-block;
+                    margin-left: 70px;
+                    text-wrap: nowrap;
+                    position: relative;
+                    z-index: 2;
+                }
 
-    .player-summary .round-info {
-        background-color: var(--main-link-color);
-        color: var(--black-white);
-        font-weight: bold;
-        padding: 0.25rem 0.5rem;
-        border-radius: 4px;
-        font-size: 0.8rem;
-        margin-left: auto;
+                & .round-info {
+                    background-color: var(--main-link-color);
+                    color: var(--black-white);
+                    font-weight: bold;
+                    padding: 0.25rem 0.5rem;
+                    border-radius: 4px;
+                    font-size: 0.8rem;
+                    margin-left: auto;
+                    mask: linear-gradient(261deg, #ffffff, #ffffff66);
+                    position: relative;
+                    z-index: 1;
+                }
+            }
+        }
     }
     
     .depth-chart {
@@ -1186,7 +1191,8 @@
     width: 200px;
     height: 200px;
     gap: 1rem;
-    background: var(--semi-frost-bg-2);
+    background: var(--semi-frost-bg);
+    border: 1px solid var(--border-stroke-weak);
     color: var(--heading-color);
     backdrop-filter: blur(10px);
     border-radius: 10px;

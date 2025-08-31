@@ -446,6 +446,7 @@ function renderTeamBuilderPlayer($player, $activeTeam, $type, $teamColor = null,
     $positionClass = strtolower(positionCodeToName2($player->positionCode));
     $rookieClass = (isset($player->rookie) && $player->rookie === 'true') ? ' rookie' : '';
     $positionName = positionCodeToName($player->positionCode);
+    $nameShort = ($player->firstName->default ? $player->firstName->default[0] . '.' : '') . ' ' . ($player->lastName->default ?? '');
     $fullName = ($player->firstName->default ?? '') . ' ' . ($player->lastName->default ?? '');
     ?>
     <a class="player <?= $positionClass ?><?= $rookieClass ?> swiper-slide" 
@@ -461,7 +462,7 @@ function renderTeamBuilderPlayer($player, $activeTeam, $type, $teamColor = null,
             </div>
             <div class="text">
                 <div class="position"><?= $positionName ?></div>
-                <div class="name"><?= $fullName ?></div>
+                <div class="name"><?= $nameShort ?></div>
             </div>
         </div>
     </a>

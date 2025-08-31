@@ -315,7 +315,7 @@ function createDraftInterface() {
                     </div>
                     
                     <div class="selected-players-section">
-                        <div class="selected-players-list">
+                        <div class="selected-players-list grid grid-300 grid-gap-lg grid-gap-row-lg">
                             <!-- Selected players will appear here -->
                         </div>
                     </div>
@@ -1062,11 +1062,13 @@ function displaySelectedPlayer(player) {
     if (!container) return;
     
     const playerElement = document.createElement('div');
+    // convert first name to display only first letter and period
+    const playerFirstName = player.firstName?.default ? player.firstName.default.charAt(0) + '.' : '';
     playerElement.className = 'selected-player-summary';
     playerElement.innerHTML = `
         <div class="player-summary">
             <img src="${player.headshot}" alt="${player.firstName?.default} ${player.lastName?.default}" width="40" height="40">
-            <span>${player.firstName?.default} ${player.lastName?.default}</span>
+            <span>${playerFirstName} ${player.lastName?.default}</span>
             <span class="round-info">Round ${DraftMode.state.currentRound}</span>
         </div>
     `;
