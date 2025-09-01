@@ -50,7 +50,13 @@ class SEOConfig {
             'title' => 'NHL Draft Center - Prospects, Rankings & Analysis',
             'description' => 'Complete NHL draft coverage including prospect rankings, draft analysis, player profiles, and historical draft data.',
             'keywords' => 'NHL draft, hockey prospects, draft rankings, player prospects, draft analysis, future stars',
-            'canonical' => '/draft'
+            'canonical' => '/draft-picks'
+        ],
+        'draft-picks' => [
+            'title' => 'NHL Draft Center - Prospects, Rankings & Analysis',
+            'description' => 'Complete NHL draft coverage including prospect rankings, draft analysis, player profiles, and historical draft data.',
+            'keywords' => 'NHL draft, hockey prospects, draft rankings, player prospects, draft analysis, future stars',
+            'canonical' => '/draft-picks'
         ],
         'trades' => [
             'title' => 'NHL Trades - Latest Trade News & Transaction Tracker',

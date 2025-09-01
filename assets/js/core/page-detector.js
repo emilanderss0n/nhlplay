@@ -34,7 +34,7 @@ export class PageDetector {
         if (path.includes('/player/')) return 'player-view';
         if (path.includes('/game/')) return 'game-view';
         if (path.includes('/standings')) return 'standings';
-        if (path.includes('/draft')) return 'draft';
+        if (path.includes('/draft-picks') || path.includes('/draft')) return 'draft';
         if (path.includes('/compare')) return 'compare-players';
         
         return 'homepage';

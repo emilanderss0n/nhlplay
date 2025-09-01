@@ -28,7 +28,8 @@ class Router
         'stat-leaders' => ['pages/stat-leaders.php', 'stat-leaders.php'],
         'standings' => ['pages/standings.php', 'standings.php'],
         'team-builder' => ['pages/team-builder.php', 'team-builder.php'],
-        'draft' => ['pages/draft.php', 'draft.php'],
+        'draft' => ['pages/draft-picks.php', 'draft-picks.php'],
+        'draft-picks' => ['pages/draft-picks.php', 'draft-picks.php'],
         'trades' => ['pages/trades.php', 'trades.php'],
         'recaps' => ['pages/recaps.php', 'recaps.php'],
     ];

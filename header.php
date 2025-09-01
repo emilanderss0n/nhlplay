@@ -165,7 +165,7 @@ $playoffs = $app['playoffs'] ?? ($GLOBALS['playoffs'] ?? false);
                                     <span>Trades</span>
                                     <i class="bi bi-arrow-right-short"></i>
                                 </a>
-                                <a id="link-draft" href="<?= BASE_URL ?>/draft" rel="page" role="menuitem">Draft <i class="bi bi-arrow-right-short"></i></a>
+                                <a id="link-draft-picks" href="<?= BASE_URL ?>/draft-picks" rel="page" role="menuitem">Draft <i class="bi bi-arrow-right-short"></i></a>
                                 <a id="link-last-season" href="<?= BASE_URL ?>/last-season-overview" rel="page" role="menuitem">Last Season <i class="bi bi-arrow-right-short"></i></a>
                             </div>
                         </div>

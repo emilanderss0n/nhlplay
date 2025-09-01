@@ -28,9 +28,9 @@ $draftPicksPicksExists = isset($draftPicks->picks) && !empty($draftPicks->picks)
         <div class="component-header">
             <h3 class="title">Draft Picks</h3>
         </div>
-        <div class="draft-picks-result grid grid-300 grid-gap-lg grid-gap-row-lg" grid-max-col-count="3">
+        <div class="draft-picks-result grid grid-400" grid-max-col-count="3">
             <?php foreach ($draftPicks->picks as $draftPick) { ?>
-                <div class="draft-pick" style="background-image: linear-gradient(22deg, <?= teamToColor($draftPick->teamId) ?> 0%, rgba(255,255,255,0) 120%);">
+                <div class="draft-pick" style="background-image: linear-gradient(132deg, <?= teamToColor($draftPick->teamId) ?> -100%, rgba(255,255,255,0) 70%);">
                     <div class="pick-info">
                         <div class="pick-number">#<?= $draftPick->overallPick ?></div>
                         <div class="pick-team-logo">

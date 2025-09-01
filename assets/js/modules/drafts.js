@@ -4,7 +4,7 @@ export function initDraftPage() {
     
     // Listen for route changes
     document.addEventListener('routeChanged', () => {
-        if (window.location.pathname.includes('/draft')) {
+        if (window.location.pathname.includes('/draft-picks') || window.location.pathname.includes('/draft')) {
             setupDraftTableHandlers();
             setupPreviousDraftHandler();
         }
