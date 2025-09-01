@@ -4753,7 +4753,7 @@
     position: relative;
     cursor: pointer;
     outline: 2px solid transparent;
-    transition: all 0.3s ease;
+    transition: box-shadow 0.3s ease, transform 0.3s ease, outline 0.3s ease;
     border-radius: 10px;
     overflow: clip;
     transform: translateY(0px);
@@ -4806,7 +4806,7 @@
       padding: 1rem;
       pointer-events: none;
       font-family: 'Inter', sans-serif;
-      transition: all 0.3s ease-out;
+      transition: color 0.3s ease-out;
       width: 100%;
     }
 
