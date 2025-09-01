@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../functions.php';
 require_once __DIR__ . '/../functions/api-functions.php';
 require_once __DIR__ . '/../functions/utility-functions.php';
 
@@ -48,12 +49,12 @@ $draftRankings = json_decode($curl);
                 <?= htmlspecialchars($draftRank->firstName . ' ' . $draftRank->lastName) ?>
             </td>
             <td><?= $draftRank->positionCode ?></td>
-            <td><?= htmlspecialchars($draftRank->lastAmateurClub) ?></td>
-            <td><?= htmlspecialchars($draftRank->lastAmateurLeague) ?></td>
-            <td><?= htmlspecialchars($draftRank->birthCountry) ?></td>
+            <td><?= htmlspecialchars($draftRank->lastAmateurClub ?? '') ?></td>
+            <td><?= htmlspecialchars($draftRank->lastAmateurLeague ?? '') ?></td>
+            <td><?= htmlspecialchars($draftRank->birthCountry ?? '') ?></td>
             <td><?= $age ?></td>
-            <td><?= intval($draftRank->heightInInches/12) . "'" . ($draftRank->heightInInches%12) . '"' ?></td>
-            <td><?= $draftRank->weightInPounds ?></td>
+            <td><?= intval(($draftRank->heightInInches ?? 0)/12) . "'" . (($draftRank->heightInInches ?? 0)%12) . '"' ?></td>
+            <td><?= $draftRank->weightInPounds ?? 0 ?></td>
         </tr>
     <?php } ?>
     </tbody>

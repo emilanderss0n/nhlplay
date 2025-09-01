@@ -63,10 +63,10 @@ $draftPicksPicksExists = isset($draftPicks->picks) && !empty($draftPicks->picks)
             <h3 class="title">Draft Rankings <span class="lower-contrast">(<?= $draftYearCurrent ?>)</span></h3>
             <div class="btn-group draft-filter">
                 <i class="bi bi-filter icon"></i>
-                <a class="btn sm active" id="draft-table-1" data-table="1" href="javascript:void(0)" data-tooltip="North American Skaters">N.A. Skaters</a>
-                <a class="btn sm" id="draft-table-2" data-table="2" href="javascript:void(0)" data-tooltip="International Skaters">Int. Skaters</a>
-                <a class="btn sm" id="draft-table-3" data-table="3" href="javascript:void(0)" data-tooltip="North American Goalies">N.A. Goalies</a>
-                <a class="btn sm" id="draft-table-4" data-table="4" href="javascript:void(0)" data-tooltip="International Goalies">Int. Goalies</a>
+                <a class="btn sm active" id="draft-table-1" data-table="1" href="javascript:void(0)">N.A. Skaters</a>
+                <a class="btn sm" id="draft-table-2" data-table="2" href="javascript:void(0)">Int. Skaters</a>
+                <a class="btn sm" id="draft-table-3" data-table="3" href="javascript:void(0)">N.A. Goalies</a>
+                <a class="btn sm" id="draft-table-4" data-table="4" href="javascript:void(0)">Int. Goalies</a>
             </div>
         </div>
         <div class="draft-rankings-table">

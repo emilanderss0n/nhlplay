@@ -130,6 +130,34 @@ class App {
             console.error('Global error:', e.error);
         });
 
+        // Listen for route changes and re-initialize modules
+        document.addEventListener('routeChanged', async () => {
+            // Use requestAnimationFrame to ensure DOM is painted, then wait for next frame
+            requestAnimationFrame(() => {
+                requestAnimationFrame(async () => {
+                    const newPageType = PageDetector.getPageType();
+                    const currentPage = this.appState.getState('currentPage');
+                    
+                    // Only re-initialize if page type actually changed
+                    if (newPageType !== currentPage) {
+                        this.appState.setState('currentPage', newPageType);
+                        
+                        const requiredModules = PageDetector.getRequiredModules(newPageType);
+                        
+                        // Load and initialize new modules
+                        const modulePromises = requiredModules.map(moduleName => 
+                            this.loadAndInitModule(moduleName)
+                        );
+                        
+                        await Promise.allSettled(modulePromises);
+                        
+                        // Re-initialize page-specific features
+                        this.initPageSpecificFeatures(newPageType);
+                    }
+                });
+            });
+        });
+
         // Initialize accessibility features
         initDropdownKeyboardNavigation();
         initDropdownClickOutside();
