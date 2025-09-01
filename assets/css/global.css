@@ -2825,18 +2825,23 @@
       }
 
       & .place {
-        font-family: "Tomorrow", sans-serif;
-        font-weight: 900;
-        border: 2px solid;
-        border-top-right-radius: 10px;
-        border-bottom-left-radius: 10px;
-        padding: 0.3rem 0.5rem;
-        width: fit-content;
+        font-weight: 600;
+        display: flex;
+        color: #fff;
+        background-color: var(--main-link-color-medium);
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
         transition: all 0.2s linear;
         position: absolute;
         left: 0.7rem;
         top: 0.7rem;
-        z-index: 2;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        z-index: 3;
+        line-height: 1;
       }
 
       &.star-1 .place::before {
@@ -2862,6 +2867,10 @@
           font-style: normal;
           line-height: 1.6rem;
           font-weight: 600;
+        }
+
+        & .stats {
+          color: var(--paragraph-color);
         }
       }
     }
