@@ -1813,7 +1813,7 @@
         mask-image: linear-gradient(to right, transparent 0%, white 0%, white 97%, transparent 100%);
 
         .swiper-wrapper {
-            padding: 1.5rem 0;
+            padding: 1.5rem 0 2.5rem;
         }
 
         & .swiper-button-next,
@@ -1826,7 +1826,7 @@
             width: 46px;
             height: 46px;
             opacity: 0.7;
-            top: 35%;
+            top: 39%;
             z-index: 20;
             transition: all 0.3s;
 
