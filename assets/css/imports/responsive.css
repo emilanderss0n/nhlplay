@@ -1,11 +1,4 @@
 @layer responsive {
-    @media screen and (min-width: 1450px) {
-        .stats-leaders .stat-select a {
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-    }
-
     @media screen and (min-width: 1350px) {
         ::-webkit-scrollbar {
             width: 8px;

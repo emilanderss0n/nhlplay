@@ -2556,27 +2556,7 @@
   }
 
   .stats-leaders .stat-select {
-    display: flex;
-    gap: 1rem;
-    border-bottom: 1px solid var(--border-stroke-weak);
     margin-top: 0.5em;
-  }
-
-  .stats-leaders .stat-select a {
-    padding: 0.5em 0;
-    color: var(--heading-color);
-    font-weight: 600;
-    border-bottom: 3px solid transparent;
-  }
-
-  .stats-leaders .stat-select a:not(.active):hover {
-    border-bottom: 3px solid var(--heading-color);
-  }
-
-  .stats-leaders .stat-select a.active {
-    border-bottom: 3px solid var(--main-link-color);
-    color: var(--main-link-color);
-    pointer-events: none;
   }
 
   .stats-leaders > h3 {
@@ -2759,6 +2739,7 @@
 
         & .name {
           flex: 1;
+          font-weight: 600;
         }
       }
     }

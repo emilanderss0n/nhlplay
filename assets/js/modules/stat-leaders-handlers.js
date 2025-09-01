@@ -1,5 +1,6 @@
 import { fixAjaxResponseUrls } from './ajax-handler.js';
 import { debounce } from './utils.js';
+import { initTabSliders, setActiveTab, updateTabSlider } from './tab-slider.js';
 
 // Guard to ensure handlers/observers are only attached once
 let _statLeadersHandlersAttached = false;
@@ -291,6 +292,13 @@ export function initStatLeadersHandlers() {
     // Ensure initial visibility is always set
     initializeStatHoldersVisibility();
 
+    // Initialize tab sliders for all .tabs containers
+    try {
+        initTabSliders('.stat-select.tabs');
+    } catch (e) {
+        console.warn('Failed to initialize tab sliders:', e);
+    }
+
     // If handlers already attached, avoid re-attaching them (prevents duplicate listeners/requests)
     if (_statLeadersHandlersAttached) {
         // Also ensure season selector visibility matches current view
@@ -324,11 +332,17 @@ export function initStatLeadersHandlers() {
         const playoffs = option.dataset.playoffs || 
             (document.querySelector('.btn-group .btn.active[data-playoffs]')?.dataset.playoffs === 'true');
 
-        // Update active tab
-        document.querySelectorAll(`.stat-select .option.${list}`).forEach(el => {
-            el.classList.remove('active');
-        });
-        option.classList.add('active');
+        // Update active tab using slider-aware function
+        const tabContainer = option.closest('.stat-select.tabs');
+        if (tabContainer) {
+            setActiveTab(tabContainer, option);
+        } else {
+            // Fallback for non-.tabs containers
+            document.querySelectorAll(`.stat-select .option.${list}`).forEach(el => {
+                el.classList.remove('active');
+            });
+            option.classList.add('active');
+        }
 
         // Hide all stat holders for this category
         document.querySelectorAll(`.stat-holder.${list}`).forEach(el => {

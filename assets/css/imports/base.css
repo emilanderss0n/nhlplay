@@ -297,6 +297,59 @@
         }
     }
 
+    .tabs {
+        display: flex;
+        gap: 1rem;
+        position: relative;
+        border-bottom: 1px solid var(--border-stroke-weak);
+        --slider-left: 0px;
+        --slider-width: 0px;
+
+        & .option {
+            padding: 0.5rem 0;
+            color: var(--heading-color);
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            font-size: 1rem;
+            border-radius: 0;
+            position: relative;
+            z-index: 2;
+            transition: color 0.3s ease;
+
+            &.active ~ .slider {
+                background: var(--main-link-color);
+                left: var(--slider-left);
+                width: var(--slider-width);
+            }
+
+            &:not(.active):hover ~ .slider {
+                background: var(--heading-color);
+            }
+
+            &.active {
+                color: var(--main-link-color);
+                pointer-events: none;
+            }
+        }
+
+        & .slider {
+            position: absolute;
+            bottom: -1px;
+            height: 3px;
+            background: var(--heading-color);
+            transition: left 0.3s ease, width 0.3s ease, background 0.2s ease;
+            z-index: 1;
+            
+            &.slider-active {
+                background: var(--main-link-color);
+            }
+            
+            &.slider-hover {
+                background: var(--heading-color);
+            }
+        }
+    }
+
     .header-dashed {
         text-transform: uppercase;
         color: var(--paragraph-color);
@@ -721,7 +774,7 @@
 
             & > .btn-group {
                 & .btn.active {
-                    background-color: var(--table-hover-bg);
+                    background-color: var(--main-link-color-medium);
                     color: #fff;
                     text-shadow: 1px 1px 2px #00000082;
                 }

@@ -111,10 +111,11 @@ try {
         <div class="section-stats">
             <div class="stats-leaders skaters">
                 <h3>Forwards</h3>
-                <div class="stat-select">
+                <div class="stat-select tabs">
                     <a href="javascript:void(0);" data-type="points" data-list="skaters" class="skaters option active">Points</a>
                     <a href="javascript:void(0);" data-type="goals" data-list="skaters" class="skaters option" data-load="true">Goals</a>
                     <a href="javascript:void(0);" data-type="assists" data-list="skaters" class="skaters option" data-load="true">Assists</a>
+                    <div class="slider"></div>
                 </div>
                 <div class="activity-content skaters"><span class="loader"></span></div>
                 <div class="stat-points stat-holder skaters">
@@ -125,10 +126,11 @@ try {
             </div>
             <div class="stats-leaders defense">
                 <h3>Defensemen</h3>
-                <div class="stat-select">
+                <div class="stat-select tabs">
                     <a href="javascript:void(0);" data-type="points" data-list="defense" class="defense option active">Points</a>
                     <a href="javascript:void(0);" data-type="goals" data-list="defense" class="defense option" data-load="true">Goals</a>
                     <a href="javascript:void(0);" data-type="assists" data-list="defense" class="defense option" data-load="true">Assists</a>
+                    <div class="slider"></div>
                 </div>
                 <div class="activity-content defense"><span class="loader"></span></div>
                 <div class="stat-points stat-holder defense">
@@ -139,9 +141,10 @@ try {
             </div>
             <div class="stats-leaders goalies">
                 <h3>Goalies</h3>
-                <div class="stat-select">
+                <div class="stat-select tabs">
                     <a href="javascript:void(0);" data-type="svp" data-list="goalies" class="goalies option active">Save %</a>
                     <a href="javascript:void(0);" data-type="gaa" data-list="goalies" class="goalies option" data-load="true">GAA</a>
+                    <div class="slider"></div>
                 </div>
                 <div class="activity-content goalies"><span class="loader"></span></div>
                 <div class="stat-svp stat-holder goalies">
@@ -151,10 +154,11 @@ try {
             </div>
             <div class="stats-leaders rookie">
                 <h3>Rookies</h3>
-                <div class="stat-select">
+                <div class="stat-select tabs">
                     <a href="javascript:void(0);" data-type="points" data-list="rookies" class="rookies option active">Points</a>
                     <a href="javascript:void(0);" data-type="goals" data-list="rookies" class="rookies option" data-load="true">Goals</a>
                     <a href="javascript:void(0);" data-type="assists" data-list="rookies" class="rookies option" data-load="true">Assists</a>
+                    <div class="slider"></div>
                 </div>
                 <div class="activity-content rookies"><span class="loader"></span></div>
                 <div class="stat-points stat-holder rookies">
