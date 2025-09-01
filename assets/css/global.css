@@ -995,13 +995,27 @@
   }
 
   .jsDataTable-top {
-    display: none;
-  }
-
-  .draft-rankings-table .jsDataTable-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 1rem;
+
+    & .jsDataTable-input {
+      width: 200px;
+      background-color: var(--semi-frost-bg);
+      border: 1px solid var(--border-stroke-weak);
+      color: var(--heading-color);
+      font-weight: bold;
+      font-family: "Inter", sans-serif;
+      border-radius: 5px;
+      font-size: 1rem;
+      padding: 0.3rem 0.6rem;
+    }
+
+    & .jsDataTable-selector option {
+      background-color: var(--dark-bg-color);
+      color: var(--heading-color);
+    }
   }
 
   .jsDataTable-sorter {
