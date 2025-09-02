@@ -217,7 +217,7 @@
       height: 0;
       overflow: hidden;
   }
-  
+
   dialog .youtube-video-container iframe {
       position: absolute;
       top: 0;
@@ -4833,7 +4833,7 @@
     & .video-title {
       position: relative;
       overflow: hidden;
-      padding: 1rem 0.5rem 0 0.5rem;
+      padding: 1rem 0.5rem 0.3rem 0.5rem;
       width: 100%;
       flex: auto;
 
