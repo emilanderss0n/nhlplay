@@ -75,6 +75,8 @@ $mergedCSS = $isDevelopment ? false : generateMergedCSS([
         <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/bootstrap-icons.min.css">
     <?php endif; ?>
 
+    <link rel="manifest" href="manifest.json" />
+
     <!-- Preload Google Fonts for faster loading and to prevent FOUT -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
