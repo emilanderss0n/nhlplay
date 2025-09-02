@@ -22,60 +22,8 @@ function setupDraftTableHandlers() {
             button.parentNode.replaceChild(newButton, button);
         });
 
-        // Wait for JSDataTable library to be available using the same pattern as stat-leaders
-        const initializeTable = () => {
-            if (typeof jsdatatables !== 'undefined') {
-                try {
-                    // Check if table is already initialized
-                    if (draftTable.classList.contains('jsDataTable-table') || draftTable.dataset.jsdatatableInitialized) {
-                        console.log('JSDataTable already initialized for draftRankings1');
-                        return;
-                    }
-                    
-                    new jsdatatables.JSDataTable('#draftRankings1', {
-                        paging: true,
-                        perPage: 50,
-                        perPageSelect: [25, 50, 100],
-                        searchable: true,
-                    });
-                    draftTable.dataset.jsdatatableInitialized = '1';
-                    console.log('JSDataTable initialized for draftRankings1');
-                } catch (error) {
-                    console.warn('JSDataTable initialization failed:', error);
-                }
-            } else {
-                // Try to find existing script tag; follow same pattern as stat-leaders-handlers
-                const existing = Array.from(document.scripts).find(s => s.src && s.src.indexOf('datatables.min.js') !== -1);
-                if (existing) {
-                    if (existing.hasAttribute('data-loaded')) {
-                        initializeTable();
-                    } else {
-                        existing.addEventListener('load', () => {
-                            existing.setAttribute('data-loaded', '1');
-                            initializeTable();
-                        });
-                    }
-                } else {
-                    // No script found - dynamically load it (this handles manual refresh scenario)
-                    console.log('JSDataTable script not found, loading dynamically...');
-                    const s = document.createElement('script');
-                    const baseUrl = window.location.pathname.includes('/nhl') ? '/nhl' : '';
-                    s.src = `${baseUrl}/assets/js/datatables.min.js`;
-                    s.async = false;
-                    s.onload = () => { 
-                        s.setAttribute('data-loaded', '1'); 
-                        initializeTable(); 
-                    };
-                    s.onerror = (e) => {
-                        console.warn('Failed to load datatables.min.js', e);
-                        draftTable.classList.add('basic-table');
-                    };
-                    document.head.appendChild(s);
-                }
-            }
-        };
-
-        initializeTable();
+        // Content manager handles JSDataTable initialization automatically
+        // No manual initialization needed!
 
         // Add click handlers
         document.querySelectorAll('.draft-filter .btn').forEach(button => {
@@ -154,69 +102,11 @@ function handleDraftTableSwitch(e) {
     xhr.onload = function() {
         container.innerHTML = this.responseText;
         
-        // Wait for JSDataTable library and reinitialize datatable
-        const initializeNewTable = () => {
-            const newTable = container.querySelector('table');
-            if (!newTable || newTable.classList.contains('jsDataTable-table') || newTable.dataset.jsdatatableInitialized) {
-                container.style.opacity = '1';
-                spinner.style.display = 'none';
-                return;
-            }
-            
-            if (typeof jsdatatables !== 'undefined') {
-                try {
-                    new jsdatatables.JSDataTable('#' + newTable.id, {
-                        paging: true,
-                        perPage: 50,
-                        perPageSelect: [25, 50, 100],
-                        searchable: true,
-                    });
-                    newTable.dataset.jsdatatableInitialized = '1';
-                    console.log(`JSDataTable initialized for ${newTable.id}`);
-                } catch (error) {
-                    console.warn('JSDataTable initialization failed:', error);
-                }
-            } else {
-                // Try to find existing script tag; follow same pattern as stat-leaders-handlers
-                const existing = Array.from(document.scripts).find(s => s.src && s.src.indexOf('datatables.min.js') !== -1);
-                if (existing) {
-                    if (existing.hasAttribute('data-loaded')) {
-                        initializeNewTable();
-                        return; // Don't hide spinner yet, let recursion handle it
-                    } else {
-                        existing.addEventListener('load', () => {
-                            existing.setAttribute('data-loaded', '1');
-                            initializeNewTable();
-                        });
-                        return; // Don't hide spinner yet
-                    }
-                } else {
-                    // No script found - dynamically load it
-                    console.log('JSDataTable script not found for new table, loading dynamically...');
-                    const s = document.createElement('script');
-                    const baseUrl = window.location.pathname.includes('/nhl') ? '/nhl' : '';
-                    s.src = `${baseUrl}/assets/js/datatables.min.js`;
-                    s.async = false;
-                    s.onload = () => { 
-                        s.setAttribute('data-loaded', '1'); 
-                        initializeNewTable(); 
-                    };
-                    s.onerror = (e) => {
-                        console.warn('Failed to load datatables.min.js for new table', e);
-                        newTable.classList.add('basic-table');
-                        container.style.opacity = '1';
-                        spinner.style.display = 'none';
-                    };
-                    document.head.appendChild(s);
-                    return; // Don't hide spinner yet
-                }
-            }
-            
-            container.style.opacity = '1';
-            spinner.style.display = 'none';
-        };
+        // Auto-initializer handles everything - JSDataTable, dependencies, etc.
+        window.initAfterAjax(container);
         
-        initializeNewTable();
+        container.style.opacity = '1';
+        spinner.style.display = 'none';
     };
     
     xhr.send();

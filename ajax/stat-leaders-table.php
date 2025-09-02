@@ -63,16 +63,5 @@ function renderSkaterLeadersRows($standing) {
     </table>
 
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            <?php if (!$detect->isMobile()) { ?>
-            let dt = new jsdatatables.JSDataTable('#playerStatsTable', {
-                paging: true,
-                searchable: true,
-            });
-            <?php } else { ?>
-            let dt = '';
-            <?php } ?>
-        });
-    </script>
+    <!-- JSDataTable initialization now handled by auto-initializer -->
 <?php if(isset( $_SERVER['HTTP_X_REQUESTED_WITH'] ) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {} else { include_once '../footer.php'; } ?>

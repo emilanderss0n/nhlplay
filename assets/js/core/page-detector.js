@@ -20,6 +20,7 @@ export class PageDetector {
         if (document.querySelector('.post-game-cont')) return 'post-game';
         if (document.querySelector('.draft-container')) return 'draft';
         if (document.querySelector('.compare-players-container')) return 'compare-players';
+        if (document.querySelector('.component-header.stat-leaders')) return 'stat-leaders';
         
         // Check for team builder specific elements
         if (document.querySelector('#team-builder-drop-area') || 
@@ -34,6 +35,7 @@ export class PageDetector {
         if (path.includes('/player/')) return 'player-view';
         if (path.includes('/game/')) return 'game-view';
         if (path.includes('/standings')) return 'standings';
+        if (path.includes('/stat-leaders')) return 'stat-leaders';
         if (path.includes('/draft-picks') || path.includes('/draft')) return 'draft';
         if (path.includes('/compare')) return 'compare-players';
         
@@ -50,7 +52,6 @@ export class PageDetector {
                 'live-games', 
                 'standings-handlers', 
                 'ui-settings',
-                'stat-leaders-handlers',
                 'player-leaders',
                 'trade-handlers'
             ],
@@ -107,6 +108,11 @@ export class PageDetector {
             ],
             'standings': [
                 'standings-handlers',
+                'ui-settings',
+                'menu-handlers'
+            ],
+            'stat-leaders': [
+                'stat-leaders-handlers',
                 'ui-settings',
                 'menu-handlers'
             ],

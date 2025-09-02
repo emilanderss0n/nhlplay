@@ -1,5 +1,12 @@
 export function initializeSkaterLeaders() {
-    document.querySelectorAll('.home-leaders .leaders-box').forEach(function (scoring) {
+    const runInitialization = () => {
+        const leaderBoxes = document.querySelectorAll('.home-leaders .leaders-box');
+        
+        if (leaderBoxes.length === 0) {
+            return;
+        }
+        
+        leaderBoxes.forEach(function (scoring) {
         const players = scoring.querySelectorAll('.player');
         const playerTexts = scoring.querySelectorAll('.player-text');
         const valueTopElements = scoring.querySelectorAll('.value-top');
@@ -57,4 +64,13 @@ export function initializeSkaterLeaders() {
             el.style.animationDelay = "0.3s";
         });
     });
+    
+    };
+    
+    // Run immediately if DOM is ready, otherwise wait
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', runInitialization);
+    } else {
+        runInitialization();
+    }
 }

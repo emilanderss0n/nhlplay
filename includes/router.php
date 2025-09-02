@@ -109,6 +109,12 @@ class Router
                 $detect = $app['detect'] ?? (class_exists('\Detection\\MobileDetect') ? new \Detection\MobileDetect : null);
                 $seasonBreak = $app['seasonBreak'] ?? false;
                 $playoffs = $app['playoffs'] ?? false;
+                
+                // Make global variables from path.php available to included pages
+                $season = $GLOBALS['season'] ?? '20242025';
+                $lastSeason = $GLOBALS['lastSeason'] ?? '20242025';
+                $draftYear = $GLOBALS['draftYear'] ?? '2025';
+                $draftYearLast = $GLOBALS['draftYearLast'] ?? '2024';
 
                 include $path;
                 return;

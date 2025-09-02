@@ -20,11 +20,18 @@ export function initStandingsHandlers() {
                     standingsHome.addEventListener('animationend', function () {
                         standingsHome.classList.remove('page-ani');
                     }, { once: true });
+                    
+                    // Use auto-initializer instead of manual JSDataTable init
+                    if (window.initAfterAjax) {
+                        window.initAfterAjax(standingsHome);
+                    } else {
+                        // Fallback for older pattern
+                        let dt = new jsdatatables.JSDataTable('.conferenceTable', {
+                            paging: false,
+                            searchable: true,
+                        });
+                    }
                 }
-                let dt = new jsdatatables.JSDataTable('.conferenceTable', {
-                    paging: false,
-                    searchable: true,
-                });
             };
 
             xhr.open('GET', 'ajax/standings-conference.php');
@@ -54,11 +61,18 @@ export function initStandingsHandlers() {
                     standingsHome.addEventListener('animationend', function () {
                         standingsHome.classList.remove('page-ani');
                     }, { once: true });
+                    
+                    // Use auto-initializer instead of manual JSDataTable init
+                    if (window.initAfterAjax) {
+                        window.initAfterAjax(standingsHome);
+                    } else {
+                        // Fallback for older pattern
+                        let dt = new jsdatatables.JSDataTable('.divisionTable', {
+                            paging: false,
+                            searchable: true,
+                        });
+                    }
                 }
-                let dt = new jsdatatables.JSDataTable('.divisionTable', {
-                    paging: false,
-                    searchable: true,
-                });
             };
 
             xhr.open('GET', 'ajax/standings-divisions.php');
@@ -88,11 +102,18 @@ export function initStandingsHandlers() {
                     standingsHome.addEventListener('animationend', function () {
                         standingsHome.classList.remove('page-ani');
                     }, { once: true });
+                    
+                    // Use auto-initializer instead of manual JSDataTable init
+                    if (window.initAfterAjax) {
+                        window.initAfterAjax(standingsHome);
+                    } else {
+                        // Fallback for older pattern
+                        let dt = new jsdatatables.JSDataTable('#leagueTable', {
+                            paging: false,
+                            searchable: true,
+                        });
+                    }
                 }
-                let dt = new jsdatatables.JSDataTable('#leagueTable', {
-                    paging: false,
-                    searchable: true,
-                });
             };
 
             xhr.open('GET', 'ajax/standings-league.php');

@@ -106,9 +106,10 @@
             </div>
             <div class="home-leaders grid grid-300 grid-gap-lg grid-gap-row-lg">
                 <?php
-                // Use the new NHL API utility
-                define('SKATER_API_URL', NHLApi::skaterStatsLeaders('current', '2', ['points', 'goals']));
-                define('GOALIE_API_URL', NHLApi::goalieStatsLeaders('current', '2', ['goalsAgainstAverage', 'wins']));
+                // Use the new NHL API utility with current season from path.php
+                $currentSeason = $season ?? $GLOBALS['season'] ?? '20242025';
+                define('SKATER_API_URL', NHLApi::skaterStatsLeaders($currentSeason, '2', ['points', 'goals']));
+                define('GOALIE_API_URL', NHLApi::goalieStatsLeaders($currentSeason, '2', ['goalsAgainstAverage', 'wins']));
 
                 $apiUrls = [SKATER_API_URL, GOALIE_API_URL];
                 $cacheDir = 'cache/';

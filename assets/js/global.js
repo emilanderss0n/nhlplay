@@ -2,6 +2,8 @@ import { ModuleLoader } from './core/module-loader.js';
 import { PageDetector } from './core/page-detector.js';
 import { FeatureObserver } from './core/feature-observer.js';
 import { appState } from './core/app-state.js';
+import { contentManager } from './core/content-manager.js';
+import { initAfterAjax } from './modules/auto-initializer.js';
 import { initDOMElements } from './modules/dom-elements.js';
 import { 
     convertUTCTimesToLocal, 
@@ -26,6 +28,9 @@ class App {
             this.elements = initDOMElements();
             convertUTCTimesToLocal();
 
+            // Setup content manager with module registrations
+            await this.setupContentManager();
+
             // Detect page type and load required modules
             const pageType = PageDetector.getPageType();
             this.appState.setState('currentPage', pageType);
@@ -48,9 +53,105 @@ class App {
             // Initialize global event listeners
             this.initGlobalEventListeners();
 
+            // Initialize content manager
+            await contentManager.initializeAll();
+
+            // Run auto-initializer for initial page content
+            initAfterAjax(document);
+
         } catch (error) {
             console.error('Error during app initialization:', error);
         }
+    }
+
+    async setupContentManager() {
+        // Register common modules with content manager
+        
+        // Draft tables with JSDataTable
+        contentManager.registerModule('draft-tables', {
+            selector: '#draftRankings1, #draftRankings2, #draftRankings3, #draftRankings4',
+            dependencies: ['jsdatatables'],
+            initFunction: async () => {
+                const tables = document.querySelectorAll('#draftRankings1, #draftRankings2, #draftRankings3, #draftRankings4');
+                tables.forEach(table => {
+                    if (!table.classList.contains('jsDataTable-table') && !table.dataset.jsdatatableInitialized) {
+                        new jsdatatables.JSDataTable('#' + table.id, {
+                            paging: true,
+                            perPage: 50,
+                            perPageSelect: [25, 50, 100],
+                            searchable: true,
+                        });
+                        table.dataset.jsdatatableInitialized = '1';
+                    }
+                });
+            },
+            debounce: 200
+        });
+
+        // Standings tables
+        contentManager.registerModule('standings-tables', {
+            selector: '.conferenceTable, .divisionTable, #leagueTable',
+            dependencies: ['jsdatatables'],
+            initFunction: async () => {
+                const tables = document.querySelectorAll('.conferenceTable, .divisionTable, #leagueTable');
+                tables.forEach(table => {
+                    if (!table.classList.contains('jsDataTable-table') && !table.dataset.jsdatatableInitialized) {
+                        new jsdatatables.JSDataTable('#' + table.id || '.' + table.className.split(' ')[0], {
+                            paging: false,
+                            searchable: true,
+                        });
+                        table.dataset.jsdatatableInitialized = '1';
+                    }
+                });
+            },
+            debounce: 100
+        });
+
+        // Stat leaders tables
+        contentManager.registerModule('stat-leaders-table', {
+            selector: '#playerStatsTable',
+            dependencies: ['jsdatatables'],
+            initFunction: async () => {
+                const table = document.getElementById('playerStatsTable');
+                if (table && !table.classList.contains('jsDataTable-table') && !table.dataset.jsdatatableInitialized) {
+                    new jsdatatables.JSDataTable('#playerStatsTable', {
+                        paging: true,
+                        searchable: true,
+                        perPage: 25
+                    });
+                    table.dataset.jsdatatableInitialized = '1';
+                }
+            },
+            debounce: 100
+        });
+
+        // Chart.js charts
+        contentManager.registerModule('charts', {
+            selector: '#playerStatsChart, .chart-container canvas',
+            dependencies: ['Chart'],
+            initFunction: async () => {},
+            runOnLoad: false
+        });
+
+        // Pre-game handlers
+        contentManager.registerModule('pre-game', {
+            selector: '.pre-game-cont',
+            initFunction: async () => {
+                const { initPreGamePage } = await import('./modules/pre-game-handlers.js');
+                initPreGamePage();
+            },
+            debounce: 150
+        });
+
+        // Team builder
+        contentManager.registerModule('team-builder', {
+            selector: '#team-builder-drop-area',
+            initFunction: async () => {
+                const { initTeamBuilder } = await import('./modules/teambuilder.js');
+                initTeamBuilder();
+            },
+            debounce: 200
+        });
     }
 
     async loadAndInitModule(moduleName) {
@@ -137,6 +238,9 @@ class App {
                 requestAnimationFrame(async () => {
                     const newPageType = PageDetector.getPageType();
                     const currentPage = this.appState.getState('currentPage');
+                    
+                    // Notify content manager about route change
+                    await contentManager.onRouteChange();
                     
                     // Only re-initialize if page type actually changed
                     if (newPageType !== currentPage) {

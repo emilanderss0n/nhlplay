@@ -479,8 +479,10 @@ export function initStatLeadersHandlers() {
                     }
                 }
 
-                // Initialize DataTable after DOM injection
-                ensurePlayerStatsTableInitialized({ paging: true, searchable: true, perPage: 25 });
+                // Use auto-initializer for JSDataTable initialization
+                if (window.initAfterAjax) {
+                    window.initAfterAjax(sectionStats || table.parentNode);
+                }
             })
             .catch(error => {
                 console.error('Error loading table data:', error);
@@ -705,8 +707,10 @@ export function initStatLeadersTableHandler() {
                     try { executeInlineScripts(tableContainer); } catch (e) {}
                 }
             }
-            // Initialize DataTable client-side because AJAX returns only the table fragment
-            ensurePlayerStatsTableInitialized({ paging: true, searchable: true });
+            // Use auto-initializer for JSDataTable initialization
+            if (window.initAfterAjax) {
+                window.initAfterAjax(sectionStats || tableContainer);
+            }
         })
         .catch(error => {
             console.error('Error loading table data:', error);
@@ -783,23 +787,13 @@ export function initStatLeadersTableHandler() {
                     try { executeInlineScripts(mainEl); } catch (e) {}
                 }
             }
-            // Initialize DataTable client-side since AJAX returned only the table
-            ensurePlayerStatsTableInitialized({ paging: false, searchable: true });
+            // Use auto-initializer for JSDataTable initialization
+            if (window.initAfterAjax) {
+                window.initAfterAjax(sectionStats || mainEl);
+            }
 
             // Update toggle text to allow returning to card view
             toggle.textContent = 'Cards';
-
-            // Initialize DataTable client-side since AJAX returned only the table
-            try {
-                if (typeof jsdatatables !== 'undefined' && !/Mobi|Android|iPhone|iPad|iPod/.test(navigator.userAgent)) {
-                    const tbl = document.getElementById('playerStatsTable');
-                    if (tbl) {
-                        new jsdatatables.JSDataTable('#playerStatsTable', { paging: false, searchable: true });
-                    }
-                }
-            } catch (e) {
-                console.warn('Failed to init DataTable after toggle:', e);
-            }
         })
         .catch(error => {
             console.error('Error loading table view:', error);
@@ -808,53 +802,6 @@ export function initStatLeadersTableHandler() {
 
     document.removeEventListener('click', handleToggleTable);
     document.addEventListener('click', handleToggleTable);
-}
-
-// Ensure DataTable is initialized for the player stats table after AJAX injection
-function ensurePlayerStatsTableInitialized(opts = {}) {
-    try {
-        if (/Mobi|Android|iPhone|iPad|iPod/.test(navigator.userAgent)) return; // skip mobile
-
-        const tbl = document.getElementById('playerStatsTable');
-        if (!tbl) return;
-
-        // Avoid double-init if already initialized by the library
-        if (tbl.classList.contains('jsDataTable-table') || tbl.dataset.jsdatatableInitialized) return;
-
-        const initFn = () => {
-            try {
-                if (tbl.classList.contains('jsDataTable-table') || tbl.dataset.jsdatatableInitialized) return;
-                const cfg = Object.assign({ paging: true, searchable: true, perPage: 25 }, opts);
-                new jsdatatables.JSDataTable('#playerStatsTable', cfg);
-                tbl.dataset.jsdatatableInitialized = '1';
-            } catch (e) {
-                console.warn('Failed to initialize JSDataTable', e);
-            }
-        };
-
-        if (typeof jsdatatables === 'undefined') {
-            // Try to find existing script tag; otherwise dynamically load the vendor file
-            const existing = Array.from(document.scripts).find(s => s.src && s.src.indexOf('datatables.min.js') !== -1);
-            if (existing) {
-                if (existing.hasAttribute('data-loaded')) {
-                    initFn();
-                } else {
-                    existing.addEventListener('load', initFn);
-                }
-            } else {
-                const s = document.createElement('script');
-                s.src = 'assets/js/datatables.min.js';
-                s.async = false;
-                s.onload = () => { s.setAttribute('data-loaded', '1'); initFn(); };
-                s.onerror = (e) => console.warn('Failed to load datatables.min.js', e);
-                document.head.appendChild(s);
-            }
-        } else {
-            initFn();
-        }
-    } catch (e) {
-        console.warn('ensurePlayerStatsTableInitialized failed', e);
-    }
 }
 
 // Execute inline <script> tags inside a container element (used after injecting HTML via innerHTML)

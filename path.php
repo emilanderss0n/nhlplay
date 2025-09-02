@@ -20,9 +20,17 @@ function getBaseUrl() {
 define('ROOT_PATH', realpath(dirname(__FILE__)));
 define('BASE_URL', getBaseUrl());
 
-$season = '20252026';
+$season = '20242025';
 $lastSeason = '20242025';
 $draftYear = '2025';
 $draftYearLast = '2024';
 $playoffs = false;
 $seasonBreak = true;
+
+// Ensure these variables are available globally
+$GLOBALS['season'] = $season;
+$GLOBALS['lastSeason'] = $lastSeason;
+$GLOBALS['draftYear'] = $draftYear;
+$GLOBALS['draftYearLast'] = $draftYearLast;
+$GLOBALS['playoffs'] = $playoffs;
+$GLOBALS['seasonBreak'] = $seasonBreak;

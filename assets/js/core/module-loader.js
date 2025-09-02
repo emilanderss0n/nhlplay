@@ -46,18 +46,22 @@ export class ModuleLoader {
         try {
             return await import(`../modules/${moduleName}.js`);
         } catch (error) {
-            // If the module doesn't exist, try common variations
-            const variations = [
-                `../modules/${moduleName}-handler.js`,
-                `../modules/${moduleName}s.js`,
-                `../modules/${moduleName.replace('-', '_')}.js`
-            ];
+            // Only try variations for 404 errors, not syntax errors
+            if (error.message && error.message.includes('404')) {
+                console.warn(`Module ${moduleName}.js not found, trying variations...`);
+                
+                const variations = [
+                    `../modules/${moduleName}-handler.js`,
+                    `../modules/${moduleName}s.js`,
+                    `../modules/${moduleName.replace('-', '_')}.js`
+                ];
 
-            for (const variation of variations) {
-                try {
-                    return await import(variation);
-                } catch (variationError) {
-                    // Continue to next variation
+                for (const variation of variations) {
+                    try {
+                        return await import(variation);
+                    } catch (variationError) {
+                        // Continue to next variation
+                    }
                 }
             }
             
