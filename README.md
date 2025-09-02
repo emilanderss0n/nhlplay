@@ -95,67 +95,72 @@ NHL PLAY is a comprehensive web application for tracking NHL hockey statistics, 
 - **Bootstrap Icons**: Comprehensive icon library for improved UI consistency
 - **Intersection Observer API**: Native browser API for performance-optimized lazy loading
 
-## Project Organization
+## Project Organization & Documentation
 
-The project follows a sophisticated modular architecture designed for scalability and maintainability:
+The project follows a sophisticated modular architecture designed for scalability and maintainability.
 
-### Core Application Structure
-- **/assets/js/global.js**: Main application entry point with App class for centralized initialization and lifecycle management
-- **/assets/js/core/**: Core application architecture
-  - **module-loader.js**: Dynamic ES6 module loading system with dependency management
-  - **page-detector.js**: Intelligent page type detection and required module determination  
-  - **feature-observer.js**: Intersection Observer implementation for performance-optimized lazy loading
-  - **app-state.js**: Global application state management with persistence support
+### Architecture Overview
 
-### Feature Modules
-- **/assets/js/modules/**: Feature-specific modular components
-  - **utils.js**: Shared utility functions and event management systems
-  - **dom-elements.js**: Centralized DOM element caching and management
-  - **teambuilder.js**: Drag-and-drop team building interface with state persistence
-  - **draft-mode.js**: Advanced draft simulation with challenge filters and round management
-  - **live-games.js**: Real-time game tracking with automatic updates
-  - **reddit-handlers.js**: Community integration with Reddit API for game threads and feeds
-  - **player-handlers.js**: Player statistics, comparisons, and profile management
-  - **game-handlers.js**: Game-specific functionality and live data processing
+#### Core System Components
+- **Custom PHP Router** - No external framework dependencies with SEO-friendly URL rewriting
+- **Modular JavaScript Architecture** - ES6 modules with dynamic loading and state management
+- **NHL API Integration** - Comprehensive caching system with multiple API endpoint support
+- **File-based Caching** - JSON caching with intelligent refresh and fallback strategies
+- **AJAX Navigation** - SPA-like experience without full page reloads
 
-### Styling Architecture
-- **/assets/css/global.css**: Main stylesheet with CSS custom properties and layer imports
-- **/assets/css/imports/**: Modular CSS architecture using @layer directives
-  - **base.css**: Foundation styles and CSS custom properties
-  - **animations.css**: Transition and animation definitions
-  - **responsive.css**: Mobile-first responsive breakpoints and device adaptations
-  - **darkmode-specific.css**: Dark theme implementations and automatic theme switching
-  - **team-builder.css**: Team builder and draft mode specific styling
-  - **draft-mode.css**: Draft simulation interface styling
+#### Directory Structure
+```
+/assets/js/          # JavaScript modules and core application files
+  /core/             # Core system (module loader, state management, page detection)
+  /modules/          # Feature-specific modules (teams, players, games, etc.)
+/ajax/               # AJAX endpoints for dynamic content
+/pages/              # Main page templates
+/includes/           # Core PHP system files
+  /controllers/      # Business logic controllers
+  /functions/        # Categorized utility functions
+  /data/             # Data processing and initialization
+/cache/              # JSON cache files for API responses
+```
 
-### Backend Structure
-- **/ajax/**: AJAX endpoints for dynamic content loading and API responses
-  - **team-builder.php**: Team roster loading and management endpoints
-  - **draft-mode.php**: Draft simulation player fetching and filtering
-  - **reddit-feed.php**: Community content aggregation and processing
-  - **live-game.php**: Real-time game data processing and updates
-- **/includes/**: PHP include files and shared functionality
-  - **functions.php**: Core utility functions and shared logic
-  - **functions/**: Specialized function libraries organized by feature
-  - **data/**: Data structure definitions, constants, and team mappings
-  - **tables/**: Reusable table generation functions with caching
-- **/pages/**: Static page templates and content structures
-- **/templates/**: Reusable UI components and partial views
-- **/cache/**: JSON-based caching system for API responses and computed data
+#### Key Features
+- **Dynamic Module Loading** - JavaScript modules loaded based on page requirements
+- **Intelligent Caching** - Multi-level caching with TTL and fallback mechanisms
+- **SEO Optimization** - Dynamic meta tags, canonical URLs, and clean URL structure
+- **Error Resilience** - Graceful degradation and comprehensive error handling
+- **Performance Focused** - Intersection observers, lazy loading, and optimized API usage
 
-### Asset Organization
-- **/assets/fonts/**: Custom web fonts and typography resources
-- **/assets/img/**: Image assets, team logos, and visual resources organized by category
+## Getting Started
 
-This architecture enables:
-- **Lazy Loading**: Modules are loaded only when needed based on page context
-- **Code Splitting**: Features are separated into independent modules for better maintainability
-- **Performance Optimization**: Intersection observers and caching reduce unnecessary operations
-- **Scalability**: New features can be added as independent modules without affecting existing code
+### For Users
+Simply navigate to the application and start exploring NHL statistics, live games, and team information. The interface is intuitive and responsive across all devices.
+
+### For Developers
+1. **Understand the Architecture** - Review the modular PHP and JavaScript architecture above
+2. **Explore the Codebase** - Begin with `index.php`, then `includes/router.php`, and `assets/js/global.js`
+3. **Check Function Libraries** - Review `includes/functions/` for available utilities
+4. **API Integration** - Examine `includes/functions/nhl-api.php` for NHL API patterns
+5. **Module System** - Study `assets/js/core/module-loader.js` for dynamic loading patterns
+
+### Development Environment
+- **Local Setup** - Designed to work with WAMP/XAMPP in `/nhl/` subdirectory
+- **Production Ready** - Automatically handles root domain deployment
+- **No Build Process** - Uses native ES6 modules, no compilation required
+- **File-based Caching** - Automatically creates and manages cache directory
 
 ## Project Status
 
-This project is actively maintained and updated throughout the NHL season with the latest data and features.
+This project is actively maintained and updated throughout the NHL season (2024-2025) with:
+- Latest NHL API integrations
+- Current season data and statistics
+- Real-time game tracking and updates
+- Performance optimizations and caching strategies
+- Mobile-first responsive design
+- SEO optimization and clean URL structure
+
+### Recent Updates
+- **September 2025** - Enhanced architecture and documentation
+- **Season 2024-2025** - Updated for current NHL season
+- **Performance Optimizations** - Enhanced caching and API integration
 
 ## Credits
 
