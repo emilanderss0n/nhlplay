@@ -241,7 +241,7 @@ function renderYouTubeVideos(videos, container) {
 
 function createVideoElement(videoId, title, thumbnail, channelTitle) {
     const videoDiv = document.createElement('div');
-    videoDiv.className = 'youtube-video-card';
+    videoDiv.className = 'youtube-video-card card';
     videoDiv.tabIndex = 0;
     
     videoDiv.innerHTML = `

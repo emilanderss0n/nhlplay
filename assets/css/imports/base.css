@@ -1871,6 +1871,10 @@
         & .swiper-button-next {
             right: 2rem;
 
+            @media (max-width: 768px) {
+                right: 1rem;
+            }
+
             &.swiper-button-disabled {
                 opacity: 0;
             }
@@ -1878,6 +1882,10 @@
 
         & .swiper-button-prev {
             left: 2rem;
+
+            @media (max-width: 768px) {
+                left: 1rem;
+            }
 
             &.swiper-button-disabled {
                 opacity: 0;
