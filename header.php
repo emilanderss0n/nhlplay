@@ -44,6 +44,8 @@ $mergedCSS = $isDevelopment ? false : generateMergedCSS([
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
     <meta name="viewport" content="height=device-height, width=device-width, initial-scale=1.0, minimum-scale=1, maximum-scale=5.0, user-scalable=yes" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="white">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)"  content="black">
     
     <?php
         // Use the improved page detection system for dynamic SEO when header is used standalone
