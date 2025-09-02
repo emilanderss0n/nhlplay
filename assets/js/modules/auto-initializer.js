@@ -109,7 +109,9 @@ export async function autoInitialize(container = document) {
     }
     
     // Draft mode
-    if (container.querySelector('[data-draft-mode]') || container.querySelector('.draft-mode')) {
+    if (container.querySelector('[data-draft-mode]') || 
+        container.querySelector('.draft-mode') || 
+        container.querySelector('#draft-mode-toggle')) {
         initPromises.push(
             import('./draft-mode.js').then(module => {
                 module.initDraftMode();

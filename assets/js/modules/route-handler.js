@@ -76,19 +76,10 @@ export function initRouteHandler(elements) {
             if (xhr.readyState === xhr.DONE && (xhr.status >= 200 && xhr.status < 300)) {
                 if (this.response) {
                     callback.call(this, fixedResponse);
-                    // Re-initialize skater leaders after content is loaded
-                    import('./player-leaders.js').then(module => {
-                        module.initializeSkaterLeaders();
+                    // Use auto-initializer for better timing and consistency
+                    import('./auto-initializer.js').then(module => {
+                        module.initAfterAjax(document);
                     });
-                    if (url.includes('team-builder')) {
-                        import('./teambuilder.js').then(module => {
-                            module.initTeamBuilder();
-                        });
-                        // Also initialize draft mode for team builder pages
-                        import('./draft-mode.js').then(module => {
-                            module.initDraftMode();
-                        });
-                    }
                 }
             }            // IMPORTANT: Dispatch custom event after content loads (used on draft page)
             document.dispatchEvent(new CustomEvent('routeChanged'));

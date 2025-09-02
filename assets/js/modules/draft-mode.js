@@ -66,7 +66,19 @@ const DraftMode = {
 // DOM elements cache
 const DOM = {};
 
+// Flag to prevent duplicate event listener registration
+let eventListenersInitialized = false;
+
 export function initDraftMode() {
+    let retryCount = 0;
+    const maxRetries = 5;
+    
+    // Always initialize event listeners first (uses delegation so works with dynamic content)
+    if (!eventListenersInitialized) {
+        initializeEventListeners();
+        eventListenersInitialized = true;
+    }
+    
     // Wait for DOM to be ready
     const initWhenReady = () => {
         // Cache DOM elements
@@ -76,17 +88,23 @@ export function initDraftMode() {
         if (!DOM.draftToggleBtn) {
             // Retry if we're on a team builder page
             const isTeamBuilderPage = document.querySelector('#team-builder-drop-area') ||
+                                      document.querySelector('#team-builder-interface') ||
                                       window.location.pathname.includes('team-builder');
             
-            if (isTeamBuilderPage) {
-                setTimeout(initWhenReady, 100);
+            if (isTeamBuilderPage && retryCount < maxRetries) {
+                retryCount++;
+                const delay = Math.min(100 * retryCount, 500); // Max 500ms delay
+                setTimeout(initWhenReady, delay);
             }
             return;
         }
         
-        // Initialize event listeners and interface
-        initializeEventListeners();
+        // Reset retry count on successful initialization
+        retryCount = 0;
+        
+        // Create draft interface
         createDraftInterface();
+        
         // If the draft toggle is present, start an early preload so data is ready
         // by the time the user opens the interface. This is silent and bounded.
         if (DOM.draftToggleBtn && !DraftMode.preloadTriggeredEarly) {
