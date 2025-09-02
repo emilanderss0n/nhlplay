@@ -180,13 +180,17 @@
         <?php } ?>
         <div class="component-header" style="margin-top: 5rem">
             <h3 class="title">Latest NHL Videos</h3>
-            <a href="https://www.youtube.com/@NHL" target="_blank" rel="noopener noreferrer" class="btn sm">NHL on YouTube</a>
+            <a href="https://www.youtube.com/results?search_query=NHL+hockey" target="_blank" rel="noopener noreferrer" class="btn sm">More NHL Videos</a>
         </div>
-        <?php
-        $channelId = "UCqFMzb-4AUf6WAIbl132QKA"; // NHL channel
-        $maxResults = 9;
-        renderYouTubeVideos($channelId, $maxResults);
-        ?>
+        <div id="videosFrontpage" class="youtube-videos grid grid-400 grid-gap-lg grid-gap-row-lg" data-swiper-enabled="1" data-max-results="12" data-season-break="<?= $seasonBreak ? 'true' : 'false' ?>">
+            <div id="activity">
+                <span class="loader"></span>
+            </div>
+        </div>
+        <script type="module">
+            import { initYouTubeVideos } from './assets/js/modules/youtube-videos.js';
+            document.addEventListener('DOMContentLoaded', initYouTubeVideos);
+        </script>
 
         <div class="component-header" style="margin-top: 5rem">
             <h3 class="title">Popular at r/hockey</h3>

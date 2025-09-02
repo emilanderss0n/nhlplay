@@ -4762,6 +4762,7 @@
   .reddit-loading {
     display: flex;
     justify-content: center;
+    align-items: center;
     padding: 2rem 0;
   }
 
@@ -4771,16 +4772,27 @@
     height: 40px;
   }
 
+  #videosFrontpage {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      min-height: 260px;
+  }
+
   .youtube-video-card {
+    --border-radius: 10px;
+
     display: flex;
     flex-direction: column;
+    flex-wrap: wrap;
+    align-self: stretch;
+    height: 100%;
     position: relative;
     cursor: pointer;
     outline: 2px solid transparent;
-    transition: box-shadow 0.3s ease, transform 0.3s ease, outline 0.3s ease;
-    border-radius: 10px;
-    overflow: clip;
-    transform: translateY(0px);
+    transition: box-shadow 0.3s ease, outline 0.3s ease;
+    border-radius: var(--border-radius);
     box-shadow: 0 0 0 transparent;
     user-select: none;
 
@@ -4789,16 +4801,17 @@
     }
 
     &:hover {
-      transform: translateY(-3px);
       box-shadow: var(--box-shadow-nice);
     }
 
     & .video-thumbnail-container {
       width: 100%;
+      position: relative;
       aspect-ratio: 16 / 9;
       object-fit: cover;
       max-height: max-content;
-      position: relative;
+      border-top-left-radius: var(--border-radius);
+      border-top-right-radius: var(--border-radius);
       overflow: hidden;
       opacity: 0.7;
       transition: opacity 0.3s ease;
@@ -4808,7 +4821,6 @@
         height: 100%;
         object-fit: cover;
         transform: scale(1);
-        z-index: 1;
       }
 
       .youtube-video-card:hover & {
@@ -4817,21 +4829,25 @@
     }
 
     & .video-title {
-      height: 77px;
+      position: relative;
       overflow: hidden;
-      font-size: 1rem;
-      color: var(--paragraph-color);
       background-color: var(--content-box-bg);
+      border-bottom-left-radius: var(--border-radius);
+      border-bottom-right-radius: var(--border-radius);
+      padding: 1rem;
+      width: 100%;
+      align-content: center;
+      flex: auto;
+
+      font-family: 'Inter', sans-serif;
+      color: var(--paragraph-color);
       line-height: 1.3;
+      font-size: 0.92rem;
       font-style: normal;
       text-transform: capitalize;
       font-weight: 600;
-      margin: 0;
-      padding: 1rem;
-      pointer-events: none;
-      font-family: 'Inter', sans-serif;
-      transition: color 0.3s ease-out;
-      width: 100%;
+      transition: color 0.3s ease;
+
     }
 
     &:hover .video-title {

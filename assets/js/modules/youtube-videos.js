@@ -1,29 +1,141 @@
 /**
  * YouTube Videos Module
- * Handles displaying YouTube videos from the NHL channel
+ * Handles displaying YouTube videos with lazy loading
  */
 
 export function initYouTubeVideos() {
-    const container = document.getElementById("videos");
+    // Initialize all YouTube video containers on the page
+    const videoContainers = document.querySelectorAll('.youtube-videos');
+    videoContainers.forEach(container => {
+        initYouTubeContainer(container);
+    });
+}
+
+/**
+ * Initialize a single YouTube video container
+ * @param {HTMLElement} container - The video container element
+ */
+function initYouTubeContainer(container) {
+    if (!container) return;
     
-    if (!container) {
-        console.warn('YouTube videos container not found');
-        return;
-    }
-
-    // Create modal if it doesn't exist
-    createVideoModal();
-
-    // Check if video data was provided by PHP
+    // Create an Intersection Observer to detect when youtube-videos comes into view
+    const youtubeObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            // If the element is in view
+            if (entry.isIntersecting) {
+                // Load YouTube videos
+                loadYouTubeVideos(entry.target);
+                // Stop observing after loading once
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        // Start loading when element is 200px from viewport
+        rootMargin: '200px',
+        threshold: 0.1
+    });
+    
+    // Start observing the youtube-videos element
+    youtubeObserver.observe(container);
+    
+    // If videos are already in the DOM (not lazy loaded), render them
     if (typeof window.youtubeVideosData !== 'undefined' && window.youtubeVideosData.items) {
         renderYouTubeVideos(window.youtubeVideosData.items, container);
-    } else {
-        console.warn('No YouTube video data available');
-        container.innerHTML = '<div class="alert info">No videos available at the moment</div>';
+        // Clear the global variable to prevent reuse
+        delete window.youtubeVideosData;
+    }
+    
+    /**
+     * Load YouTube videos for a specific container
+     * @param {HTMLElement} container - The video container element
+     */
+    function loadYouTubeVideos(container) {
+        if (!container) return;
+        
+        // Show loading indicator
+        const loadElement = container.querySelector('#activity');
+        if (loadElement) {
+            loadElement.style.display = 'flex';
+        }
+        
+        // Get maxResults from data attribute or default to 12
+        const maxResults = container.dataset.maxResults || 12;
+        
+        // Get seasonBreak from data attribute or detect from global variable
+        const seasonBreak = container.dataset.seasonBreak || 
+                           (typeof window.seasonBreak !== 'undefined' ? window.seasonBreak : 'false');
+        
+        // Determine the correct base URL for the environment
+        let baseUrl;
+        if (window.location.hostname === 'localhost') {
+            baseUrl = '/nhl/ajax/';
+        } else {
+            baseUrl = '/ajax/';
+        }
+        
+        // Build the final URL
+        const ajaxUrl = window.location.origin + baseUrl + 'youtube-videos.php';
+        
+        // Fetch YouTube videos from our AJAX endpoint
+        fetch(`${ajaxUrl}?maxResults=${maxResults}&seasonBreak=${seasonBreak}`, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(resp => {
+            // Normalize response: support envelope { success, videos }
+            let videos = [];
+            if (resp && Array.isArray(resp.videos)) {
+                videos = resp.videos;
+                // Log cache status for debugging
+                if (resp.cache_status) {
+                    console.log(`YouTube Videos: Cache ${resp.cache_status} (${resp.cache_file || 'unknown'})`);
+                }
+            } else if (resp && resp.success && Array.isArray(resp.data)) {
+                videos = resp.data;
+            }
+            
+            // Check if we got videos
+            if (videos && Array.isArray(videos) && videos.length > 0) {
+                renderYouTubeVideos(videos, container);
+            } else {
+                // Show error message if no videos found
+                container.innerHTML = `
+                    <div class="alert info">
+                        <div class="alert-content">
+                            <i class="bi bi-info-circle"></i>
+                            <span>No NHL videos available at the moment. Please try again later or <a href="https://www.youtube.com/results?search_query=NHL+hockey" target="_blank" rel="noopener noreferrer">search YouTube directly</a>.</span>
+                        </div>
+                    </div>
+                `;
+            }
+        })
+        .catch(error => {
+            console.error('Error loading YouTube videos:', error);
+            container.innerHTML = `
+                <div class="alert danger">
+                    <div class="alert-content">
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <span>There was an error loading YouTube videos. Please try again later.</span>
+                    </div>
+                </div>
+            `;
+        })
+        .finally(() => {
+            // Hide loading indicator
+            if (loadElement) {
+                loadElement.style.display = 'none';
+            }
+        });
     }
 }
 
 function renderYouTubeVideos(videos, container) {
+    // Create modal if it doesn't exist
+    createVideoModal();
+    
     container.innerHTML = ''; // Clear any existing content
 
     // Build Swiper structure
@@ -136,14 +248,10 @@ function createVideoElement(videoId, title, thumbnail, channelTitle) {
         <div class="video-thumbnail-container">
             <img src="${thumbnail}" alt="${title}" class="video-thumbnail" loading="lazy">
         </div>
-        <h4 class="video-title">${title}</h4>
+        <div class="video-title">${title}</div>
     `;
     
-    // Add click handler to open modal
-    const thumbnailContainer = videoDiv.querySelector('.video-thumbnail-container');
-    
-    // Also allow clicking the thumbnail image to open modal
-    thumbnailContainer.addEventListener('click', () => {
+    videoDiv.addEventListener('click', () => {
         openVideoModal(videoId, channelTitle);
     });
     
