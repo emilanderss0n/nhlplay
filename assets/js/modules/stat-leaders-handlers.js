@@ -602,28 +602,31 @@ export function initStatLeadersHandlers() {
                         item.closest('.stat-holder').classList.contains('stat-assists') ? 'Assists' : 
                         item.closest('.stat-holder').classList.contains('stat-svp') ? 'Save %' : 
                         item.closest('.stat-holder').classList.contains('stat-gaa') ? 'GAA' : 'Stat';
+
+        // generate random number for mask IDs to avoid duplicates
+        const randId = Math.floor(Math.random() * 10000);
         
         // Create the player card HTML
         const playerCardHtml = `
             <div class="player-card" data-player-id="${playerId}" data-team-id="${teamId}" data-tricode="${triCode}" data-name="${playerName}" data-position="${position}" data-logo="${logo}" data-bg-color="${bgColor}" data-stat="${stat}" data-headshot="${headshot}">
                 <a class="headshot" href="#" id="player-link" data-link="${playerId}">
                     <svg class="headshot_wrap" width="128" height="128">
-                        <mask id="circleMask:r2:">
+                        <mask id="circleMask:r${randId}:">
                             <svg>
                                 <path fill="#FFFFFF" d="M128 0H0V72H8C8 79.354 9.44848 86.636 12.2627 93.4303C15.077 100.224 19.2019 106.398 24.402 111.598C29.6021 116.798 35.7755 120.923 42.5697 123.737C49.364 126.552 56.646 128 64 128C71.354 128 78.636 126.552 85.4303 123.737C92.2245 120.923 98.3979 116.798 103.598 111.598C108.798 106.398 112.923 100.225 115.737 93.4303C118.552 86.636 120 79.354 120 72H128V0Z"></path>
                             </svg>
                         </mask>
-                        <image mask="url(#circleMask:r2:)" fill="#000000" id="canTop" height="128" href="${headshot}"></image>
+                        <image mask="url(#circleMask:r${randId}:)" fill="#000000" id="canTop" height="128" href="${headshot}"></image>
                     </svg>
                     <svg class="team-fill" width="128" height="128">
                         <circle cx="64" cy="72" r="56" fill="${bgColor}"></circle>
                         <defs>
-                            <linearGradient id="gradient:r2:" x1="0" y1="0" x2="0" y2="1">
+                            <linearGradient id="gradient:r${randId}:" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="20%" stop-opacity="0" stop-color="#000000"></stop>
                                 <stop offset="65%" stop-opacity="0.35" stop-color="#000000"></stop>
                             </linearGradient>
                         </defs>
-                        <circle cx="64" cy="72" r="56" fill="url(#gradient:r2:)"></circle>
+                        <circle cx="64" cy="72" r="56" fill="url(#gradient:r${randId}:)"></circle>
                     </svg>
                 </a>
                 <div class="player-info">

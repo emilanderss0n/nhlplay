@@ -2738,6 +2738,7 @@
         background-color: var(--second-content-box-bg);
         color: var(--heading-color);
         border-radius: 5px;
+        text-align: left;
         font-weight: 500;
         font-size: 0.9rem;
         transition: all 0.2s linear;
