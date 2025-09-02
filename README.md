@@ -157,11 +157,6 @@ This project is actively maintained and updated throughout the NHL season (2024-
 - Mobile-first responsive design
 - SEO optimization and clean URL structure
 
-### Recent Updates
-- **September 2025** - Enhanced architecture and documentation
-- **Season 2024-2025** - Updated for current NHL season
-- **Performance Optimizations** - Enhanced caching and API integration
-
 ## Credits
 
-Created by [emils.graphics](https://emils.graphics)
+Created by [Emil Andersson](https://emilandersson.com)
