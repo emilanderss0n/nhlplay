@@ -448,13 +448,14 @@ function renderTeamBuilderPlayer($player, $activeTeam, $type, $teamColor = null,
     $positionName = positionCodeToName($player->positionCode);
     $nameShort = ($player->firstName->default ? $player->firstName->default[0] . '.' : '') . ' ' . ($player->lastName->default ?? '');
     $fullName = ($player->firstName->default ?? '') . ' ' . ($player->lastName->default ?? '');
+    $jerseyNumber = $player->sweaterNumber ?? '??';
     ?>
     <a class="player <?= $positionClass ?><?= $rookieClass ?> swiper-slide" 
        href="javascript:void(0);" 
        style="background-image: linear-gradient(142deg, <?= $teamColor ?> -100%, rgba(255,255,255,0) 70%);"
        data-team-id="<?= $activeTeam ?>"
        data-player-id="<?= $player->id ?>">
-        <div class="jersey"><span>#</span><?= $player->sweaterNumber ?></div>
+        <div class="jersey"><span>#</span><?= $jerseyNumber ?></div>
         <div class="info">
             <div class="headshot">
                 <img class="head" loading="lazy" height="400" width="400" src="<?= $player->headshot ?>" alt="<?= $fullName ?>">
