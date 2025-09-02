@@ -237,8 +237,6 @@ class SEOConfig {
         $tags[] = '<meta property="og:type" content="' . ($seoData['type'] ?? 'website') . '">';
         $tags[] = '<meta property="og:site_name" content="NHL PLAY">';
         $tags[] = '<meta property="og:image" content="' . $baseUrl . '/assets/img/og-image-nhlplay.jpg">';
-        $tags[] = '<meta property="og:image:width" content="180">';
-        $tags[] = '<meta property="og:image:height" content="180">';
         $tags[] = '<meta property="og:locale" content="en_US">';
         
         // Twitter Card tags
@@ -247,10 +245,6 @@ class SEOConfig {
         $tags[] = '<meta name="twitter:description" content="' . htmlspecialchars($seoData['description']) . '">';
         $tags[] = '<meta name="twitter:image" content="' . $baseUrl . '/assets/img/og-image-nhlplay-twitter.jpg">';
         $tags[] = '<meta name="twitter:site" content="@NHLPlayOnline">';
-        
-        // Additional structured data hints
-        $tags[] = '<meta name="theme-color" content="#041e42">';
-        $tags[] = '<meta name="msapplication-TileColor" content="#041e42">';
         
         // Add JSON-LD structured data
         $tags[] = self::generateStructuredData($seoData, $currentUrl);
