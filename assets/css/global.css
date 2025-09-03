@@ -106,6 +106,12 @@
 @layer third_party, base, widgets, util, darkmode, responsive, animations;
 
 @layer util {
+  @property --position {
+    syntax: '<percentage>';
+    inherits: false;
+    initial-value: 0%;
+  }
+
   .checkbox-container {
     cursor: pointer;
     position: relative;
@@ -4808,6 +4814,7 @@
     }
 
     & .video-thumbnail-container {
+      --position: 50%;
       width: 100%;
       position: relative;
       aspect-ratio: 16 / 9;
@@ -4816,7 +4823,8 @@
       border-radius: var(--border-radius);
       overflow: hidden;
       opacity: 0.83;
-      transition: opacity 0.3s ease;
+      mask-image: linear-gradient(-150deg, #000 var(--position), rgb(0 0 0 / 10%) 100%);
+      transition: opacity 0.3s ease, --position 0.3s ease;
 
       & img {
         width: 100%;
@@ -4827,6 +4835,8 @@
 
       .youtube-video-card:hover & {
         opacity: 1;
+        --position: 80%;
+        mask-image: linear-gradient(-158deg, #000 var(--position), rgb(0 0 0 / 5%) 100%);
       }
     }
 
