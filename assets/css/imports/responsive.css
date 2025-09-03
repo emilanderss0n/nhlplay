@@ -582,7 +582,7 @@
         }
 
         .wrap {
-            margin: 120px auto 6rem;
+            margin: 120px auto 0;
         }
 
         .tablet-show {
@@ -598,20 +598,40 @@
             font-size: 1.5em;
         }
 
+        .custom-select .dropdown:not(:checked) + label {
+            font-size: 0.9rem;
+            padding: 0.2rem 0.5rem;
+        }
+
+        .season-select-dropdown {
+            width: 130px;
+            height: auto;
+        }
+
         .component-header {
             flex-direction: column;
             gap: 0.3rem;
+            box-shadow: none;
+            border: none;
+            background-color: transparent;
         }
 
         .component-header > p {
             text-align: center;
         }
 
+        .component-header .title {
+            font-size: 1.2rem;
+            padding: 0;
+        }
+
         .component-header:has(:nth-child(2)) .title {
             width: 100%;
             text-align: center;
-            border-bottom: 1px solid var(--border-stroke-weak);
-            padding-bottom: 0.7rem;
+            padding: 1rem;
+            background-color: var(--component-header-bg);
+            border-radius: 10px;
+            font-size: 1.2rem;
         }
 
         .component-header > *:not(.title) {
@@ -628,6 +648,10 @@
 
         .component-header .multi .btn-group {
             margin: 0 !important;
+        }
+
+        .section-three-stars {
+            margin-top: 3rem;
         }
 
         #stat-leaders-toggle-table {
@@ -946,6 +970,14 @@
 
         .stats-leaders > h3 {
             padding: 2rem 0 0.5rem;
+        }
+
+        .stats-leaders:first-child > h3 {
+            padding: 0 0 0.5rem;
+        }
+
+        .stats-leaders .stat-leader-list {
+            padding-top: 0;
         }
 
         .three-stars {
