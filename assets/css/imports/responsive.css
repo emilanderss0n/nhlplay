@@ -582,7 +582,7 @@
         }
 
         .wrap {
-            margin: 120px auto 0;
+            margin: 120px auto 5rem;
         }
 
         .tablet-show {
@@ -1325,7 +1325,7 @@
 
         .wrap {
             padding: 0 20px;
-            margin: 100px auto 6rem;
+            margin: 100px auto 0;
         }
 
         .btn-group {
