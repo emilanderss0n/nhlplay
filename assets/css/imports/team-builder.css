@@ -988,6 +988,13 @@
         }
     }
 
+    .nineties-theme .progress-fill {
+        background: #a2eada;
+        @media (prefers-color-scheme: dark) {
+            background: #21484b;
+        }
+    }
+
     .nineties-theme .selected-player-summary {
         background-color: #a2eada;
         @media (prefers-color-scheme: dark) {
