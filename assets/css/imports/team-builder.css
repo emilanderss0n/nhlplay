@@ -963,6 +963,103 @@
         }
     }
 
+    .draft-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+
+        & .checkbox-container {
+            font-size: 0.9rem;
+            background-image: linear-gradient(120deg, #4adebe, #7873f5, #ff6ec4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    }
+
+    .nineties-theme .draft-header {
+        background-color: #a2eada;
+        @media (prefers-color-scheme: dark) {
+            background-color: #21484b;
+        }
+    }
+
+    .nineties-theme .draft-progress,
+    .nineties-theme .draft-selected-players {
+        background-color: #e1c9e6;
+        @media (prefers-color-scheme: dark) {
+            background-color: #22293e;
+        }
+    }
+
+    .nineties-theme .selected-player-summary {
+        background-color: #a2eada;
+        @media (prefers-color-scheme: dark) {
+            background-color: #21484b;
+        }
+    }
+
+    .nineties-theme .depth-chart,
+    .nineties-theme .position-count {
+        background-color: transparent;
+    }
+
+    .nineties-theme .draft-players-container {
+        background: radial-gradient(ellipse at top, #775f84, #223932);
+        filter: blur(0.5px) brightness(1.1) saturate(1.1);
+
+        @media screen and (prefers-color-scheme: dark) {
+            background: radial-gradient(ellipse at bottom, #243d41, transparent), radial-gradient(ellipse at top, #08073b, transparent);
+        }
+
+        &::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image: url('../../img/noise.svg');
+            background-size: 580px;
+            width: 100%;
+            height: 100%;
+            mix-blend-mode: color-dodge;
+            opacity: 0.7;
+            z-index: 2;
+            pointer-events: none;
+            animation: noise 0.2s infinite;
+        }
+    }
+
+    @keyframes noise {
+        0%, 100% {
+            background-position: 0 0;
+        }
+        10% {
+            background-position: -5% -10%;
+        }
+        20% {
+            background-position: -15% 5%;
+        }
+        30% {
+            background-position: 7% -25%;
+        }
+        40% {
+            background-position: -20% 25%;
+        }
+        50% {
+            background-position: 20% 15%;
+        }
+        60% {
+            background-position: -25% 5%;
+        }
+        70% {
+            background-position: 15% 10%;
+        }
+        80% {
+            background-position: 0% 5%;
+        }
+        90% {
+            background-position: -10% 0%;
+        }
+    }
+
     .draft-select-btn {
         position: absolute;
         bottom: 1rem;

@@ -1,5 +1,40 @@
 import { eventManager } from './utils.js';
 
+// Audio objects for draft sound effects
+const DraftAudio = {
+    // 90's edition sounds
+    nineties: {
+        backgroundMusic: (() => {
+            const audio = document.createElement("audio");
+            audio.src = "assets/fx/music-loop.mp3";
+            audio.volume = 0.3;
+            audio.loop = true;
+            return audio;
+        })(),
+        selected: (() => {
+            const audio = document.createElement("audio");
+            audio.src = "assets/fx/selected.mp3";
+            audio.volume = 0.5;
+            return audio;
+        })(),
+        newCards: (() => {
+            const audio = document.createElement("audio");
+            audio.src = "assets/fx/new-cards.mp3";
+            audio.volume = 0.4;
+            return audio;
+        })(),
+        complete: (() => {
+            const audio = document.createElement("audio");
+            audio.src = "assets/fx/complete.mp3";
+            audio.volume = 0.6;
+            return audio;
+        })()
+    }
+};
+
+// Legacy reference for backward compatibility
+const myAudio = DraftAudio.nineties.selected;
+
 // Draft mode state management
 const DraftMode = {
     state: {
@@ -9,7 +44,8 @@ const DraftMode = {
         currentPosition: 'forwards',
         selectedPlayers: [],
         filters: [],
-    autoCompleting: false,
+        autoCompleting: false,
+        ninetiesTheme: false, // 90's edition theme toggle
         roundConfig: {
             forwards: 12,    // rounds 1-12
             defensemen: 6,   // rounds 13-18
@@ -53,6 +89,20 @@ const DraftMode = {
 
             // Show label with uppercase position and PICK X/Y
             positionInfo.innerHTML = `${position.toUpperCase()} - PICK <div class="tag">${positionRound}/${maxByPosition}</div>`;
+        }
+        
+        // Update theme class on draft header
+        this.updateThemeClass();
+    },
+    
+    updateThemeClass() {
+        const draftHeader = document.querySelector('.draft-mode-interface');
+        if (draftHeader) {
+            if (this.state.ninetiesTheme) {
+                draftHeader.classList.add('nineties-theme');
+            } else {
+                draftHeader.classList.remove('nineties-theme');
+            }
         }
     },
     
@@ -158,6 +208,9 @@ function initializeEventListeners() {
     // NHLPLAY Recommended Preset button
     eventManager.addDelegatedEventListener(document, '.nhlplay-preset-btn', 'click', applyNHLPLAYPreset);
     
+    // 90's theme toggle
+    eventManager.addDelegatedEventListener(document, '.nineties-theme-toggle', 'change', handleNinetiesThemeToggle);
+    
     // Exit draft mode
     eventManager.addDelegatedEventListener(document, '.exit-draft-btn', 'click', exitDraftMode);
     
@@ -167,7 +220,7 @@ function initializeEventListeners() {
 
 function createDraftInterface() {
     if (DOM.draftInterface) return; // Already exists
-    
+
     const draftHTML = `
         <div id="draft-mode-interface" class="draft-mode-interface" style="display: none;">
                 <div class="draft-header component-header">
@@ -282,8 +335,15 @@ function createDraftInterface() {
                     </label>
                     <button class="btn sm nhlplay-preset-btn"><i class="bi bi-star-fill"></i> NHLPLAY Preset</button>
                 </div>
+                
                 <div class="draft-buttons">
-                    
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="nineties-theme-toggle" name="nineties-theme" class="nineties-theme-toggle">
+                        <svg viewBox="0 0 64 64" height="2em" width="2em">
+                            <path d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16" pathLength="575.0541381835938" class="path"></path>
+                        </svg>
+                        <span>90's Edition (Theme)</span>
+                    </label>
                     <button class="fancy-button start-draft-btn"><span><i class="bi bi-stars"></i> Start Draft</span></button>
                 </div>
             </div>
@@ -436,11 +496,13 @@ function enterDraftMode() {
     DraftMode.setState({
         currentRound: 1,
         selectedPlayers: [],
-        filters: []
+        filters: [],
+        ninetiesTheme: false
     });
     
-    // Reset all filter checkboxes
+    // Reset all filter checkboxes and theme checkbox
     resetFilterCheckboxes();
+    resetThemeCheckbox();
     
     // Clear previously selected players from UI
     clearSelectedPlayersUI();
@@ -522,6 +584,20 @@ function exitDraftMode() {
     
     DraftMode.setState({ isActive: false });
     
+    // Remove nineties-theme class from draft header when exiting
+    const draftHeader = document.querySelector('.draft-mode-interface');
+    if (draftHeader) {
+        draftHeader.classList.remove('nineties-theme');
+    }
+    
+    // Stop background music if it was playing
+    try {
+        DraftAudio.nineties.backgroundMusic.pause();
+        DraftAudio.nineties.backgroundMusic.currentTime = 0;
+    } catch (err) {
+        console.warn('Error stopping background music on exit:', err);
+    }
+    
     // Hide draft interface
     const draftActive = document.querySelector('.draft-active');
     const draftFilters = document.querySelector('.draft-filters');
@@ -569,6 +645,24 @@ function handleFilterToggle(e) {
     debouncePreload();
 }
 
+function handleNinetiesThemeToggle(e) {
+    const isChecked = e.target.checked;
+    
+    // Update state
+    DraftMode.setState({ ninetiesTheme: isChecked });
+    
+    // Only stop background music if theme is disabled, don't start it here
+    if (!isChecked) {
+        // Stop background music if 90's theme is disabled
+        try {
+            DraftAudio.nineties.backgroundMusic.pause();
+            DraftAudio.nineties.backgroundMusic.currentTime = 0;
+        } catch (err) {
+            console.warn('Error stopping background music:', err);
+        }
+    }
+}
+
 // Debounced preload to avoid too many requests when filters change rapidly
 let preloadTimeout;
 function debouncePreload() {
@@ -586,12 +680,71 @@ function debouncePreload() {
     }, 500); // Wait 500ms after last filter change
 }
 
+function fadeOutBackgroundMusic() {
+    // Fade out background music over 5 seconds
+    if (!DraftMode.state.ninetiesTheme) return;
+    
+    const music = DraftAudio.nineties.backgroundMusic;
+    const originalVolume = music.volume;
+    const fadeStep = originalVolume / 50; // 50 steps over 5 seconds (100ms each)
+    
+    const fadeInterval = setInterval(() => {
+        if (music.volume > fadeStep) {
+            music.volume -= fadeStep;
+        } else {
+            music.volume = 0;
+            clearInterval(fadeInterval);
+        }
+    }, 100); // Update every 100ms for smooth fade
+}
+
+function fadeInBackgroundMusic() {
+    // Fade in background music over 2 seconds
+    if (!DraftMode.state.ninetiesTheme) return;
+    
+    const music = DraftAudio.nineties.backgroundMusic;
+    const targetVolume = 0.3; // Original volume
+    const fadeStep = targetVolume / 20; // 20 steps over 2 seconds (100ms each)
+    
+    // Start with volume 0 and play
+    music.volume = 0;
+    music.currentTime = 0;
+    music.play().catch(err => {
+        console.log('Background music autoplay prevented:', err);
+    });
+    
+    const fadeInterval = setInterval(() => {
+        if (music.volume < targetVolume - fadeStep) {
+            music.volume += fadeStep;
+        } else {
+            music.volume = targetVolume;
+            clearInterval(fadeInterval);
+        }
+    }, 100); // Update every 100ms for smooth fade
+}
+
 function resetFilterCheckboxes() {
     // Uncheck all filter checkboxes when starting a new draft
     const filterCheckboxes = document.querySelectorAll('.draft-filter-toggle');
     filterCheckboxes.forEach(checkbox => {
         checkbox.checked = false;
     });
+}
+
+function resetThemeCheckbox() {
+    // Reset the 90's theme checkbox
+    const themeCheckbox = document.querySelector('.nineties-theme-toggle');
+    if (themeCheckbox) {
+        themeCheckbox.checked = false;
+    }
+    
+    // Ensure background music is stopped
+    try {
+        DraftAudio.nineties.backgroundMusic.pause();
+        DraftAudio.nineties.backgroundMusic.currentTime = 0;
+    } catch (err) {
+        console.warn('Error stopping background music on reset:', err);
+    }
 }
 
 function applyNHLPLAYPreset() {
@@ -663,6 +816,11 @@ async function startDraft() {
     // Hide filters, show draft interface
     document.querySelector('.draft-filters').style.display = 'none';
     document.querySelector('.draft-active').style.display = 'block';
+    
+    // Start background music with fade-in if 90's theme is enabled
+    if (DraftMode.state.ninetiesTheme) {
+        fadeInBackgroundMusic();
+    }
     
     DraftMode.setState({ currentRound: 1 });
     
@@ -790,6 +948,16 @@ function displayRoundPlayers(playersHtml) {
     if (container) {
         // Clear container and add new content
         container.innerHTML = playersHtml.join('');
+        
+        // Play new cards sound for 90's theme (but not on first round)
+        if (DraftMode.state.ninetiesTheme && DraftMode.state.currentRound > 1) {
+            DraftAudio.nineties.newCards.play().catch(err => console.log('New cards audio play prevented:', err));
+        }
+        
+        // Fade out background music on the last round
+        if (DraftMode.state.ninetiesTheme && DraftMode.state.currentRound === DraftMode.state.totalRounds) {
+            fadeOutBackgroundMusic();
+        }
         
         // Get all the new player cards and initially hide them
         const playerCards = container.querySelectorAll('.draft-player');
@@ -1059,6 +1227,11 @@ function animateCardSelection(playerCard) {
                 });
             }
 
+            // Play selection sound only when 90's theme is enabled
+            if (DraftMode.state.ninetiesTheme) {
+                DraftAudio.nineties.selected.play().catch(err => console.log('Audio play prevented:', err));
+            }
+
             // Allow the selected visual to settle, then resolve.
             // Keep timings similar to previous behavior: brief emphasis, then settle
             setTimeout(() => {
@@ -1229,6 +1402,11 @@ function showDraftCompletionMessage() {
     // Start countdown
     let timeLeft = 5;
     countdownNumber.textContent = timeLeft;
+    
+    // Play completion sound when countdown begins
+    if (DraftMode.state.ninetiesTheme) {
+        DraftAudio.nineties.complete.play().catch(err => console.log('Complete audio play prevented:', err));
+    }
     
     const countdownInterval = setInterval(() => {
         timeLeft--;
