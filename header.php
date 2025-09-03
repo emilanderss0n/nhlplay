@@ -206,6 +206,7 @@ $playoffs = $app['playoffs'] ?? ($GLOBALS['playoffs'] ?? false);
             --glitter: url(<?= BASE_URL ?>/assets/img/glitter.png);
             --pattern: url(<?= BASE_URL ?>/assets/img/pattern-NHLPLAY.png);
             --backdrop: url(<?= BASE_URL ?>/assets/img/nhlplay-backdrop.jpg);
+            --noise-svg: url(<?= BASE_URL ?>/assets/img/noise.svg);
         }
     </style>
 
