@@ -27,6 +27,14 @@
                 echo renderTradeContent(true, 6, true);
                 echo '</div>';
 
+                echo '<div class="component-header" style="margin-top: 3rem">';
+                echo '<h3 class="title">Recent Signings</h3>';
+                echo '<a href="'.BASE_URL.'/ajax/trades" rel="page" class="btn sm">All Signings</a>';
+                echo '</div>';
+                echo '<div class="signings signings-frontpage">';
+                echo renderSigningContent(true, 4, true);
+                echo '</div>';
+
                 // echo '<a href="'.BASE_URL.'/pages/last-season-overview" rel="page" tabindex="0" role="button">';
                 // echo '<div class="season-break-message" style="background-image: url('.BASE_URL.'/assets/img/stanley_cup_fla_2025.webp);">';
                 // echo '<div class="inner">';

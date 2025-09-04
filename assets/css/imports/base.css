@@ -441,6 +441,7 @@
         position: relative;
         transition: all 0.2s linear;
         will-change: transform, background-color, color, outline;
+        white-space: nowrap;
     }
 
     .btn.sm {

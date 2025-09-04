@@ -228,9 +228,7 @@ function renderAllSignings($alternateLayout = false, $limit = 10, $useShortName 
         });
         
         if ($alternateLayout) {
-            // Special layout for frontpage with buttons + expanded view
-            $html .= '<div class="signing-buttons">';
-            
+            // Special layout for frontpage - show signings directly without date grouping
             $count = 0;
             foreach ($signingsByDate as $date => $signings) {
                 foreach ($signings as $index => $signing) {
@@ -238,24 +236,14 @@ function renderAllSignings($alternateLayout = false, $limit = 10, $useShortName 
                         break 2; // Break out of both loops
                     }
                     
-                    $signingHtml = renderSigning($signing, $alternateLayout, $useShortName, $count, true); // true for button mode
+                    // Render signing with full details directly (no button mode)
+                    $signingHtml = renderSigning($signing, false, $useShortName, $count); // Use standard layout, no alternate layout
                     if (!empty($signingHtml)) {
                         $html .= $signingHtml;
                         $count++;
                     }
                 }
             }
-            
-            $html .= '</div>';
-            
-            // Add expanded container with first signing
-            $html .= '<div class="signing-expanded-container">';
-            if (!empty($signingTracker)) {
-                $firstSigning = $signingTracker[0];
-                $expandedHtml = renderSigning($firstSigning, $alternateLayout, $useShortName, 0, false); // false for expanded mode
-                $html .= $expandedHtml;
-            }
-            $html .= '</div>';
         } else {
             // Standard layout - grouped by date
             $totalCount = 0;
