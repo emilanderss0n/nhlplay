@@ -649,10 +649,6 @@
             display: none;
         }
 
-        .alert {
-            gap: 1rem;
-        }
-
         .standings table {
             font-size: 0.7em;
         }
