@@ -11,7 +11,7 @@
 <footer>
     <div class="wrapper">
         <div class="footer-info">Copyright © <?php echo date('Y'); ?> <span>/</span> <strong>NHLPLAY</strong> <span>/</span> <a class="social-btn-twitter" href="https://twitter.com/NHLPlayOnline" target="_blank"><i class="bi bi-twitter"></i> Follow</a></div>
-        <div class="credit">Created by <a href="https://emils.graphics" target="_blank">emils.graphics</a></div>
+        <div class="credit">Created by <a href="https://emilandersson.com" target="_blank">Emil Andersson</a></div>
     </div>
 </footer>
 
