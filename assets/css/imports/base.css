@@ -1802,6 +1802,7 @@
         transform: translate(-50%, -55%);
         background: linear-gradient(to right, var(--medium-contrast-color) 0, #fff 10%, var(--medium-contrast-color) 20%);
         background-position: 0;
+        background-clip: text;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         animation: fancyButtonShine 3s infinite linear;
