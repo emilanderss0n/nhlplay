@@ -62,18 +62,18 @@ $mergedCSS = $isDevelopment ? false : generateMergedCSS([
     <link rel="icon" type="image/png" sizes="48x48" href="<?= BASE_URL ?>/assets/img/favicon-48x48.png">
     <link rel="icon" type="image/png" sizes="32x32" href="<?= BASE_URL ?>/assets/img/favicon-32x32.png">
 
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <?php if ($mergedCSS): ?>
-        <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/<?= $mergedCSS ?>">
+    <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/<?= $mergedCSS ?>">
     <?php else: ?>
-        <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/datatables.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/global.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/imports/base.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/imports/animations.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/imports/darkmode-specific.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/imports/responsive.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/imports/team-builder.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/swiper.css">
-        <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/bootstrap-icons.min.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/datatables.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/global.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/imports/base.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/imports/animations.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/imports/darkmode-specific.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/imports/responsive.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/imports/team-builder.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/swiper.css">
     <?php endif; ?>
 
     <link rel="manifest" href="manifest.json" />
