@@ -182,6 +182,8 @@ function renderSigning($signing, $alternateLayout = false, $useShortName = false
     $signingClass = 'signing';
     $html = '<div class="' . $signingClass . '">';
     
+    $html .= '<div class="date">' . $signingDate . '</div>';
+    
     $html .= '<div class="signing-content">';
     
     // Player section (includes team logo)

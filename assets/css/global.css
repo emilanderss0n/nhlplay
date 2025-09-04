@@ -4051,10 +4051,34 @@
 				background-color: transparent;
 				border-radius: 0;
 
+				& .date {
+					display: inline-block;
+					padding: 1rem 0 0;
+					color: var(--paragraph-color);
+					font-size: 0.9rem;
+
+					@media (max-width: 760px) {
+						text-align: center;
+						width: 100%;
+					}
+				}
+
 				& .signing-content {
 					padding: 1rem;
 					border-bottom: 1px solid var(--border-stroke-weak);
+
+					.signing:last-child & {
+						border-bottom: none;
+					}
+
+					@media (max-width: 760px) {
+						border: none;
+					}
 				}
+			}
+
+			& .date {
+				display: none;
 			}
 
 			& .team-logo {
