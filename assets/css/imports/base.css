@@ -854,6 +854,11 @@
                         --stop02: var(--heading-color);
                         --stop01: var(--medium-contrast-color);
                         --light-color: rgba(255, 255, 255, 0.1);
+
+                        @media (prefers-color-scheme: dark) {
+                            --stop01: var(--heading-color);
+                            --stop02: var(--low-contrast-color);
+                        }
                     }
                 }
             }

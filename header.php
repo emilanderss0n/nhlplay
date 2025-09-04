@@ -30,7 +30,6 @@ $mergedCSS = $isDevelopment ? false : generateMergedCSS([
     'assets/css/global.css',
     'assets/css/imports/base.css',
     'assets/css/imports/animations.css',
-    'assets/css/imports/darkmode-specific.css',
     'assets/css/imports/responsive.css',
     'assets/css/imports/team-builder.css',
     'assets/css/swiper.css',
