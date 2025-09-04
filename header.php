@@ -33,7 +33,6 @@ $mergedCSS = $isDevelopment ? false : generateMergedCSS([
     'assets/css/imports/responsive.css',
     'assets/css/imports/team-builder.css',
     'assets/css/swiper.css',
-    'assets/css/bootstrap-icons.min.css',
 ], 'merged.min.css');
 
 ?>
@@ -70,7 +69,6 @@ $mergedCSS = $isDevelopment ? false : generateMergedCSS([
     <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/global.css">
     <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/imports/base.css">
     <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/imports/animations.css">
-    <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/imports/darkmode-specific.css">
     <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/imports/responsive.css">
     <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/imports/team-builder.css">
     <link rel="stylesheet" type="text/css" media="screen" href="<?= BASE_URL ?>/assets/css/swiper.css">
