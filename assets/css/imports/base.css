@@ -707,6 +707,7 @@
         }
         --main-link-normal: var(--main-link-color);
         --background-gradient: linear-gradient(160deg, var(--main-link-dark-color) 0%, var(--content-box-bg) 30%, var(--dark-bg-color) 100%), linear-gradient(160deg, var(--main-link-normal), var(--border-stroke), var(--border-stroke-weak));
+        
         color: var(--main-link-color);
         line-height: 1.4;
         width: 100%;
