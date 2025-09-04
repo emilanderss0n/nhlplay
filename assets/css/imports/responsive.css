@@ -605,7 +605,6 @@
 
         .season-select-dropdown {
             width: 130px;
-            height: auto;
         }
 
         .component-header {
@@ -640,14 +639,6 @@
 
         .component-header:has(:nth-child(2)) > *:last-child {
             margin-right: 0;
-        }
-
-        .component-header .multi {
-            flex-direction: column;
-        }
-
-        .component-header .multi .btn-group {
-            margin: 0 !important;
         }
 
         .section-three-stars {
@@ -877,7 +868,7 @@
 
         #player-modal .stats-player .phone-show .stat .value {
             font-size: 1.7rem;
-            font-family: "Tomorrow", sans-serif;
+            font-family: var(--font-family-heading);
             font-weight: 600;
         }
 
@@ -1223,6 +1214,14 @@
 
     @media screen and (max-width: 700px) {
 
+        .component-header .multi {
+            flex-direction: column;
+        }
+
+        .component-header .multi .btn-group {
+            margin: 0 !important;
+        }
+
         .players-to-watch .player {
             width: 100%;
             gap: 2rem;
@@ -1275,7 +1274,7 @@
             font-size: 1.5rem;
             font-weight: 700;
             font-style: italic;
-            font-family: "Tomorrow", sans-serif;
+            font-family: var(--font-family-heading);
         }
 
         .players-to-watch .player .headshot {
@@ -1328,20 +1327,6 @@
             margin: 100px auto 0;
         }
 
-        .btn-group {
-            flex-wrap: wrap;
-            margin: 0.5rem 1rem 0;
-            justify-content: space-between;
-        }
-
-        .btn-group .icon {
-            display: none;
-        }
-
-        .btn-group > a {
-            margin: 4px 0;
-        }
-
         #player-modal {
             padding: 1.4rem 1.4rem 4rem;
         }
@@ -1369,6 +1354,45 @@
 
         #player-modal .career-stats-two .title.stats p {
             font-size: 0.9rem;
+        }
+
+        .season-select-dropdown {
+            width: 100%;
+        }
+
+        .component-header .multi {
+            width: 100%;
+        }
+
+        .component-header .multi .btn-group {
+            width: 100%;
+        }
+
+        .btn-group {
+            flex-wrap: wrap;
+            margin: 0.5rem 1rem 0;
+            justify-content: space-between;
+        }
+
+        .btn-group .icon {
+            display: none;
+        }
+
+        .btn-group > a {
+            margin: 4px 0;
+            flex: 1;
+        }
+
+        .custom-select .section-dropdown {
+            & > a {
+                padding: 0.5rem 0.8rem;
+                background-color: var(--main-link-color-medium);
+                margin: 1rem;
+            }
+        }
+
+        .custom-select .dropdown:not(:checked) + label {
+            padding: 0 1rem;
         }
 
         .playoffs-bracket .round-games .game .team-img {

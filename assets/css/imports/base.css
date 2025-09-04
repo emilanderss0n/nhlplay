@@ -5,7 +5,7 @@
         max-width: 100%;
         padding: 0;
         margin: 0;
-        font-family: "Inter", "Open Sans", sans-serif;
+        font-family: var(--font-family-base);
         font-size: 18px;
         overflow-x: hidden;
         display: flex;
@@ -192,7 +192,7 @@
     h2,
     h3,
     h4 {
-        font-family: "Tomorrow", sans-serif;
+        font-family: var(--font-family-heading);
         letter-spacing: 0;
         color: var(--heading-color);
         font-weight: 600;
@@ -353,7 +353,7 @@
     .header-dashed {
         text-transform: uppercase;
         color: var(--paragraph-color);
-        font-family: "Tomorrow", sans-serif;
+        font-family: var(--font-family-heading);
         font-size: 1rem;
         border-bottom: 2px dashed var(--low-contrast-color);
         padding: 0.5rem 0;
@@ -425,7 +425,7 @@
     }
 
     button {
-        font-family: 'Inter', sans-serif;
+        font-family: var(--font-family-base);
         font-weight: bold;
         cursor: pointer;
     }
@@ -498,7 +498,7 @@
     }
 
     select {
-        font-family: 'Inter', sans-serif;
+        font-family: var(--font-family-base);
         font-weight: 600;
         font-size: 0.9rem;
         cursor: pointer;
@@ -513,7 +513,7 @@
 
         &::picker-icon {
             content: "\F282";
-            font-family: 'bootstrap-icons';
+            font-family: var(--font-family-icons);
             color: var(--medium-contrast-color);
             font-size: 0.8rem;
             display: flex;
@@ -567,7 +567,7 @@
         font-size: 2.3rem;
         font-weight: 600;
         color: var(--heading-color);
-        font-family: "Tomorrow", sans-serif;
+        font-family: var(--font-family-heading);
     }
 
     .indicator {
@@ -827,7 +827,7 @@
             align-items: center;
 
             & .header-title {
-                font-family: "Tomorrow", sans-serif;
+                font-family: var(--font-family-heading);
                 font-size: 1.8em;
                 text-transform: uppercase;
                 position: relative;
@@ -844,7 +844,7 @@
                         line-height: 1;
                         font-size: 2rem;
                         margin-right: 0.3rem;
-                        font-family: "Inter", sans-serif;
+                        font-family: var(--font-family-base);
                         font-weight: 700;
                         letter-spacing: -1px;
                     }
@@ -1042,7 +1042,7 @@
         border-radius: 5px;
         display: block;
         box-shadow: var(--shadow-box);
-        z-index: 2;
+        z-index: 8;
         opacity: 0;
         pointer-events: none;
         transform: translateY(20px);
@@ -1055,6 +1055,10 @@
         opacity: 1;
         pointer-events: auto;
         transform: translateY(0);
+    }
+
+    .custom-select .dropdown:checked ~ .section-dropdown {
+        transform: translateY(-5px);
     }
 
     .menu-teams .section-dropdown .fader-top,
@@ -1116,12 +1120,12 @@
         position: relative;
         color: var(--heading-color);
         transition: all 200ms linear;
-        font-family: "Roboto", sans-serif;
+        font-family: var(--font-family-base);
         font-weight: 500;
         font-size: 15px;
         border-radius: 3px;
         padding: 5px 0;
-        padding-left: 20px;
+        padding-left: 15px;
         padding-right: 15px;
         margin: 2px 0;
         text-align: left;
@@ -1134,7 +1138,6 @@
     .menu-teams .section-dropdown a,
     .custom-select .section-dropdown a {
         justify-content: flex-start;
-        padding-left: 10px;
     }
 
     .menu-links .section-dropdown a:hover,
@@ -1180,7 +1183,7 @@
         position: relative;
         color: var(--heading-color);
         transition: all 200ms linear;
-        font-family: "Roboto", sans-serif;
+        font-family: var(--font-family-base);
         font-weight: 500;
         font-size: 15px;
         border-radius: 2px;
@@ -1405,7 +1408,7 @@
 
     .modal .series-game .game-teams .team {
         font-weight: 600;
-        font-family: 'Tomorrow', sans-serif;
+        font-family: var(--font-family-heading);
         font-size: 1.5rem;
         color: var(--heading-color);
         max-height: 50px;
@@ -1483,7 +1486,7 @@
             font-size: 1rem;
             font-style: normal;
             color: var(--heading-color);
-            font-family: 'Inter', sans-serif;
+            font-family: var(--font-family-base);
             flex: 1;
             padding-left: 1rem;
         }

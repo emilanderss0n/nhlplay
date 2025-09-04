@@ -74,7 +74,7 @@
     }
 
     .draggable-mirror .info .text .name {
-        font-family: 'Tomorrow', sans-serif !important;
+        font-family: var(--font-family-heading) !important;
         font-weight: 500 !important;
         font-size: 1rem !important;
         padding-right: 5px !important;
@@ -174,7 +174,7 @@
 
     .tb-selection-players .swiper > .swiper-button-next:after,
     .tb-selection-players .swiper > .swiper-button-prev:after {
-        font-family: 'bootstrap-icons';
+        font-family: var(--font-family-icons);
         font-size: 2rem;
     }
 
@@ -236,7 +236,7 @@
     }
 
     .tb-selection-players .tb-pool .player .info .text .name {
-        font-family: 'Tomorrow', sans-serif;
+        font-family: var(--font-family-heading);
         font-weight: 500;
     }
 
@@ -271,7 +271,7 @@
 
     .tb-selection-players .tb-pool .player.in-slot::after {
         content: '\F633';
-        font-family: 'bootstrap-icons';
+        font-family: var(--font-family-icons);
         position: absolute;
         right: 0.5rem;
         bottom: 0.5rem;
@@ -377,7 +377,7 @@
 
     .team-builder .player-slot:empty::after {
         content: "\F4FE";
-        font-family: 'bootstrap-icons';
+        font-family: var(--font-family-icons);
         font-size: 2rem;
         color: var(--low-contrast-color);
     }
@@ -593,7 +593,7 @@
         font-size: 1.5rem;
         font-weight: 700;
         color: var(--heading-color);
-        font-family: 'Tomorrow', sans-serif;
+        font-family: var(--font-family-heading);
         text-transform: uppercase;
     }
 
@@ -855,7 +855,7 @@
                 }
 
                 & .name {
-                    font-family: 'Tomorrow', sans-serif;
+                    font-family: var(--font-family-heading);
                     text-transform: uppercase;
                     font-weight: 600;
                     font-size: 1.1rem;

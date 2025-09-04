@@ -1,5 +1,8 @@
 :root {
   interpolate-size: allow-keywords;
+  --font-family-base: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-family-heading: 'Tomorrow', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-family-icons: 'bootstrap-icons';
   --main-bg-color: #e3e7eb;
   --main-darker-bg: #f2f4f7;
   --content-box-bg: #fff;
@@ -392,7 +395,7 @@
     border: 1px solid var(--border-stroke-weak);
     color: inherit;
     font-weight: bold;
-    font-family: "Inter", sans-serif;
+    font-family: var(--font-family-base);
     border-radius: 5px;
     font-size: 1rem;
     height: 100%;
@@ -412,7 +415,7 @@
 
   .suggestion-input::before {
     content: "\F52A";
-    font-family: "bootstrap-icons";
+    font-family: var(--font-family-icons);
     position: absolute;
     left: 0;
     top: 0;
@@ -599,7 +602,7 @@
         font-size: 2.3rem;
         font-weight: 600;
         color: var(--heading-color);
-        font-family: "Tomorrow", sans-serif;
+        font-family: var(--font-family-heading);
       }
     }
   }
@@ -952,7 +955,7 @@
     font-weight: 600;
     font-style: italic;
     color: var(--paragraph-color);
-    font-family: "Tomorrow", sans-serif;
+    font-family: var(--font-family-heading);
     font-size: 1.1rem;
     border-bottom: 2px dashed var(--low-contrast-color);
     padding: 0.5em 0;
@@ -1014,7 +1017,7 @@
       border: 1px solid var(--border-stroke-weak);
       color: var(--heading-color);
       font-weight: bold;
-      font-family: "Inter", sans-serif;
+      font-family: var(--font-family-base);
       border-radius: 5px;
       font-size: 1rem;
       padding: 0.3rem 0.6rem;
@@ -1032,7 +1035,7 @@
 
   table.jsDataTable-table thead > tr > td .jsDataTable-sorter::before {
     content: "\F229";
-    font-family: "bootstrap-icons";
+    font-family: var(--font-family-icons);
     border: none;
     font-size: 0.6rem;
     bottom: 0.5rem;
@@ -1041,7 +1044,7 @@
 
   table.jsDataTable-table thead > tr > td .jsDataTable-sorter::after {
     content: "\F235";
-    font-family: "bootstrap-icons";
+    font-family: var(--font-family-icons);
     border: none;
     font-size: 0.6rem;
     top: -0.05rem;
@@ -1302,7 +1305,7 @@
     align-items: center;
     gap: 1rem;
     justify-content: space-between;
-    font-family: 'Tomorrow', sans-serif;
+    font-family: var(--font-family-heading);
     font-weight: 600;
     font-size: 1.2rem;
     color: var(--heading-color);
@@ -1414,7 +1417,7 @@
 
       &::after {
         content: "E";
-        font-family: "Tomorrow", sans-serif;
+        font-family: var(--font-family-heading);
         font-weight: bold;
         position: absolute;
         right: 0;
@@ -1512,7 +1515,7 @@
           & .vs {
             font-size: 1.5rem;
             font-weight: bold;
-            font-family: "Tomorrow", sans-serif;
+            font-family: var(--font-family-heading);
             font-style: italic;
             color: var(--medium-contrast-color);
           }
@@ -1612,7 +1615,7 @@
           display: none;
           font-size: 2rem;
           font-weight: 700;
-          font-family: "Tomorrow", sans-serif;
+          font-family: var(--font-family-heading);
           line-height: 1.7rem;
           letter-spacing: -0.07rem;
           transform: translateY(0.2rem);
@@ -1865,12 +1868,12 @@
         font-size: 2em;
         color: var(--low-contrast-color);
         transition: all 0.3s linear;
-        font-family: "Tomorrow", sans-serif;
+        font-family: var(--font-family-heading);
         font-style: italic;
         font-weight: 700;
 
         & span {
-          font-family: "Inter", sans-serif;
+          font-family: var(--font-family-base);
           font-weight: initial;
         }
       }
@@ -1935,7 +1938,7 @@
           & .name {
             font-size: 1.2em;
             font-weight: 400;
-            font-family: "Tomorrow", sans-serif;
+            font-family: var(--font-family-heading);
             text-transform: uppercase;
             display: flex;
             gap: 0.5rem;
@@ -1979,7 +1982,7 @@
         border-top: 1px solid var(--border-stroke-weak);
 
         & strong {
-          font-family: "Tomorrow", sans-serif;
+          font-family: var(--font-family-heading);
           font-weight: 500;
           font-size: 1.1em;
         }
@@ -2035,7 +2038,7 @@
           & .name {
             font-size: 1rem;
             font-weight: 400;
-            font-family: "Tomorrow", sans-serif;
+            font-family: var(--font-family-heading);
             text-transform: uppercase;
           }
         }
@@ -2295,7 +2298,7 @@
 
   #player-modal .player-graph::after {
     content: "// RADAR CHART";
-    font-family: "Tomorrow", sans-serif;
+    font-family: var(--font-family-heading);
     position: absolute;
     color: var(--paragraph-color);
     opacity: 0.6;
@@ -2316,7 +2319,7 @@
   }
 
   #player-modal .stats-player table tbody tr td {
-    font-family: "Tomorrow", sans-serif;
+    font-family: var(--font-family-heading);
     font-weight: 600;
     text-transform: uppercase;
   }
@@ -2669,7 +2672,7 @@
             font-size: 1.2rem;
             font-weight: 600;
             line-height: 1.2;
-            font-family: "Tomorrow", sans-serif;
+            font-family: var(--font-family-heading);
             text-transform: uppercase;
 
             @media (max-width: 580px) {
@@ -3033,7 +3036,7 @@
   .post-game-header .score > span,
   .pre-game-header .score > span {
     font-size: 7rem;
-    font-family: "Tomorrow", sans-serif;
+    font-family: var(--font-family-heading);
     font-weight: 700;
     letter-spacing: -0.8rem;
     color: var(--heading-color);
@@ -3050,7 +3053,7 @@
 
   .post-game-header .score .game-date,
   .pre-game-header .score .game-date {
-    font-family: "Tomorrow", sans-serif;
+    font-family: var(--font-family-heading);
     font-size: 1rem;
     text-transform: uppercase;
     line-height: 1.4rem;
@@ -3065,7 +3068,7 @@
     justify-content: center;
     padding: 0.3rem 0.6rem;
     border-radius: 3px;
-    font-family: "Tomorrow", sans-serif;
+    font-family: var(--font-family-heading);
     font-size: 1rem;
     line-height: 1.4rem;
     color: var(--heading-color);
@@ -3080,7 +3083,7 @@
   }
 
   .pre-game-header .score #countdown {
-    font-family: "Tomorrow", sans-serif;
+    font-family: var(--font-family-heading);
     font-size: 1rem;
     line-height: 1.4rem;
     text-transform: uppercase;
@@ -3152,7 +3155,7 @@
     font-size: 1.4rem;
     text-transform: uppercase;
     text-align: center;
-    font-family: "Tomorrow", sans-serif;
+    font-family: var(--font-family-heading);
     font-weight: 500;
   }
 
@@ -3177,7 +3180,7 @@
     letter-spacing: 0.1rem;
     font-weight: 600;
     color: var(--paragraph-color);
-    font-family: "Tomorrow", sans-serif;
+    font-family: var(--font-family-heading);
     font-size: 0.8em;
     opacity: 0.8;
     font-style: italic;
@@ -3256,7 +3259,7 @@
     text-transform: none;
     width: -webkit-fill-available;
     padding-right: 1rem;
-    font-family: "Tomorrow", sans-serif;
+    font-family: var(--font-family-heading);
   }
 
   .post-game-stars .player .name {
@@ -3268,7 +3271,7 @@
   .post-game-stars .player .role {
     font-weight: normal;
     opacity: 0.7;
-    font-family: "Inter", sans-serif;
+    font-family: var(--font-family-base);
   }
 
   .post-game-stars .player .stats {
@@ -3322,7 +3325,7 @@
   }
 
   .post-game-boxscore .scoring-play .goal .player-info a.name {
-    font-family: "Tomorrow", sans-serif;
+    font-family: var(--font-family-heading);
     text-transform: uppercase;
     font-weight: 600;
   }
@@ -3492,7 +3495,7 @@
     letter-spacing: 0.1rem;
     font-weight: 500;
     color: var(--paragraph-color);
-    font-family: "Tomorrow", sans-serif;
+    font-family: var(--font-family-heading);
   }
 
   .boxscore-roster .box .break picture {
@@ -3541,7 +3544,7 @@
     padding: 0.5em;
     font-size: 1.3em;
     font-weight: 600;
-    font-family: "Tomorrow", sans-serif;
+    font-family: var(--font-family-heading);
     height: 3.5rem;
     display: flex;
     justify-content: center;
@@ -3586,7 +3589,7 @@
     font-size: 1rem;
     padding: 0.5em;
     color: var(--heading-color);
-    font-family: "Inter", sans-serif;
+    font-family: var(--font-family-base);
   }
 
   .head-to-head-players {
@@ -3793,7 +3796,7 @@
   .players-to-watch .player .name {
     font-size: 1.1rem;
     color: var(--heading-color);
-    font-family: "Tomorrow", sans-serif;
+    font-family: var(--font-family-heading);
     text-transform: uppercase;
     font-weight: 600;
   }
@@ -3854,7 +3857,7 @@
   .players-to-watch .row .stat {
     font-size: 2rem;
     font-weight: 600;
-    font-family: "Tomorrow", sans-serif;
+    font-family: var(--font-family-heading);
   }
 
   .players-to-watch .stat-m {
@@ -3881,7 +3884,7 @@
     box-shadow: var(--shadow-box);
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
-    font-family: "Tomorrow", sans-serif;
+    font-family: var(--font-family-heading);
     letter-spacing: 0.2em;
     text-transform: uppercase;
     font-weight: bold;
@@ -3911,7 +3914,7 @@
 
   .trades .team-info .name {
     font-weight: bold;
-    font-family: "Tomorrow", Inter, Open Sans, sans-serif;
+    font-family: var(--font-family-heading);
     font-size: 1.2rem;
     text-transform: uppercase;
     font-style: italic;
@@ -3973,7 +3976,7 @@
     margin-top: 0.3rem;
     font-weight: 500;
     text-transform: uppercase;
-    font-family: "Tomorrow", Inter, Open Sans, sans-serif;
+    font-family: var(--font-family-heading);
   }
 
   .trades .team .list ul li::marker {
@@ -4163,7 +4166,7 @@
     background: none;
     position: relative;
     padding: 0;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-family-base);
     box-shadow: none;
     color: var(--paragraph-color);
     font-weight: normal;
@@ -4172,7 +4175,7 @@
   .trades-frontpage .trade.alt-layout:not(.expanded)::after {
     content: "\F135";
     position: absolute;
-    font-family: 'bootstrap-icons';
+    font-family: var(--font-family-icons);
     bottom: 5px;
     right: 8px;
     color: var(--paragraph-color);
@@ -4847,7 +4850,7 @@
       width: 100%;
       flex: auto;
 
-      font-family: 'Inter', sans-serif;
+      font-family: var(--font-family-base);
       color: var(--paragraph-color);
       line-height: 1.3;
       font-size: 0.92rem;
