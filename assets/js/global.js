@@ -179,6 +179,8 @@ class App {
             'ui-settings': () => module.initUISettings(),
             'stat-leaders-handlers': () => module.initStatLeadersHandlers(),
             'trade-handlers': () => module.initTradeHandlers(),
+            'signing-handlers': () => module.initSigningHandlers(),
+            'trade-signing-toggle': () => module.initTradeSigningToggle(),
             'reddit-handlers': () => {
                 if (module.initRedditPosts) module.initRedditPosts();
                 if (module.initRedditGameThread) module.initRedditGameThread();

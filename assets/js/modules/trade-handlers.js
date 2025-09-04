@@ -148,3 +148,6 @@ function handleTradeKeydown(event) {
 if (document.querySelector('.trades-frontpage')) {
     document.addEventListener('DOMContentLoaded', initTradeHandlers);
 }
+
+// Make initTradeHandlers available globally for the toggle module
+window.initTradeHandlers = initTradeHandlers;

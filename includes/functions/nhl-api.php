@@ -703,6 +703,26 @@ class NHLApi {
     public static function buildSort($sorts) {
         return json_encode($sorts);
     }
+
+    // ==========================================
+    // EXTERNAL/THIRD-PARTY API ENDPOINTS
+    // ==========================================
+
+    /**
+     * Get Sportsnet trade tracker API URL
+     * @return string API URL for trade tracker
+     */
+    public static function sportsnetTradeTracker() {
+        return 'https://www.sportsnet.ca/wp-json/sportsnet/v1/trade-tracker';
+    }
+
+    /**
+     * Get Sportsnet signings tracker API URL
+     * @return string API URL for signings tracker
+     */
+    public static function sportsnetSigningsTracker() {
+        return 'https://www.sportsnet.ca/wp-json/sportsnet/v1/signings-tracker';
+    }
 }
 
 // ==========================================
@@ -824,4 +844,20 @@ function getTopForwardsByPointsUrl($season, $limit = 100) {
  */
 function getTopDefenseByPointsUrl($season, $limit = 100) {
     return NHLApi::topDefenseByPoints($season, $limit);
+}
+
+/**
+ * Quick method to get Sportsnet trade tracker URL
+ * @return string API URL
+ */
+function getSportsnetTradeTrackerUrl() {
+    return NHLApi::sportsnetTradeTracker();
+}
+
+/**
+ * Quick method to get Sportsnet signings tracker URL
+ * @return string API URL
+ */
+function getSportsnetSigningsTrackerUrl() {
+    return NHLApi::sportsnetSigningsTracker();
 }

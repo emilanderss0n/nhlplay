@@ -38,6 +38,7 @@ export class PageDetector {
         if (path.includes('/stat-leaders')) return 'stat-leaders';
         if (path.includes('/draft-picks') || path.includes('/draft')) return 'draft';
         if (path.includes('/compare')) return 'compare-players';
+        if (path.includes('/trades') || path.includes('trades.php')) return 'trades-signings';
         
         return 'homepage';
     }
@@ -123,6 +124,13 @@ export class PageDetector {
             ],
             'compare-players': [
                 'player-handlers',
+                'ui-settings',
+                'menu-handlers'
+            ],
+            'trades-signings': [
+                'trade-handlers',
+                'signing-handlers',
+                'trade-signing-toggle',
                 'ui-settings',
                 'menu-handlers'
             ]

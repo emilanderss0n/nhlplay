@@ -20,6 +20,34 @@ if (isset($_GET['expanded']) && isset($_GET['index'])) {
     exit;
 }
 
+// Handle AJAX request for individual signing
+if (isset($_GET['signing-expanded']) && isset($_GET['index'])) {
+    $signingIndex = intval($_GET['index']);
+    $signingTracker = fetchSigningData();
+    
+    if ($signingTracker && is_array($signingTracker) && isset($signingTracker[$signingIndex])) {
+        $signing = $signingTracker[$signingIndex];
+        echo renderSigning($signing, true, true, $signingIndex, false); // false for expanded mode
+    } else {
+        echo '<div class="signing alt-layout expanded" style="background: var(--dark-bg-color);">';
+        echo '<div class="date">Signing Not Found</div>';
+        echo '<div class="signing-content"><div style="text-align: center; padding: 2rem; color: #999;">Signing details not available.</div></div>';
+        echo '</div>';
+    }
+    exit;
+}
+
+// Handle AJAX request for view toggle
+if (isset($_GET['view'])) {
+    $view = $_GET['view'];
+    if ($view === 'signings') {
+        echo renderSigningContent();
+    } else {
+        echo renderTradeContent();
+    }
+    exit;
+}
+
 if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest') {
 } else {
     include '../header.php';
@@ -32,9 +60,15 @@ $deviceType = ($detect ? ($detect->isMobile() ? ($detect->isTablet() ? 'tablet' 
     <div class="wrap">
         <div class="component-header">
             <h3 class="title">Trade Tracker</h3>
-            <p class="sm">Any new trade within 1 days, shows an indicator in the "Links" menu</p>
+            <div class="multi">
+                <div class="btn-group">
+                    <i class="icon bi bi-filter"></i>
+                    <a href="javascript:void(0);" id="trades-toggle" class="btn sm active" data-view="trades">Trades</a>
+                    <a href="javascript:void(0);" id="signings-toggle" class="btn sm" data-view="signings">Signings</a>
+                </div>
+            </div>
         </div>
-        <div class="trades">
+        <div class="trades" id="content-container">
             <?php echo renderTradeContent(); ?>
         </div>
     </div>

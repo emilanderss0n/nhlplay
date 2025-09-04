@@ -8,9 +8,11 @@
  * @return array|null Array of trade data or null on failure
  */
 function fetchTradeData() {
-    $ApiUrl = 'https://www.sportsnet.ca/wp-json/sportsnet/v1/trade-tracker';
-    $curl = curlInit($ApiUrl);
-    return json_decode($curl);
+    $apiUrl = NHLApi::sportsnetTradeTracker();
+    $cacheFile = 'cache/trades-tracker.json';
+    $cacheLifetime = 3600; // 1 hour cache
+    
+    return fetchData($apiUrl, $cacheFile, $cacheLifetime);
 }
 
 /**
