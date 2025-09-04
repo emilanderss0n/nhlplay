@@ -1,8 +1,10 @@
 :root {
   interpolate-size: allow-keywords;
+  
   --font-family-base: 'Inter', Roboto, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
   --font-family-heading: 'Tomorrow', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-family-icons: 'bootstrap-icons';
+
   --main-bg-color: #e3e7eb;
   --main-darker-bg: #f2f4f7;
   --content-box-bg: #fff;
@@ -52,14 +54,6 @@
   --table-td: #fff;
   --table-td-odd: #f0f0f0;
   --reddit-color: #ff4500;
-  --break-400: 400px;
-  --break-600: 600px;
-  --break-700: 700px;
-  --break-800: 800px;
-  --break-900: 900px;
-  --break-1000: 1000px;
-  --break-1200: 1200px;
-  --break-1400: 1400px;
   --text-shadow: 1px 1px 2px rgb(0 0 0 / 80%);
   --card-gradient-bg: radial-gradient(ellipse at top, var(--dark-bg-color), transparent), radial-gradient(ellipse at bottom, var(--second-content-box-bg), transparent);
 }
