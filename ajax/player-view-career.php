@@ -1,10 +1,10 @@
 <?php
-$playerID = $_POST['player'];
+$playerID = $_POST['player'] ?? null;
 include_once '../path.php';
 include_once '../includes/functions.php';
 include_once __DIR__ . '/../includes/controllers/player.php';
 $careerData = player_fetch_career($playerID);
-$careerTotals = $careerData->careerTotals->regularSeason;
+$careerTotals = $careerData->careerTotals->regularSeason ?? null;
 $careerTotalsPlayoffs = $careerData->careerTotals->playoffs ?? (object)[
     'gamesPlayed' => 0,
     'wins' => 0,
@@ -18,11 +18,11 @@ $careerTotalsPlayoffs = $careerData->careerTotals->playoffs ?? (object)[
     'plusMinus' => 0,
     'pim' => 0,
 ];
-$careerAll = $careerData->seasonTotals;
+$careerAll = $careerData->seasonTotals ?? [];
 ?>
 <div class="stats-player-inner">
     <div class="career-stats">
-        <?php if ($careerData->position == 'G') { ?>
+        <?php if (($careerData->position ?? '') == 'G') { ?>
         <table class="phone-hide">
             <thead>
                 <td>Games</td>
@@ -32,11 +32,11 @@ $careerAll = $careerData->seasonTotals;
                 <td>GAA</td>
             </thead>
             <tbody>
-                <td><?= $careerTotals->gamesPlayed ?></td>
-                <td><?= $careerTotals->wins ?></td>
-                <td><?= $careerTotals->shutouts ?></td>
-                <td><?= number_format((float)$careerTotals->savePctg, 3, '.', '') ?></td>
-                <td><?= number_format((float)$careerTotals->goalsAgainstAvg, 2, '.', '') ?></td>
+                <td><?= $careerTotals->gamesPlayed ?? 0 ?></td>
+                <td><?= $careerTotals->wins ?? 0 ?></td>
+                <td><?= $careerTotals->shutouts ?? 0 ?></td>
+                <td><?= isset($careerTotals->savePctg) ? number_format((float)$careerTotals->savePctg, 3, '.', '') : '0.000' ?></td>
+                <td><?= isset($careerTotals->goalsAgainstAvg) ? number_format((float)$careerTotals->goalsAgainstAvg, 2, '.', '') : '0.00' ?></td>
             </tbody>
         </table>
         <div class="phone-show">
@@ -73,11 +73,11 @@ $careerAll = $careerData->seasonTotals;
                 <td>GAA</td>
             </thead>
             <tbody>
-                <td><?= $careerTotalsPlayoffs->gamesPlayed ?></td>
-                <td><?= $careerTotalsPlayoffs->wins ?></td>
-                <td><?= $careerTotalsPlayoffs->shutouts ?></td>
-                <td><?= number_format((float)$careerTotalsPlayoffs->savePctg, 3, '.', '') ?></td>
-                <td><?= number_format((float)$careerTotalsPlayoffs->goalsAgainstAvg, 2, '.', '') ?></td>
+                <td><?= $careerTotalsPlayoffs->gamesPlayed ?? 0 ?></td>
+                <td><?= $careerTotalsPlayoffs->wins ?? 0 ?></td>
+                <td><?= $careerTotalsPlayoffs->shutouts ?? 0 ?></td>
+                <td><?= isset($careerTotalsPlayoffs->savePctg) ? number_format((float)$careerTotalsPlayoffs->savePctg, 3, '.', '') : '0.000' ?></td>
+                <td><?= isset($careerTotalsPlayoffs->goalsAgainstAvg) ? number_format((float)$careerTotalsPlayoffs->goalsAgainstAvg, 2, '.', '') : '0.00' ?></td>
             </tbody>
         </table>
         <div class="phone-show">
@@ -115,14 +115,14 @@ $careerAll = $careerData->seasonTotals;
                 <td>PIM</td>
             </thead>
             <tbody>
-                <td><?= $careerTotals->gamesPlayed ?></td>
-                <td><?= $careerTotals->goals ?></td>
-                <td><?= $careerTotals->assists ?></td>
-                <td><?= $careerTotals->points ?></td>
-                <td><?= number_format((float)$careerTotals->points / $careerTotals->gamesPlayed, 2, '.', '') ?></td>
-                <td><?= number_format((float)$careerTotals->shootingPctg * 100, 1, '.', '') ?></td>
-                <td><?= $careerTotals->plusMinus ?></td>
-                <td><?= $careerTotals->pim ?></td>
+                <td><?= $careerTotals->gamesPlayed ?? 0 ?></td>
+                <td><?= $careerTotals->goals ?? 0 ?></td>
+                <td><?= $careerTotals->assists ?? 0 ?></td>
+                <td><?= $careerTotals->points ?? 0 ?></td>
+                <td><?= isset($careerTotals->points) && isset($careerTotals->gamesPlayed) && $careerTotals->gamesPlayed > 0 ? number_format((float)$careerTotals->points / $careerTotals->gamesPlayed, 2, '.', '') : '0.00' ?></td>
+                <td><?= isset($careerTotals->shootingPctg) ? number_format((float)$careerTotals->shootingPctg * 100, 1, '.', '') : '0.0' ?></td>
+                <td><?= $careerTotals->plusMinus ?? 0 ?></td>
+                <td><?= $careerTotals->pim ?? 0 ?></td>
             </tbody>
         </table>
         <div class="phone-show">
@@ -174,14 +174,14 @@ $careerAll = $careerData->seasonTotals;
                 <td>PIM</td>
             </thead>
             <tbody>
-                <td><?= $careerTotalsPlayoffs->gamesPlayed ?></td>
-                <td><?= $careerTotalsPlayoffs->goals ?></td>
-                <td><?= $careerTotalsPlayoffs->assists ?></td>
-                <td><?= $careerTotalsPlayoffs->points ?></td>
-                <td><?= ($careerTotalsPlayoffs->gamesPlayed > 0) ? number_format((float)$careerTotalsPlayoffs->points / $careerTotalsPlayoffs->gamesPlayed, 2, '.', '') : '0.00' ?></td>
-                <td><?= number_format((float)$careerTotalsPlayoffs->shootingPctg * 100, 1, '.', '') ?></td>
-                <td><?= $careerTotalsPlayoffs->plusMinus ?></td>
-                <td><?= $careerTotalsPlayoffs->pim ?></td>
+                <td><?= $careerTotalsPlayoffs->gamesPlayed ?? 0 ?></td>
+                <td><?= $careerTotalsPlayoffs->goals ?? 0 ?></td>
+                <td><?= $careerTotalsPlayoffs->assists ?? 0 ?></td>
+                <td><?= $careerTotalsPlayoffs->points ?? 0 ?></td>
+                <td><?= (isset($careerTotalsPlayoffs->gamesPlayed) && $careerTotalsPlayoffs->gamesPlayed > 0) ? number_format((float)($careerTotalsPlayoffs->points ?? 0) / $careerTotalsPlayoffs->gamesPlayed, 2, '.', '') : '0.00' ?></td>
+                <td><?= isset($careerTotalsPlayoffs->shootingPctg) ? number_format((float)$careerTotalsPlayoffs->shootingPctg * 100, 1, '.', '') : '0.0' ?></td>
+                <td><?= $careerTotalsPlayoffs->plusMinus ?? 0 ?></td>
+                <td><?= $careerTotalsPlayoffs->pim ?? 0 ?></td>
             </tbody>
         </table>
         <div class="phone-show">
@@ -252,11 +252,11 @@ $careerAll = $careerData->seasonTotals;
         if (isset($careerData->awards) && is_array($careerData->awards)) {
             // Loop through awards to count trophies
             foreach ($careerData->awards as $award) {
-                $trophyName = $award->trophy->default;
+                $trophyName = $award->trophy->default ?? 'Unknown Trophy';
                 if (!isset($trophyCounts[$trophyName])) {
                     $trophyCounts[$trophyName] = 0;
                 }
-                $trophyCounts[$trophyName] += count($award->seasons);
+                $trophyCounts[$trophyName] += count($award->seasons ?? []);
             }
         }
 
@@ -290,13 +290,15 @@ $careerAll = $careerData->seasonTotals;
     <?php
     // Group career stats by season and team for NHL only
     $seasonTeamMap = [];
-    foreach ($careerAll as $career) {
-        if ($career->leagueAbbrev == 'NHL') {
-            $key = $career->season . '_' . $career->teamName->default;
-            if (!isset($seasonTeamMap[$key])) {
-                $seasonTeamMap[$key] = [];
+    if (!empty($careerAll)) {
+        foreach ($careerAll as $career) {
+            if (($career->leagueAbbrev ?? '') == 'NHL') {
+                $key = ($career->season ?? '') . '_' . ($career->teamName->default ?? '');
+                if (!isset($seasonTeamMap[$key])) {
+                    $seasonTeamMap[$key] = [];
+                }
+                $seasonTeamMap[$key][$career->gameTypeId ?? 2] = $career; // 2 = regular, 3 = playoffs
             }
-            $seasonTeamMap[$key][$career->gameTypeId] = $career; // 2 = regular, 3 = playoffs
         }
     }
 
@@ -304,16 +306,16 @@ $careerAll = $careerData->seasonTotals;
     foreach ($seasonTeamMap as $key => $types) {
         // Get season and team from key
         list($season, $teamName) = explode('_', $key, 2);
-        $season1 = substr($season, 0, -4);
-        $season2 = substr($season, 4, 4);
-        $teamColorConverted = teamNameToIdConvert($teamName);
+        $season1 = strlen($season) >= 4 ? substr($season, 0, -4) : '';
+        $season2 = strlen($season) >= 4 ? substr($season, 4, 4) : '';
+        $teamColorConverted = teamNameToIdConvert($teamName ?? '');
         ?>
         <div class="season-career">
             <div class="header-season-career">
                 <h3 class="header-text">
-                    <?= idToTeamAbbrev($teamColorConverted) ?><span class="season"> <?= '- ' . $season1 . ' / ' . $season2 ?></span>
+                    <?= idToTeamAbbrev($teamColorConverted ?? '') ?><span class="season"> <?= '- ' . $season1 . ' / ' . $season2 ?></span>
                 </h3>
-                <img class="team-logo" src="assets/img/teams/<?= $teamColorConverted ?>.svg" alt="<?= $teamName ?>">
+                <img class="team-logo" src="assets/img/teams/<?= $teamColorConverted ?? 'default' ?>.svg" alt="<?= $teamName ?? 'Unknown Team' ?>">
             </div>
             <?php
             // REGULAR SEASON - render inline
@@ -348,32 +350,32 @@ $careerAll = $careerData->seasonTotals;
                         <div class="career-stats-group">
                             <div class="stat">
                                 <div class="label">GP</div>
-                                <div class="value"><?= $career->gamesPlayed ?></div>
+                                <div class="value"><?= $career->gamesPlayed ?? 0 ?></div>
                             </div>
                             <div class="stat">
                                 <div class="label">G</div>
-                                <div class="value"><?= $career->goals ?></div>
+                                <div class="value"><?= $career->goals ?? 0 ?></div>
                             </div>
                             <div class="stat">
                                 <div class="label">A</div>
-                                <div class="value"><?= $career->assists ?></div>
+                                <div class="value"><?= $career->assists ?? 0 ?></div>
                             </div>
                             <div class="stat">
                                 <div class="label">P</div>
-                                <div class="value"><?= $career->points ?></div>
+                                <div class="value"><?= $career->points ?? 0 ?></div>
                             </div>
                             <div class="stat">
                                 <div class="label">PM</div>
-                                <div class="value"><?= $career->plusMinus ?></div>
+                                <div class="value"><?= $career->plusMinus ?? 0 ?></div>
                             </div>
                             <div class="stat">
                                 <div class="label">PIM</div>
-                                <div class="value"><?= $career->pim ?></div>
+                                <div class="value"><?= $career->pim ?? 0 ?></div>
                             </div>
                         </div>
                     <?php } ?>
                 </div>
-                <a href="javascript:void(0);" data-player="<?= $playerID ?>" data-skater-goalie="<?= $careerData->position ?>" data-season-selection="<?= $season ?>" data-season-type="2" class="btn sm outline player-game-log">Full Game Log</a>
+                <a href="javascript:void(0);" data-player="<?= $playerID ?>" data-skater-goalie="<?= $careerData->position ?? '' ?>" data-season-selection="<?= $season ?>" data-season-type="2" class="btn sm outline player-game-log">Full Game Log</a>
             <?php } ?>
 
             <?php
@@ -385,64 +387,64 @@ $careerAll = $careerData->seasonTotals;
                 <div class="season-career">
                     <div class="header-season-career">
                         <h3 class="header-text">
-                            <?= idToTeamAbbrev($teamColorConverted) ?><span class="season"> <?= '- ' . $season1 . ' / ' . $season2 ?></span>
+                            <?= idToTeamAbbrev($teamColorConverted ?? '') ?><span class="season"> <?= '- ' . $season1 . ' / ' . $season2 ?></span>
                         </h3>
-                        <img class="team-logo" src="assets/img/teams/<?= $teamColorConverted ?>.svg" alt="<?= $teamName ?>">
+                        <img class="team-logo" src="assets/img/teams/<?= $teamColorConverted ?? 'default' ?>.svg" alt="<?= $teamName ?? 'Unknown Team' ?>">
                     </div>
                     <div class="section">
-                        <?php if ($careerData->position == 'G') { ?>
+                        <?php if (($careerData->position ?? '') == 'G') { ?>
                         <div class="career-stats-group">
                             <div class="stat">
                                 <div class="label">GP</div>
-                                <div class="value"><?= $career->gamesPlayed ?? '' ?></div>
+                                <div class="value"><?= $career->gamesPlayed ?? 0 ?></div>
                             </div>
                             <div class="stat">
                                 <div class="label">GAA</div>
-                                <div class="value"><?= isset($career->goalsAgainstAvg) ? number_format((float)$career->goalsAgainstAvg, 2, '.', '') : '' ?></div>
+                                <div class="value"><?= isset($career->goalsAgainstAvg) ? number_format((float)$career->goalsAgainstAvg, 2, '.', '') : '0.00' ?></div>
                             </div>
                             <div class="stat">
                                 <div class="label">SV %</div>
-                                <div class="value"><?= isset($career->savePctg) ? number_format((float)$career->savePctg, 3, '.', '') : '' ?></div>
+                                <div class="value"><?= isset($career->savePctg) ? number_format((float)$career->savePctg, 3, '.', '') : '0.000' ?></div>
                             </div>
                             <div class="stat">
                                 <div class="label">W</div>
-                                <div class="value"><?= $career->wins ?? '' ?></div>
+                                <div class="value"><?= $career->wins ?? 0 ?></div>
                             </div>
                             <div class="stat">
                                 <div class="label">SO</div>
-                                <div class="value"><?= $career->shutouts ?? '' ?></div>
+                                <div class="value"><?= $career->shutouts ?? 0 ?></div>
                             </div>
                         </div>
                         <?php } else { ?>
                         <div class="career-stats-group">
                             <div class="stat">
                                 <div class="label">GP</div>
-                                <div class="value"><?= $career->gamesPlayed ?></div>
+                                <div class="value"><?= $career->gamesPlayed ?? 0 ?></div>
                             </div>
                             <div class="stat">
                                 <div class="label">G</div>
-                                <div class="value"><?= $career->goals ?></div>
+                                <div class="value"><?= $career->goals ?? 0 ?></div>
                             </div>
                             <div class="stat">
                                 <div class="label">A</div>
-                                <div class="value"><?= $career->assists ?></div>
+                                <div class="value"><?= $career->assists ?? 0 ?></div>
                             </div>
                             <div class="stat">
                                 <div class="label">P</div>
-                                <div class="value"><?= $career->points ?></div>
+                                <div class="value"><?= $career->points ?? 0 ?></div>
                             </div>
                             <div class="stat">
                                 <div class="label">PM</div>
-                                <div class="value"><?= $career->plusMinus ?></div>
+                                <div class="value"><?= $career->plusMinus ?? 0 ?></div>
                             </div>
                             <div class="stat">
                                 <div class="label">PIM</div>
-                                <div class="value"><?= $career->pim ?></div>
+                                <div class="value"><?= $career->pim ?? 0 ?></div>
                             </div>
                         </div>
                         <?php } ?>
                     </div>
-                    <a href="javascript:void(0);" data-player="<?= $playerID ?>" data-skater-goalie="<?= $careerData->position ?>" data-season-selection="<?= $season ?>" data-season-type="3" class="btn sm outline player-game-log">Full Game Log</a>
+                    <a href="javascript:void(0);" data-player="<?= $playerID ?>" data-skater-goalie="<?= $careerData->position ?? '' ?>" data-season-selection="<?= $season ?>" data-season-type="3" class="btn sm outline player-game-log">Full Game Log</a>
                 </div>
                 <?php
                 $playoffBlocks[] = ob_get_clean();
