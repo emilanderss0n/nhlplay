@@ -23,9 +23,6 @@ function fetchSigningData() {
 function renderSigningPlayer($signing) {
     $html = '<div class="signing-player">';
     
-    // Team logo
-    $html .= renderSigningTeamLogo($signing);
-    
     // Player image
     $html .= '<div class="player-image">';
     if (isset($signing->player_image_headshot) && !empty($signing->player_image_headshot)) {
@@ -39,50 +36,13 @@ function renderSigningPlayer($signing) {
     $html .= '<div class="player-info">';
     $html .= '<div class="name">' . htmlspecialchars($signing->name ?? 'Unknown Player') . '</div>';
     $html .= '<div class="details">';
-    $html .= '<div class="position">' . htmlspecialchars($signing->player_position ?? 'Position TBD') . '</div>';
+    $html .= '<div class="team">' . htmlspecialchars($signing->team_shortname ?? '???') . '</div><div class="separator">&#x2022;</div>';
+    $html .= '<div class="position">' . htmlspecialchars($signing->player_position ?? 'Position TBD') . '</div><div class="separator">&#x2022;</div>';
     if (isset($signing->age)) {
         $html .= '<div class="age">Age: ' . htmlspecialchars($signing->age) . '</div>';
     }
     $html .= '</div>';
     $html .= '</div>';
-    
-    $html .= '</div>';
-    return $html;
-}
-
-/**
- * Render team logo for signing
- * @param object $signing Signing data
- * @return string HTML for team logo
- */
-function renderSigningTeamLogo($signing) {
-    $html = '<div class="team-logo">';
-    
-    if (isset($signing->team_shortname) && !empty($signing->team_shortname)) {
-        $signingTeamAbbrev = strtoupper($signing->team_shortname);
-        
-        // Handle special cases for team abbreviations that differ between sources
-        $teamAbbrevMap = [
-            'CLB' => 'CBJ', // Columbus Blue Jackets
-            'PHX' => 'ARI', // Arizona (used to be Phoenix)
-        ];
-        
-        if (isset($teamAbbrevMap[$signingTeamAbbrev])) {
-            $signingTeamAbbrev = $teamAbbrevMap[$signingTeamAbbrev];
-        }
-        
-        // Check if the team abbreviation exists in our mapping
-        global $teamAbbrev;
-        if (isset($teamAbbrev[$signingTeamAbbrev])) {
-            $teamId = abbrevToTeamId($signingTeamAbbrev);
-            $html .= '<img src="assets/img/teams/' . $teamId . '.svg" height="100" width="100" alt="Team Logo" />';
-        } else {
-            // Fallback: use the original abbreviation in lowercase for direct file lookup
-            $html .= '<img src="assets/img/teams/' . strtolower($signing->team_shortname) . '.svg" height="100" width="100" alt="Team Logo" />';
-        }
-    } else {
-        $html .= '<div class="placeholder-logo">?</div>';
-    }
     
     $html .= '</div>';
     return $html;

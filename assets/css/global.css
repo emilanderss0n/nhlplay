@@ -4060,7 +4060,7 @@
 				}
 
 				& .signing-content {
-					padding: 1rem;
+					padding: 1rem 0;
 					border-bottom: 1px solid var(--border-stroke-weak);
 
 					.signing:last-child & {
@@ -4076,18 +4076,6 @@
 			& .date {
 				display: none;
 			}
-
-			& .team-logo {
-				width: 48px;
-				height: 48px;
-
-				& img {
-					width: 100%;
-					height: 100%;
-					object-fit: contain;
-					mask: var(--logo-mask-subtle);
-				}
-			}
 			
 			& .signing-content {
 				padding: 1.5rem 2rem;
@@ -4096,7 +4084,7 @@
 				gap: 1rem;
 				justify-content: flex-start;
 
-				@media (max-width: 1100px) {
+				@media (max-width: 1000px) {
 					padding: 1rem;
 				}
 
@@ -4112,6 +4100,7 @@
 
 					@media (max-width: 760px) {
 						justify-content: center;
+						flex-wrap: wrap;
 					}
 
 					& .player-image {
@@ -4135,7 +4124,7 @@
 
 						& .name {
 							font-size: 1.2rem;
-							font-weight: 600;
+							font-weight: 500;
 							text-transform: uppercase;
 							color: var(--heading-color);
 							font-family: var(--font-family-heading);
@@ -4147,15 +4136,19 @@
 							font-weight: 500;
 							display: flex;
 							gap: 0.5rem;
+
+							& .team {
+								text-transform: uppercase;
+							}
 						}
 					}
 				}
 
 				& .contract-details {
 					margin-left: auto;
-					min-width: 520px;
+					min-width: 500px;
 
-					@media (max-width: 1100px) {
+					@media (max-width: 1000px) {
 						text-align: right;
 						min-width: auto;
 					}
@@ -4179,7 +4172,7 @@
 						font-size: 0.9rem;
 						color: var(--paragraph-color);
 
-						@media (max-width: 1100px) {
+						@media (max-width: 1000px) {
 							grid-template-columns: none;
 						}
 
