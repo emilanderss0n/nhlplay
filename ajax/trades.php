@@ -27,9 +27,9 @@ if (isset($_GET['signing-expanded']) && isset($_GET['index'])) {
     
     if ($signingTracker && is_array($signingTracker) && isset($signingTracker[$signingIndex])) {
         $signing = $signingTracker[$signingIndex];
-        echo renderSigning($signing, true, true, $signingIndex, false); // false for expanded mode
+        echo renderSigning($signing);
     } else {
-        echo '<div class="signing alt-layout expanded" style="background: var(--dark-bg-color);">';
+        echo '<div class="signing" style="background: var(--dark-bg-color);">';
         echo '<div class="date">Signing Not Found</div>';
         echo '<div class="signing-content"><div style="text-align: center; padding: 2rem; color: #999;">Signing details not available.</div></div>';
         echo '</div>';

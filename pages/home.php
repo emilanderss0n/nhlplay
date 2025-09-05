@@ -32,7 +32,7 @@
                 echo '<a href="'.BASE_URL.'/ajax/trades" rel="page" class="btn sm">All Signings</a>';
                 echo '</div>';
                 echo '<div class="signings signings-frontpage">';
-                echo renderSigningContent(true, 4, true);
+                echo renderSigningContent(4, true);
                 echo '</div>';
 
                 // echo '<a href="'.BASE_URL.'/pages/last-season-overview" rel="page" tabindex="0" role="button">';

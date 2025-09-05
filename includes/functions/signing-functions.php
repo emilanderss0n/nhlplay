@@ -18,10 +18,9 @@ function fetchSigningData() {
 /**
  * Render signing player section
  * @param object $signing Signing data
- * @param bool $useShortName Whether to use team short name instead of full name
  * @return string HTML for signing player section
  */
-function renderSigningPlayer($signing, $useShortName = false) {
+function renderSigningPlayer($signing) {
     $html = '<div class="signing-player">';
     
     // Team logo
@@ -120,63 +119,15 @@ function renderContractDetails($signing) {
 /**
  * Render a complete signing HTML block
  * @param object $signing Signing data from API
- * @param bool $alternateLayout Whether to use alternate layout
- * @param bool $useShortName Whether to use team short name instead of full name
- * @param int $signingIndex Index of the signing (0-based)
- * @param bool $buttonMode Whether to render as a button (minimal view only) or full signing
  * @return string Complete HTML for signing block
  */
-function renderSigning($signing, $alternateLayout = false, $useShortName = false, $signingIndex = 0, $buttonMode = null) {
+function renderSigning($signing) {
     // Skip if no signing data
     if (!$signing) {
         return '';
     }
     
     $signingDate = isset($signing->signing_date) ? htmlspecialchars($signing->signing_date) : 'Date TBD';
-    
-    // Determine rendering mode
-    if ($alternateLayout && $buttonMode !== null) {
-        // New button/expanded layout
-        if ($buttonMode) {
-            // Render as button (minimal view)
-            $isActive = $signingIndex === 0 ? ' active' : '';
-            $signingClass = 'signing alt-layout' . $isActive;
-            
-            $html = '<div class="' . $signingClass . '" data-signing-index="' . $signingIndex . '" tabindex="0" role="button">';
-            $html .= '<div class="date">' . $signingDate . '</div>';
-            $html .= '<div class="signing-minimal">';
-            
-            $playerName = isset($signing->name) ? $signing->name : 'Unknown Player';
-            $teamName = isset($signing->team_shortname) ? strtoupper($signing->team_shortname) : 'Team TBD';
-            
-            $html .= '<div class="signing-summary">';
-            $html .= htmlspecialchars($playerName) . ' → ' . htmlspecialchars($teamName);
-            $html .= '</div>';
-            $html .= '</div>';
-            $html .= '</div>';
-            
-            return $html;
-        } else {
-            // Render as expanded view
-            $signingClass = 'signing alt-layout expanded';
-            
-            $html = '<div class="' . $signingClass . '">';
-            $html .= '<div class="signing-title">Signing</div>';
-            
-            $html .= '<div class="signing-content">';
-            
-            // Player section (includes team logo)
-            $html .= renderSigningPlayer($signing, $useShortName);
-            
-            // Contract details
-            $html .= renderContractDetails($signing);
-            
-            $html .= '</div>';
-            $html .= '</div>';
-            
-            return $html;
-        }
-    }
     
     // Standard layout
     $signingClass = 'signing';
@@ -187,7 +138,7 @@ function renderSigning($signing, $alternateLayout = false, $useShortName = false
     $html .= '<div class="signing-content">';
     
     // Player section (includes team logo)
-    $html .= renderSigningPlayer($signing, $useShortName);
+    $html .= renderSigningPlayer($signing);
     
     // Contract details
     $html .= renderContractDetails($signing);
@@ -200,12 +151,11 @@ function renderSigning($signing, $alternateLayout = false, $useShortName = false
 
 /**
  * Render all signings from API data grouped by date
- * @param bool $alternateLayout Whether to use alternate layout
  * @param int $limit Maximum number of signings to display (default: 10)
- * @param bool $useShortName Whether to use team short name instead of full name
+ * @param bool $frontpage Whether this is for frontpage display (no date grouping)
  * @return string Complete HTML for all signings
  */
-function renderAllSignings($alternateLayout = false, $limit = 10, $useShortName = false) {
+function renderAllSignings($limit = 10, $frontpage = false) {
     $signingTracker = fetchSigningData();
     $html = '';
     
@@ -229,8 +179,8 @@ function renderAllSignings($alternateLayout = false, $limit = 10, $useShortName 
             return $dateB - $dateA; // Descending order
         });
         
-        if ($alternateLayout) {
-            // Special layout for frontpage - show signings directly without date grouping
+        if ($frontpage) {
+            // Frontpage layout - show signings directly without date grouping
             $count = 0;
             foreach ($signingsByDate as $date => $signings) {
                 foreach ($signings as $index => $signing) {
@@ -238,8 +188,8 @@ function renderAllSignings($alternateLayout = false, $limit = 10, $useShortName 
                         break 2; // Break out of both loops
                     }
                     
-                    // Render signing with full details directly (no button mode)
-                    $signingHtml = renderSigning($signing, false, $useShortName, $count); // Use standard layout, no alternate layout
+                    // Render signing with full details directly
+                    $signingHtml = renderSigning($signing);
                     if (!empty($signingHtml)) {
                         $html .= $signingHtml;
                         $count++;
@@ -260,7 +210,7 @@ function renderAllSignings($alternateLayout = false, $limit = 10, $useShortName 
                         break 2; // Break out of both loops
                     }
                     
-                    $signingHtml = renderSigning($signing, $alternateLayout, $useShortName, $totalCount);
+                    $signingHtml = renderSigning($signing);
                     if (!empty($signingHtml)) {
                         $html .= $signingHtml;
                         $totalCount++;
@@ -272,7 +222,7 @@ function renderAllSignings($alternateLayout = false, $limit = 10, $useShortName 
             }
         }
     } else {
-        $html .= '<div class="signing"';
+        $html .= '<div class="signing">';
         $html .= '<div class="date">No signings available</div>';
         $html .= '<div class="signing-content">';
         $html .= '<div class="alert info">';
@@ -287,12 +237,11 @@ function renderAllSignings($alternateLayout = false, $limit = 10, $useShortName 
 
 /**
  * Render just the signing content (for use inside existing .signings container)
- * @param bool $alternateLayout Whether to use alternate layout
  * @param int $limit Maximum number of signings to display (default: 10)
- * @param bool $useShortName Whether to use team short name instead of full name
+ * @param bool $frontpage Whether this is for frontpage display (no date grouping)
  * @return string Complete HTML for signing content only
  */
-function renderSigningContent($alternateLayout = false, $limit = 10, $useShortName = false) {
-    return renderAllSignings($alternateLayout, $limit, $useShortName);
+function renderSigningContent($limit = 10, $frontpage = false) {
+    return renderAllSignings($limit, $frontpage);
 }
 ?>

@@ -1580,6 +1580,8 @@
     table {
         width: 100%;
         color: var(--heading-color);
+        border-collapse: collapse;
+        white-space: nowrap;
     }
 
     table thead th {
