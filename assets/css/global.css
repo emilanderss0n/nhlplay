@@ -56,7 +56,8 @@
 	--reddit-color: #ff4500;
 	--text-shadow: 1px 1px 2px rgb(0 0 0 / 80%);
 	--card-gradient-bg: radial-gradient(ellipse at top, var(--dark-bg-color), transparent), radial-gradient(ellipse at bottom, var(--second-content-box-bg), transparent);
-	--real-shadow: 0 15px 25px -4px rgb(0 0 0 / 20%), inset 0 -3px 4px -1px rgb(0 0 0 / 20%), 0 -10px 15px -1px rgb(255 255 255 / 43%), inset 0 3px 4px -1px rgb(255 255 255 / 19%), inset 0 0 5px 1px rgb(255 255 255), inset 0 20px 30px 0 rgb(255 255 255 / 85%);
+	--real-shadow: 0 15px 25px -10px rgb(8 10 21 / 24%), inset 0 -3px 4px -1px rgb(6 9 48 / 15%), 0 -10px 15px -1px rgb(255 255 255 / 31%), inset 0 3px 4px -1px rgb(255 255 255 / 87%), inset 0 0 5px 1px rgb(255 255 255 / 54%), inset 0 20px 30px 0 rgb(255 255 255 / 30%);
+	--real-shadow-pressed: 0 10px 25px -4px rgb(8 10 21 / 24%), inset 0 -8px 25px -1px rgb(255 255 255 / 86%), 0 -10px 15px -1px rgb(255 255 255 / 77%), inset 0 8px 20px 0 rgb(19 27 62 / 24%), inset 0 0 5px 1px rgb(255 255 255);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -98,7 +99,8 @@
 		--table-td-odd: #101620;
 		--text-shadow: 1px 1px 2px rgb(0 0 0 / 80%);
 		--card-gradient-bg: radial-gradient(ellipse at top, var(--dark-bg-color), transparent), radial-gradient(ellipse at bottom, var(--second-content-box-bg), transparent);
-		--real-shadow: 0 15px 25px -4px rgb(0 0 0 / 24%), inset 0 -3px 4px -1px rgb(0 0 0 / 77%), 0 -10px 15px -1px rgb(81 101 160 / 4%), inset 0 3px 4px -1px rgb(163 176 238 / 22%), inset 0 0 5px 1px rgb(132 200 221 / 25%), inset 0 20px 30px 0 rgb(117 134 218 / 7%);
+		--real-shadow: 0 15px 25px -4px rgb(0 0 0 / 24%), inset 0 -3px 4px -1px rgb(0 0 0 / 77%), 0 -10px 15px -1px rgb(81 101 160 / 4%), inset 0 3px 4px -1px rgb(163 176 238 / 22%), inset 0 0 5px 1px rgb(132 200 221 / 8%), inset 0 20px 30px 0 rgb(117 134 218 / 7%);
+		--real-shadow-pressed: 0 10px 25px -4px rgb(6 6 11 / 0%), inset 0 -8px 25px -1px rgb(129 131 199 / 6%), 0 -10px 15px -1px rgb(110 155 232 / 3%), inset 0 8px 20px 0 rgb(0 0 0), inset 0 0 5px 1px rgb(161 174 213 / 18%);
 	}
 }
 
@@ -4125,6 +4127,7 @@
 							object-fit: contain;
 							border-radius: 50%;
 							background-color: var(--content-box-bg);
+							box-shadow: var(--real-shadow);
 						}
 					}
 
@@ -4240,20 +4243,21 @@
 				transition: all 0.3s ease;
 				gap: 0.3rem;
 				position: relative;
-				background: var(--card-gradient-bg) !important;
+				background: var(--dark-bg-color) !important;
 				overflow: hidden;
 				border-radius: 8px;
 				display: flex;
 				align-items: center;
 				justify-content: center;
 				flex-direction: column;
-				border: 1px solid var(--border-stroke-weak);
 				outline: 2px solid transparent;
 				transition: .3s all ease;
 				margin: 0;
+				box-shadow: var(--real-shadow);
 
 				&.active {
 					outline: 2px solid var(--main-link-color);
+					box-shadow: var(--real-shadow-pressed);
 				}
 
 				& .date {
@@ -4288,14 +4292,13 @@
 
 				&:hover {
 					transform: translateY(-2px);
-					box-shadow: var(--box-shadow-nice);
+					background: var(--content-box-bg) !important;
 				}
 
 				&:focus-visible {
 					outline: 2px solid var(--main-link-color);
 					outline-offset: 2px;
 					transform: translateY(-2px);
-					box-shadow: var(--box-shadow-nice);
 				}
 			}
 		}
@@ -4309,9 +4312,9 @@
 				cursor: default;
 				height: 100%;
 				outline: 2px solid transparent;
-				background: var(--card-gradient-bg) !important;
+				box-shadow: var(--real-shadow);
 				transition: outline 0.4s ease .6s;
-				box-shadow: inset 0 0 0 1px var(--border-stroke-weak);
+				box-shadow: var(--real-shadow);
 
 				&:focus-visible {
 					outline: 2px solid var(--main-link-color);
