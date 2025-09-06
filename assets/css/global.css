@@ -56,6 +56,7 @@
 	--reddit-color: #ff4500;
 	--text-shadow: 1px 1px 2px rgb(0 0 0 / 80%);
 	--card-gradient-bg: radial-gradient(ellipse at top, var(--dark-bg-color), transparent), radial-gradient(ellipse at bottom, var(--second-content-box-bg), transparent);
+	--real-shadow: 0 15px 25px -4px rgb(0 0 0 / 20%), inset 0 -3px 4px -1px rgb(0 0 0 / 20%), 0 -10px 15px -1px rgb(255 255 255 / 43%), inset 0 3px 4px -1px rgb(255 255 255 / 19%), inset 0 0 5px 1px rgb(255 255 255), inset 0 20px 30px 0 rgb(255 255 255 / 85%);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -97,6 +98,7 @@
 		--table-td-odd: #101620;
 		--text-shadow: 1px 1px 2px rgb(0 0 0 / 80%);
 		--card-gradient-bg: radial-gradient(ellipse at top, var(--dark-bg-color), transparent), radial-gradient(ellipse at bottom, var(--second-content-box-bg), transparent);
+		--real-shadow: 0 15px 25px -4px rgb(0 0 0 / 24%), inset 0 -3px 4px -1px rgb(0 0 0 / 77%), 0 -10px 15px -1px rgb(81 101 160 / 4%), inset 0 3px 4px -1px rgb(163 176 238 / 22%), inset 0 0 5px 1px rgb(132 200 221 / 25%), inset 0 20px 30px 0 rgb(117 134 218 / 7%);
 	}
 }
 
@@ -2844,6 +2846,7 @@
 			align-items: center;
 			overflow: hidden;
 			min-height: 120px;
+			box-shadow: var(--real-shadow);
 
 			&:hover {
 				background-color: var(--content-box-bg);
