@@ -114,6 +114,14 @@ export function initMenuHandlers() {
                     document.removeEventListener('mouseup', handleClickOutside);
                 }
             });
+
+            // Close suggestion box when a search result is clicked (desktop)
+            container.addEventListener('click', function(evt) {
+                if (evt.target.closest('#player-link')) {
+                    container.style.display = 'none';
+                    searchInput.value = '';
+                }
+            });
         }
     });
 
@@ -186,6 +194,18 @@ export function initMenuHandlers() {
                     container.style.display = 'none';
                     searchInput.value = '';
                     document.removeEventListener('mouseup', handleClickOutside);
+                }
+            });
+
+            // Close suggestion input when a search result is clicked (mobile)
+            container.addEventListener('click', function(evt) {
+                if (evt.target.closest('#player-link')) {
+                    const mobileSearch = document.getElementById('mobile-search');
+                    if (mobileSearch) {
+                        mobileSearch.classList.remove('active');
+                    }
+                    container.style.display = 'none';
+                    searchInput.value = '';
                 }
             });
         }
