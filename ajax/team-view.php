@@ -108,7 +108,7 @@ $schedules = (isset($schedules) && is_object($schedules)) ? $schedules : (object
                         <?php if ($teamStatsAdv && isset($teamStatsAdv->data[0]->powerPlayPct)) {
                             echo '<p class="stat-display">' . getPercentage($teamStatsAdv->data[0]->powerPlayPct) . '</p>';
                         } else {
-                            echo '<p class="stat-display">N/A</p>';
+                            echo '<p class="stat-display">0</p>';
                         } ?>
                     </div>
                     <div class="stat">
@@ -116,7 +116,7 @@ $schedules = (isset($schedules) && is_object($schedules)) ? $schedules : (object
                         <?php if ($teamStatsAdv && isset($teamStatsAdv->data[0]->penaltyKillPct)) {
                             echo '<p class="stat-display">' . getPercentage($teamStatsAdv->data[0]->penaltyKillPct) . '</p>';
                         } else {
-                            echo '<p class="stat-display">N/A</p>';
+                            echo '<p class="stat-display">0</p>';
                         } ?>
                     </div>
                 </div>

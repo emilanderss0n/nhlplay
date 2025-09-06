@@ -407,11 +407,11 @@ function getPlayerAdvancedStats($playerId, $season, $gameType = 2) {
     // Calculate stats
     $formattedSAT = isset($advancedStats['puckPossession']->satPct) 
         ? number_format($advancedStats['puckPossession']->satPct * 100, 1) 
-        : 'N/A';
+        : '0';
     
     $formattedUSAT = isset($advancedStats['puckPossession']->usatPct) 
         ? number_format($advancedStats['puckPossession']->usatPct * 100, 1) 
-        : 'N/A';
+        : '0';
     
     $evenStrengthGoalDiff = isset($advancedStats['goalsForAgainst']->evenStrengthGoalDifference) 
         ? $advancedStats['goalsForAgainst']->evenStrengthGoalDifference 

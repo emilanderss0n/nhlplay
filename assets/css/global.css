@@ -4021,6 +4021,10 @@
 		&.signings-frontpage {
 			display: flex;
 			flex-direction: column;
+
+			@media (max-width: 760px) {
+				gap: 2rem;
+			}
 		}
 
 		& .signing-date-group {
@@ -4055,21 +4059,19 @@
 					font-size: 0.9rem;
 
 					@media (max-width: 760px) {
-						text-align: center;
-						width: 100%;
+                    	display: none;
 					}
 				}
 
 				& .signing-content {
-					padding: 1rem 0;
-					border-bottom: 1px solid var(--border-stroke-weak);
-
-					.signing:last-child & {
-						border-bottom: none;
-					}
+					padding: 1rem;
+					margin-top: 1rem;
+					border: 1px solid var(--border-stroke-weak);
+					border-radius: 10px;
 
 					@media (max-width: 760px) {
 						border: none;
+						padding: 0;
 					}
 				}
 			}

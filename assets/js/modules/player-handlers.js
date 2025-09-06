@@ -589,8 +589,8 @@ export function initPlayerHandlers(elements) {
                             const usatValue = document.getElementById('usat-value');
                             const evgdValue = document.getElementById('evgd-value');
 
-                            if (satValue) satValue.textContent = response.advancedStats.formattedSAT || 'N/A';
-                            if (usatValue) usatValue.textContent = response.advancedStats.formattedUSAT || 'N/A';
+                            if (satValue) satValue.textContent = response.advancedStats.formattedSAT || '0';
+                            if (usatValue) usatValue.textContent = response.advancedStats.formattedUSAT || '0';
                             if (evgdValue) evgdValue.textContent = response.advancedStats.evenStrengthGoalDiff || '0';
                         }
 

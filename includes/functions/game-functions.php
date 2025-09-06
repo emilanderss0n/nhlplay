@@ -20,7 +20,7 @@ function gameScoringPlays($gameContent) {
                 $scorerHomeScore = $scorer->homeScore;
                 $seasonGoals = $scorer->goalsToDate;
                 $timeInPeriod = $scorer->timeInPeriod;
-                $shotType = isset($scorer->shotType) ? $scorer->shotType : 'N/A';
+                $shotType = isset($scorer->shotType) ? $scorer->shotType : '??';
                 $teamGoal = abbrevToTeamId($scorerTeamAbbrev);
                 $highlightClip = isset($scorer->highlightClipSharingUrl) ? $scorer->highlightClipSharingUrl : null;
 

@@ -118,7 +118,7 @@ $playerBirthplaceLong = \Locale::getDisplayRegion('-' . ($playerBirthplace ?? ''
             <div class="stats-player-inner">
                 <div class="phone-show">
                     <?php if ($isSkater) { ?>
-                        <?= renderPhoneStatsDisplay($playerSeasonStats, $regularSeasonAdvancedStats['formattedSAT'] ?? 'N/A', $regularSeasonAdvancedStats['formattedUSAT'] ?? 'N/A', $regularSeasonAdvancedStats['evenStrengthGoalDiff'] ?? '0', true) ?>
+                        <?= renderPhoneStatsDisplay($playerSeasonStats, $regularSeasonAdvancedStats['formattedSAT'] ?? '0', $regularSeasonAdvancedStats['formattedUSAT'] ?? '0', $regularSeasonAdvancedStats['evenStrengthGoalDiff'] ?? '0', true) ?>
                     <?php } else { ?>
                         <?= renderPhoneStatsDisplay($playerSeasonStats, null, null, null, false) ?>
                     <?php } ?>
@@ -142,7 +142,7 @@ $playerBirthplaceLong = \Locale::getDisplayRegion('-' . ($playerBirthplace ?? ''
                             </tr>
                         </thead>
                         <tbody>
-                            <?= renderPlayerStatsRow($playerSeasonStats, $regularSeasonAdvancedStats['formattedSAT'] ?? 'N/A', $regularSeasonAdvancedStats['formattedUSAT'] ?? 'N/A', $regularSeasonAdvancedStats['evenStrengthGoalDiff'] ?? '0') ?>
+                            <?= renderPlayerStatsRow($playerSeasonStats, $regularSeasonAdvancedStats['formattedSAT'] ?? '0', $regularSeasonAdvancedStats['formattedUSAT'] ?? '0', $regularSeasonAdvancedStats['evenStrengthGoalDiff'] ?? '0') ?>
                         </tbody>
                     <?php } else { ?>
                         <thead>
@@ -166,7 +166,7 @@ $playerBirthplaceLong = \Locale::getDisplayRegion('-' . ($playerBirthplace ?? ''
                     </div>
                     <div class="phone-show">
                         <?php if ($isSkater) { ?>
-                            <?= renderPhoneStatsDisplay($playerPlayoffsStats, $playoffAdvancedStats['formattedSAT'] ?? 'N/A', $playoffAdvancedStats['formattedUSAT'] ?? 'N/A', $playoffAdvancedStats['evenStrengthGoalDiff'] ?? '0', true) ?>
+                            <?= renderPhoneStatsDisplay($playerPlayoffsStats, $playoffAdvancedStats['formattedSAT'] ?? '0', $playoffAdvancedStats['formattedUSAT'] ?? '0', $playoffAdvancedStats['evenStrengthGoalDiff'] ?? '0', true) ?>
                         <?php } else { ?>
                             <?= renderPhoneStatsDisplay($playerPlayoffsStats, null, null, null, false) ?>
                         <?php } ?>
@@ -190,7 +190,7 @@ $playerBirthplaceLong = \Locale::getDisplayRegion('-' . ($playerBirthplace ?? ''
                                 </tr>
                             </thead>
                             <tbody>
-                                <?= renderPlayerStatsRow($playerPlayoffsStats, $playoffAdvancedStats['formattedSAT'] ?? 'N/A', $playoffAdvancedStats['formattedUSAT'] ?? 'N/A', $playoffAdvancedStats['evenStrengthGoalDiff'] ?? '0') ?>
+                                <?= renderPlayerStatsRow($playerPlayoffsStats, $playoffAdvancedStats['formattedSAT'] ?? '0', $playoffAdvancedStats['formattedUSAT'] ?? '0', $playoffAdvancedStats['evenStrengthGoalDiff'] ?? '0') ?>
                             </tbody>
                         <?php } else { ?>
                             <thead>

@@ -67,8 +67,8 @@ function renderPlayerCard($player, $matchingStats, $activeTeam, $type, $injuredP
     <?php
 }
 
-function renderPlayerStatsRow($stats, $formattedSAT = 'N/A', $formattedUSAT = 'N/A', $evenStrengthGoalDiff = '0') {
-    if (!$stats) return '<tr><td colspan="12">No stats available</td></tr>';
+function renderPlayerStatsRow($stats, $formattedSAT = '0', $formattedUSAT = '0', $evenStrengthGoalDiff = '0') {
+    if (!$stats) return '<tr><td colspan="12" style="font-size: 0.8rem;">No stats available</td></tr>';
     
     return sprintf('
         <tr>
@@ -120,7 +120,7 @@ function renderGoalieStatsRow($stats) {
     );
 }
 
-function renderPhoneStatsDisplay($stats, $formattedSAT = 'N/A', $formattedUSAT = 'N/A', $evenStrengthGoalDiff = '0', $isSkater = true) {
+function renderPhoneStatsDisplay($stats, $formattedSAT = '0', $formattedUSAT = '0', $evenStrengthGoalDiff = '0', $isSkater = true) {
     if ($isSkater) {
         return sprintf('
             <div class="stat">
@@ -243,7 +243,7 @@ function getThreeStars($season) {
                     $output .= '<div class="team-color" style="background: linear-gradient(142deg, '. teamToColor($stars->team->id ?? 0) .' 0%, rgba(255,255,255,0) 58%); right: 0;"></div>';
                     $output .= '<div class="player-desc">';
                     $output .= '<h3>' . $formattedName . '</h3>';
-                    $output .= '<div class="stats">' . ($stars->team->triCode ?? 'NHL') . ' - #' . ($stars->player->sweaterNumber ?? '0') . ' - ' . ($stars->player->position ?? 'N/A') . '</div>';
+                    $output .= '<div class="stats">' . ($stars->team->triCode ?? 'NHL') . ' - #' . ($stars->player->sweaterNumber ?? '0') . ' - ' . ($stars->player->position ?? '??') . '</div>';
                     $output .= '</div></a>';
                     $i++;
                 }

@@ -148,8 +148,8 @@ function player_compute_advanced($playerId, $isSkater = true, $season = null)
         return [
             'success' => true,
             'advancedStats' => [
-                'formattedSAT' => $advancedStats['formattedSAT'] ?? 'N/A',
-                'formattedUSAT' => $advancedStats['formattedUSAT'] ?? 'N/A',
+                'formattedSAT' => $advancedStats['formattedSAT'] ?? '0',
+                'formattedUSAT' => $advancedStats['formattedUSAT'] ?? '0',
                 'evenStrengthGoalDiff' => $advancedStats['evenStrengthGoalDiff'] ?? '0'
             ]
         ];
