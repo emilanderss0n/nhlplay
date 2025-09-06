@@ -187,7 +187,6 @@ class App {
             },
             'menu-handlers': () => {
                 if (module.initMenuHandlers) module.initMenuHandlers();
-                if (module.checkRecentTrades) module.checkRecentTrades();
             },
             'route-handler': () => module.initRouteHandler(this.elements),
             'player-leaders': () => module.initializeSkaterLeaders(),

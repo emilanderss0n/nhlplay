@@ -198,28 +198,3 @@ function fadeOutElement(element) {
         element.style.display = 'none';
     }, 500);
 }
-
-export async function checkRecentTrades() {
-    try {
-        const response = await fetch('https://www.sportsnet.ca/wp-json/sportsnet/v1/trade-tracker');
-        const tradeTracker = await response.json();
-
-        if (tradeTracker) {
-            const currentTime = Math.floor(Date.now() / 1000);
-            const hasRecentTrades = tradeTracker.some(trade => {
-                const tradeTime = Math.floor(new Date(trade.trade_date).getTime() / 1000);
-                return (currentTime - tradeTime) <= (2 * 24 * 60 * 60);
-            });
-
-            const indicator = document.querySelector('#link-trades .indicator');
-            if (hasRecentTrades && !indicator) {
-                const span = document.querySelector('#link-trades span');
-                const div = document.createElement('div');
-                div.className = 'indicator';
-                span.prepend(div);
-            }
-        }
-    } catch (error) {
-        console.error('Error checking trades:', error);
-    }
-}
